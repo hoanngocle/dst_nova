@@ -37,7 +37,7 @@ test("mod metadata requires every client and Tu Tien", () => {
   assert.match(source, /dst_compatible\s*=\s*true/);
   assert.match(source, /all_clients_require_mod\s*=\s*true/);
   assert.match(source, /client_only_mod\s*=\s*false/);
-  assert.match(source, /\[\"workshop-3721846643\"\]\s*=\s*true/);
+  assert.match(source, /mod_dependencies\s*=\s*{\s*{\s*workshop\s*=\s*"workshop-3721846643"\s*},?\s*}/);
 });
 
 test("pricing uses half-stone integers for common and rare examples", () => {

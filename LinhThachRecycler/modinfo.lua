@@ -17,7 +17,7 @@ icon = nil
 server_filter_tags = { "linh thach", "recycler", "tu tien" }
 
 mod_dependencies = {
-    ["workshop-3721846643"] = true,
+    { workshop = "workshop-3721846643" },
 }
 
 configuration_options = {}
