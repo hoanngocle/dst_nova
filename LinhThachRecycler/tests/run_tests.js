@@ -91,6 +91,9 @@ test("machine owns replicated integer state and persists a clamped balance", () 
 test("high value confirmation is tied to the current container revision", () => {
   const source = read("scripts/prefabs/nova_lingshi_recycler.lua");
   assert.match(source, /CONFIRM_UNITS\s*=\s*10/);
+  assert.match(source, /quote\.units\s*>=\s*CONFIRM_UNITS\s*\*\s*quote\.count/);
+  assert.match(source, /if\s+requires_confirmation\s+then/);
+  assert.doesNotMatch(source, /if\s+total_units\s*>=\s*CONFIRM_UNITS\s+then/);
   assert.match(source, /inst\._content_revision\s*=\s*inst\._content_revision\s*\+\s*1/);
   assert.match(source, /inst\._confirm_revision\s*==\s*inst\._content_revision/);
   assert.match(source, /inst\._confirm_userid\s*==\s*UserKey\(player\)/);
@@ -124,6 +127,63 @@ test("machine cannot be hammered while either items or fractional credit remain"
   assert.match(source, /container:IsEmpty\(\)\s+and\s+inst\._balance_units\s*==\s*0/);
   assert.match(source, /workable:SetWorkable\(CanHammer\(inst\)\)/);
   assert.doesNotMatch(source, /AddComponent\("burnable"\)/);
+});
+
+test("integration registers a nine-slot container without discarding earlier mod wrappers", () => {
+  const source = read("modmain.lua");
+  assert.match(source, /PrefabFiles\s*=\s*{\s*"nova_lingshi_recycler"\s*}/);
+  assert.match(source, /containers_widgetsetup_base\s*=\s*containers\.widgetsetup/);
+  assert.match(source, /containers_widgetsetup_base\(container,\s*prefab,\s*data/);
+  assert.match(source, /for\s+y\s*=\s*2,\s*0,\s*-1\s+do/);
+  assert.match(source, /containers\.MAXITEMSLOTS\s*=\s*math\.max/);
+});
+
+test("client UI exposes live refine, confirmation, withdrawal, balance, preview, and status", () => {
+  const source = read("modmain.lua");
+  assert.match(source, /AddClassPostConstruct\("widgets\/containerwidget"/);
+  assert.match(source, /SendModRPCToServer\(_G\.MOD_RPC\[RPC_NAMESPACE\]\.Refine,\s*container\)/);
+  assert.match(source, /SendModRPCToServer\(_G\.MOD_RPC\[RPC_NAMESPACE\]\.Withdraw,\s*container\)/);
+  assert.match(source, /_nova_confirm:value\(\)/);
+  assert.match(source, /_nova_balance:value\(\)/);
+  assert.match(source, /_nova_preview:value\(\)/);
+  assert.match(source, /_nova_status:value\(\)/);
+  assert.match(source, /"Luyện hóa"/);
+  assert.match(source, /"Xác nhận"/);
+  assert.match(source, /"Rút"/);
+});
+
+test("RPC handlers validate prefab, range, open ownership, and inventory before mutation", () => {
+  const source = read("modmain.lua");
+  assert.match(source, /AddModRPCHandler\(RPC_NAMESPACE,\s*"Refine"/);
+  assert.match(source, /AddModRPCHandler\(RPC_NAMESPACE,\s*"Withdraw"/);
+  assert.match(source, /machine\.prefab\s*~=\s*"nova_lingshi_recycler"/);
+  assert.match(source, /GetDistanceSqToInst\(machine\)\s*>\s*MAX_RPC_DISTANCE_SQ/);
+  assert.match(source, /container:IsOpenedBy\(player\)/);
+  assert.match(source, /player\.components\.inventory\s*==\s*nil/);
+  assert.match(source, /machine:TryRefine\(player\)/);
+  assert.match(source, /machine:TryWithdraw\(player\)/);
+});
+
+test("recipe uses the approved Alchemy Engine ingredients", () => {
+  const source = read("modmain.lua");
+  assert.match(source, /AddRecipe2\(\s*"nova_lingshi_recycler"/);
+  assert.match(source, /Ingredient\("cutstone",\s*4\)/);
+  assert.match(source, /Ingredient\("boards",\s*4\)/);
+  assert.match(source, /Ingredient\("goldnugget",\s*2\)/);
+  assert.match(source, /Ingredient\("gears",\s*1\)/);
+  assert.match(source, /TECH\.SCIENCE_TWO/);
+  assert.match(source, /"STRUCTURES"/);
+  assert.match(source, /nova_lingshi_recycler_placer/);
+});
+
+test("README documents installation and manual acceptance checks", () => {
+  const source = read("README.md");
+  assert.match(source, /3721846643/);
+  assert.match(source, /Luyện hóa/);
+  assert.match(source, /Rút/);
+  assert.match(source, /2 cỏ/i);
+  assert.match(source, /túi đầy/i);
+  assert.match(source, /lưu.*tải/i);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

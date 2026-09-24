@@ -2,6 +2,7 @@ local pricing = require("nova_lingshi_pricing")
 
 local assets = {
     Asset("ANIM", "anim/treasure_chest.zip"),
+    Asset("ANIM", "anim/ui_chest_3x3.zip"),
 }
 
 local prefabs = {
@@ -63,6 +64,7 @@ local function BuildBatch(inst)
     local total_units = 0
     local rejected_count = 0
     local first_reason = nil
+    local requires_confirmation = false
     local container = inst.components.container
 
     for slot = 1, SLOT_COUNT do
@@ -76,6 +78,8 @@ local function BuildBatch(inst)
                     units = quote.units,
                 })
                 total_units = total_units + quote.units
+                requires_confirmation = requires_confirmation
+                    or quote.units >= CONFIRM_UNITS * quote.count
             else
                 rejected_count = rejected_count + ItemCount(item)
                 first_reason = first_reason or quote.reason
@@ -83,7 +87,7 @@ local function BuildBatch(inst)
         end
     end
 
-    return entries, total_units, rejected_count, first_reason
+    return entries, total_units, rejected_count, first_reason, requires_confirmation
 end
 
 local function RefreshPreview(inst)
@@ -139,14 +143,14 @@ local function TryRefine(inst, player)
         return false
     end
 
-    local entries, total_units = BuildBatch(inst)
+    local entries, total_units, _, _, requires_confirmation = BuildBatch(inst)
     if total_units <= 0 then
         ClearConfirmation(inst)
         RefreshPreview(inst)
         return false
     end
 
-    if total_units >= CONFIRM_UNITS then
+    if requires_confirmation then
         local is_confirmed = inst._confirm_userid == UserKey(player)
             and inst._confirm_revision == inst._content_revision
         if not is_confirmed then
@@ -244,6 +248,7 @@ end
 
 local function OnClose(inst)
     inst.AnimState:PlayAnimation("close")
+    inst.AnimState:PushAnimation("closed", false)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
 end
 
@@ -316,6 +321,8 @@ local function fn()
     inst.components.container:WidgetSetup("nova_lingshi_recycler")
     inst.components.container:SetOnOpenFn(OnOpen)
     inst.components.container:SetOnCloseFn(OnClose)
+    inst.components.container.skipopensnd = true
+    inst.components.container.skipclosesnd = true
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({ "cutstone", "cutstone", "boards", "boards", "goldnugget" })
