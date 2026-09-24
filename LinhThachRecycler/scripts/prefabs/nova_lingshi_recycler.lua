@@ -1,4 +1,5 @@
 local pricing = require("nova_lingshi_pricing")
+local safe_pcall = pcall
 
 local assets = {
     Asset("ANIM", "anim/treasure_chest.zip"),
@@ -217,7 +218,7 @@ local function TryWithdraw(inst, player)
         -- one-item spawn detached so it can be removed without losing credit.
         local old_ignorefull = inventory.ignorefull
         inventory.ignorefull = true
-        local ok, accepted = pcall(inventory.GiveItem, inventory, stone)
+        local ok, accepted = safe_pcall(inventory.GiveItem, inventory, stone)
         inventory.ignorefull = old_ignorefull
 
         if not ok or not accepted then
@@ -319,8 +320,8 @@ local function fn()
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("nova_lingshi_recycler")
-    inst.components.container:SetOnOpenFn(OnOpen)
-    inst.components.container:SetOnCloseFn(OnClose)
+    inst.components.container.onopenfn = OnOpen
+    inst.components.container.onclosefn = OnClose
     inst.components.container.skipopensnd = true
     inst.components.container.skipclosesnd = true
 

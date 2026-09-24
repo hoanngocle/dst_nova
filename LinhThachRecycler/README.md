@@ -29,6 +29,15 @@ Máy nhận tối đa 9 chồng vật phẩm, quy đổi chúng thành số dư 
 6. Thử đập máy khi còn đồ hoặc số dư: máy không nhận thao tác búa. Lấy hết đồ và
    rút hết số dư rồi mới đập được.
 
+## Kiểm tra bằng mã
+
+- Chạy bộ kiểm tra hợp đồng tĩnh: `node tests/run_tests.js`.
+- Sau khi dedicated server đã tải xong thế giới và bật cả hai mod, chạy lệnh sau
+  trong server console:
+  `dofile([[../mods/LinhThachRecycler/tests/runtime_server_test.lua]])`.
+  Harness này chỉ chạy khi được gọi thủ công, dùng prefab thật, tự dọn các entity
+  kiểm tra và in `[LTR TEST] PASS 19 runtime assertions` khi hoàn tất.
+
 ## Ghi chú kỹ thuật
 
 Máy lưu số dư bằng đơn vị nguyên: `1` đơn vị bằng `0,5` Hạ Phẩm. Server tính lại

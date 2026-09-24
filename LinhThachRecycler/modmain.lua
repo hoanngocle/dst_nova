@@ -1,5 +1,5 @@
 local _G = GLOBAL
-local containers = _G.require("containers")
+local containers = require("containers")
 
 PrefabFiles = { "nova_lingshi_recycler" }
 
@@ -229,12 +229,12 @@ _G.STRINGS.CHARACTERS.GENERIC.DESCRIBE.NOVA_LINGSHI_RECYCLER = "Một cỗ máy 
 AddRecipe2(
     "nova_lingshi_recycler",
     {
-        Ingredient("cutstone", 4),
-        Ingredient("boards", 4),
-        Ingredient("goldnugget", 2),
-        Ingredient("gears", 1),
+        _G.Ingredient("cutstone", 4),
+        _G.Ingredient("boards", 4),
+        _G.Ingredient("goldnugget", 2),
+        _G.Ingredient("gears", 1),
     },
-    TECH.SCIENCE_TWO,
+    _G.TECH.SCIENCE_TWO,
     {
         placer = "nova_lingshi_recycler_placer",
         min_spacing = 1.5,

@@ -86,6 +86,9 @@ test("machine owns replicated integer state and persists a clamped balance", () 
   assert.match(source, /_nova_confirm/);
   assert.match(source, /nova_balance_units\s*=\s*inst\._balance_units/);
   assert.match(source, /math\.max\(0,\s*math\.floor\(tonumber\(data\.nova_balance_units\)\s*or\s*0\)\)/);
+  assert.match(source, /components\.container\.onopenfn\s*=\s*OnOpen/);
+  assert.match(source, /components\.container\.onclosefn\s*=\s*OnClose/);
+  assert.doesNotMatch(source, /SetOnOpenFn|SetOnCloseFn/);
 });
 
 test("high value confirmation is tied to the current container revision", () => {
@@ -113,10 +116,12 @@ test("refinement removes only server-requoted accepted slots", () => {
 
 test("withdrawal suppresses full-inventory drops and charges only accepted stones", () => {
   const source = read("scripts/prefabs/nova_lingshi_recycler.lua");
+  assert.match(source, /local safe_pcall = pcall/);
+  assert.doesNotMatch(source, /\bGLOBAL\b/);
   assert.match(source, /SpawnPrefab\("xd_lingshi1"\)/);
   assert.match(source, /old_ignorefull\s*=\s*inventory\.ignorefull/);
   assert.match(source, /inventory\.ignorefull\s*=\s*true/);
-  assert.match(source, /pcall\(inventory\.GiveItem,\s*inventory,\s*stone\)/);
+  assert.match(source, /safe_pcall\(inventory\.GiveItem,\s*inventory,\s*stone\)/);
   assert.match(source, /inventory\.ignorefull\s*=\s*old_ignorefull/);
   assert.match(source, /if\s+not\s+ok\s+or\s+not\s+accepted\s+then[\s\S]*stone:Remove\(\)[\s\S]*break/);
   assert.match(source, /inst\._balance_units\s*=\s*inst\._balance_units\s*-\s*2/);
@@ -131,6 +136,8 @@ test("machine cannot be hammered while either items or fractional credit remain"
 
 test("integration registers a nine-slot container without discarding earlier mod wrappers", () => {
   const source = read("modmain.lua");
+  assert.match(source, /local containers = require\("containers"\)/);
+  assert.doesNotMatch(source, /GLOBAL\.require/);
   assert.match(source, /PrefabFiles\s*=\s*{\s*"nova_lingshi_recycler"\s*}/);
   assert.match(source, /containers_widgetsetup_base\s*=\s*containers\.widgetsetup/);
   assert.match(source, /containers_widgetsetup_base\(container,\s*prefab,\s*data/);
@@ -167,11 +174,12 @@ test("RPC handlers validate prefab, range, open ownership, and inventory before 
 test("recipe uses the approved Alchemy Engine ingredients", () => {
   const source = read("modmain.lua");
   assert.match(source, /AddRecipe2\(\s*"nova_lingshi_recycler"/);
-  assert.match(source, /Ingredient\("cutstone",\s*4\)/);
-  assert.match(source, /Ingredient\("boards",\s*4\)/);
-  assert.match(source, /Ingredient\("goldnugget",\s*2\)/);
-  assert.match(source, /Ingredient\("gears",\s*1\)/);
-  assert.match(source, /TECH\.SCIENCE_TWO/);
+  assert.match(source, /_G\.Ingredient\("cutstone",\s*4\)/);
+  assert.match(source, /_G\.Ingredient\("boards",\s*4\)/);
+  assert.match(source, /_G\.Ingredient\("goldnugget",\s*2\)/);
+  assert.match(source, /_G\.Ingredient\("gears",\s*1\)/);
+  assert.match(source, /_G\.TECH\.SCIENCE_TWO/);
+  assert.doesNotMatch(source, /(?:^|[^._A-Za-z])TECH\.SCIENCE_TWO/);
   assert.match(source, /"STRUCTURES"/);
   assert.match(source, /nova_lingshi_recycler_placer/);
 });
@@ -184,6 +192,21 @@ test("README documents installation and manual acceptance checks", () => {
   assert.match(source, /2 cỏ/i);
   assert.match(source, /túi đầy/i);
   assert.match(source, /lưu.*tải/i);
+});
+
+test("dedicated-server behavior harness covers transactions and persistence", () => {
+  const source = read("tests/runtime_server_test.lua");
+  assert.match(source, /two grass must equal one stone/);
+  assert.match(source, /curated Tu Tien rare value must apply/);
+  assert.match(source, /durability must be applied before stack multiplication/);
+  assert.match(source, /profitable multi-output recipes must be rejected/);
+  assert.match(source, /first high-value action must arm confirmation without consuming/);
+  assert.match(source, /slot changes must invalidate a pending confirmation/);
+  assert.match(source, /leave rejected slots untouched/);
+  assert.match(source, /save\/load must preserve fractional credit/);
+  assert.match(source, /full inventory must keep credit/);
+  assert.match(source, /successful withdrawal must charge only delivered stones/);
+  assert.match(source, /\[LTR TEST\] PASS/);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
