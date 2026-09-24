@@ -57,6 +57,15 @@ local VALUES = {
     purebrilliance = 32,
     horrorfuel = 32,
     alterguardianhatshard = 40,
+
+    -- Curated Tu Tiên drops. Prefab names are verified against the mod's
+    -- STRINGS.NAMES entries; these must never fall through to the default.
+    xd_bysp = 20, -- Mảnh Bản Nguyên
+    xd_spider_leg = 20, -- Tà Sát Bộ Túc
+    xd_mgqg = 20, -- Ma Quái Kiềm Cốt
+    xd_baihu_skin = 24, -- Cẩm Mao Hổ Bì
+    xd_qlr = 30, -- Kỳ Lân Nhung
+    xd_fs = 30, -- Phượng Tủy
 }
 
 local PROTECTED = {
@@ -93,6 +102,9 @@ local function PositiveInteger(value, fallback)
 end
 
 local function GetRawUnitValue(prefab)
+    if type(prefab) ~= "string" or prefab == "" then
+        return nil
+    end
     return VALUES[prefab] or DEFAULT_UNITS
 end
 
@@ -132,8 +144,17 @@ local function RecipeCreatesProfit(prefab, all_recipes)
             local input_units = 0
 
             for _, ingredient in ipairs(recipe.ingredients) do
+                -- Character/stat ingredients and malformed mod recipes have
+                -- no item prefab to value. Reject their output conservatively.
+                if type(ingredient.type) ~= "string" or ingredient.type == "" then
+                    return true
+                end
                 local amount = math.max(1, PositiveInteger(ingredient.amount, 1))
-                input_units = input_units + GetRawUnitValue(ingredient.type) * amount
+                local ingredient_units = GetRawUnitValue(ingredient.type)
+                if ingredient_units == nil then
+                    return true
+                end
+                input_units = input_units + ingredient_units * amount
             end
 
             if output_units > input_units then

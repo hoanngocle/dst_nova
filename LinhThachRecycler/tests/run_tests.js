@@ -47,6 +47,8 @@ test("pricing uses half-stone integers for common and rare examples", () => {
   assert.equal(tableValue(source, "gears"), 6);
   assert.equal(tableValue(source, "deerclops_eyeball"), 20);
   assert.equal(tableValue(source, "alterguardianhatshard"), 40);
+  assert.equal(tableValue(source, "xd_bysp"), 20);
+  assert.equal(tableValue(source, "xd_baihu_skin"), 24);
 });
 
 test("durability scaling rounds down and never values an accepted item below half a stone", () => {
@@ -64,6 +66,7 @@ test("pricing guards currency, nested storage, protected items, and profitable r
   assert.match(source, /PROTECTED\[prefab\]/);
   assert.match(source, /recipe\.numtogive/);
   assert.match(source, /output_units\s*>\s*input_units/);
+  assert.match(source, /type\(ingredient\.type\)\s*~=\s*"string"/);
 });
 
 test("stack and durability are applied in the safe order", () => {
@@ -71,6 +74,56 @@ test("stack and durability are applied in the safe order", () => {
   assert.match(source, /unit_value\s*=\s*ApplyDurability/);
   assert.match(source, /units\s*=\s*unit_value\s*\*\s*count/);
   assert.equal(scaledUnitValue(6, 0.5) * 4, 12);
+});
+
+test("machine owns replicated integer state and persists a clamped balance", () => {
+  const source = read("scripts/prefabs/nova_lingshi_recycler.lua");
+  assert.match(source, /net_uint\(/);
+  assert.match(source, /_nova_balance/);
+  assert.match(source, /_nova_preview/);
+  assert.match(source, /_nova_rejected/);
+  assert.match(source, /_nova_status/);
+  assert.match(source, /_nova_confirm/);
+  assert.match(source, /nova_balance_units\s*=\s*inst\._balance_units/);
+  assert.match(source, /math\.max\(0,\s*math\.floor\(tonumber\(data\.nova_balance_units\)\s*or\s*0\)\)/);
+});
+
+test("high value confirmation is tied to the current container revision", () => {
+  const source = read("scripts/prefabs/nova_lingshi_recycler.lua");
+  assert.match(source, /CONFIRM_UNITS\s*=\s*10/);
+  assert.match(source, /inst\._content_revision\s*=\s*inst\._content_revision\s*\+\s*1/);
+  assert.match(source, /inst\._confirm_revision\s*==\s*inst\._content_revision/);
+  assert.match(source, /inst\._confirm_userid\s*==\s*UserKey\(player\)/);
+  assert.match(source, /ClearConfirmation\(inst\)/);
+});
+
+test("refinement removes only server-requoted accepted slots", () => {
+  const source = read("scripts/prefabs/nova_lingshi_recycler.lua");
+  assert.match(source, /for\s+slot\s*=\s*1,\s*SLOT_COUNT\s+do/);
+  assert.match(source, /pricing\.GetItemQuote\(item,\s*AllRecipes\)/);
+  assert.match(source, /if\s+quote\.accepted\s+then/);
+  assert.match(source, /RemoveItemBySlot\(entry\.slot\)/);
+  assert.match(source, /removed\s*==\s*entry\.item/);
+  assert.match(source, /removed:Remove\(\)/);
+  assert.match(source, /inst\._busy/);
+});
+
+test("withdrawal suppresses full-inventory drops and charges only accepted stones", () => {
+  const source = read("scripts/prefabs/nova_lingshi_recycler.lua");
+  assert.match(source, /SpawnPrefab\("xd_lingshi1"\)/);
+  assert.match(source, /old_ignorefull\s*=\s*inventory\.ignorefull/);
+  assert.match(source, /inventory\.ignorefull\s*=\s*true/);
+  assert.match(source, /pcall\(inventory\.GiveItem,\s*inventory,\s*stone\)/);
+  assert.match(source, /inventory\.ignorefull\s*=\s*old_ignorefull/);
+  assert.match(source, /if\s+not\s+ok\s+or\s+not\s+accepted\s+then[\s\S]*stone:Remove\(\)[\s\S]*break/);
+  assert.match(source, /inst\._balance_units\s*=\s*inst\._balance_units\s*-\s*2/);
+});
+
+test("machine cannot be hammered while either items or fractional credit remain", () => {
+  const source = read("scripts/prefabs/nova_lingshi_recycler.lua");
+  assert.match(source, /container:IsEmpty\(\)\s+and\s+inst\._balance_units\s*==\s*0/);
+  assert.match(source, /workable:SetWorkable\(CanHammer\(inst\)\)/);
+  assert.doesNotMatch(source, /AddComponent\("burnable"\)/);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
