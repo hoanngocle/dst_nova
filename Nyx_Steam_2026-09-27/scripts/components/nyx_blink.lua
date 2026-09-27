@@ -74,6 +74,8 @@ end
 
 function NyxBlink:_DamagePath(targets)
     local combat = self.inst.components ~= nil and self.inst.components.combat or nil
+    local level = self.inst.components ~= nil and self.inst.components.levelsystem or nil
+    local damage = Common.LungeDamage(level ~= nil and level.level or nil)
     local previous_ignore
     if combat ~= nil then
         previous_ignore = combat.ignorehitrange
@@ -83,7 +85,7 @@ function NyxBlink:_DamagePath(targets)
         for _, target in ipairs(targets) do
             if Common.IsValidLungeTarget(self.inst, target) then
                 SkillDamage.Apply(
-                    self.inst, target, Common.LUNGE_DAMAGE, "nyx_blink")
+                    self.inst, target, damage, "nyx_blink")
                 if self.inst:IsValid() then
                     self.inst:PushEvent("onareaattackother", {target = target})
                 end

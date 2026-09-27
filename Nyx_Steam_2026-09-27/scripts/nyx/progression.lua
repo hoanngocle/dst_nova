@@ -1,12 +1,12 @@
 local P = {}
 function P.Finite(v) return type(v)=='number' and v==v and v>-math.huge and v<math.huge end
-function P.Radius(level) return math.min(18,8+math.floor(math.max(0,level-10)/5)) end
+function P.Radius(level) return math.min(17,8+math.floor(math.max(0,level-10)/10)) end
 function P.NextRadiusLevel(level)
-    if level>=60 then return nil end
-    return math.max(15,10+(math.floor(math.max(0,level-10)/5)+1)*5)
+    if level>=100 then return nil end
+    return math.max(20,10+(math.floor(math.max(0,level-10)/10)+1)*10)
 end
-function P.WingDrain(level) return level>=50 and 1 or level>=40 and 2 or 3 end
-function P.EyeDrain(level) return level>=50 and 1 or level>=40 and 2 or level>=30 and 3 or 4 end
+function P.WingDrain(level) return level>=100 and 1 or level>=90 and 2 or level>=70 and 3 or 4 end
+function P.EyeDrain(level) return level>=100 and 1 or level>=70 and 2 or level>=50 and 3 or 4 end
 function P.Unlocked(def,s)
     if not s.ready then return false end
     if def.gate.kind=='always' then return true end

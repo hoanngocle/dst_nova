@@ -1,6 +1,6 @@
 local G=GLOBAL
 G.setmetatable(env,{__index=function(_,key) return G.rawget(G,key) end})
-PrefabFiles={'nyx','nyx_none','nyx_skillbook','nyx_domain_fx','nyx_gather_fx','nyx_wings_fx','nyx_htz_xtzlj','nyx_wmz_spell','nyx_ice_fx'}
+PrefabFiles={'nyx','nyx_none','nyx_skillbook','nyx_gather_fx','nyx_wings_fx','nyx_htz_xtzlj','nyx_wmz_spell','nyx_ice_fx'}
 Assets={Asset('ANIM','anim/nyx_purple.zip'),Asset('ANIM','anim/nyx_ghost.zip'),
     Asset('ANIM','anim/status_xd_htz_lq.zip')}
 for _,path in ipairs({'images/nyx_eye_icon','images/nyx_night_icon','images/nyx_triflame_icon','images/nyx_yellow_river_icon','images/nyx_skill_icons','images/nyx_skill_toggle','images/nyx_skin_dress_icon',

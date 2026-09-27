@@ -55,8 +55,7 @@ local function master(inst)
 end
 return MakePlayerCharacter('nyx',{
     'nyx_skillbook','spear_wathgrithr_lightning_lunge_fx','lightning','xd_luoshen_krss','xd_wmz_zhf',
-    'nyx_domain_aura_fx','nyx_domain_shield_fx','nyx_domain_projectile',
-    'xd_luoshen_shentong_life_buff','xd_luoshen_shentong_life_circle',
+    'xd_luoshen_shentong_death_buff','xd_luoshen_shentong_death_circle',
     'groundpoundring_fx','xd_yunxiao_swamp_terraformer','xd_yunxiao_jjj_aoeent',
     'xd_htz_firefx','xd_wmz_butterfly1','xd_wmz_butterfly2','xd_wmz_butterfly3',
     'nyx_gather_controller','nyx_wings_fx','nyx_ice_circle',

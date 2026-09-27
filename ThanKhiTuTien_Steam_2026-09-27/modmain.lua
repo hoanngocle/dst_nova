@@ -547,26 +547,22 @@ AddPrefabPostInitAny(function(inst)
     if not utility_detail_enabled then
         DetailHooks.AttachSpecial(inst, G.STRINGS.NAMES)
     end
-    if c.health == nil or c.combat == nil or inst:HasTag("player") then return end
-    local day_eligible = not inst:HasTag("companion")
-        and not inst:HasTag("structure")
-        and (inst:HasTag("monster") or inst:HasTag("epic")
-            or string.sub(inst.prefab or "", 1, 3) == "xd_")
-    if not standalone_scaling_enabled then MonsterScaling.WatchHealth(inst) end
+    if c.health == nil or inst:HasTag("player") or inst:HasTag("structure") then return end
+    local day_eligible = c.combat ~= nil and not inst:HasTag("companion")
+    local loot_eligible = inst:HasTag("monster") or inst:HasTag("epic")
+        or string.sub(inst.prefab or "", 1, 3) == "xd_"
+    if not standalone_scaling_enabled or not day_eligible then MonsterScaling.WatchHealth(inst) end
     if not day_eligible then
-        if not standalone_scaling_enabled then
-            inst:DoTaskInTime(0, function(mob)
-                if not mob:IsValid() or mob.components.xd_guaiwu_skills == nil then
-                    return
-                end
-                mob._tbc_monster_kind = "realm_only"
-                mob._tbc_monster_days = G.TheWorld.state ~= nil
-                    and G.TheWorld.state.cycles or 0
-                local world = GetRealmWorld()
-                MonsterScaling.ApplyMonster(mob, "realm_only",
-                    mob._tbc_monster_days, world ~= nil and world.max_level or 0)
-            end)
-        end
+        inst._tbc_monster_base_kind = MonsterClass(inst)
+        inst._tbc_monster_kind = "realm_only"
+        inst._tbc_monster_days = G.TheWorld.state ~= nil
+            and G.TheWorld.state.cycles or 0
+        inst:DoTaskInTime(0, function(mob)
+            if not mob:IsValid() then return end
+            local world = GetRealmWorld()
+            MonsterScaling.ApplyMonster(mob, "realm_only",
+                mob._tbc_monster_days, world ~= nil and world.max_level or 0)
+        end)
         return
     end
     local kind = MonsterClass(inst)
@@ -595,6 +591,7 @@ AddPrefabPostInitAny(function(inst)
             MonsterScaling.ApplyMonster(mob, kind, days, level)
         end
     end)
+    if not loot_eligible then return end
     inst:ListenForEvent("death", function(mob, data)
         local killer = KillCredit(data ~= nil and data.afflicter or nil, 0)
         if mob._tbc_looted or killer == nil then return end
@@ -612,25 +609,40 @@ AddPrefabPostInitAny(function(inst)
     end)
 end)
 
+local material_atlas = "images/vat_pham_inventory_so_1.xml"
+local potion_atlas = "images/phuc_lac_duoc_inventory.xml"
+local recipe_ingredient_icons = {
+    hh_effect_tally = { material_atlas, "giay_thuoc_tinh_inventory.tex" },
+    hh_remove_stone = { material_atlas, "luc_bao_thach_inventory.tex" },
+    hh_essence = { material_atlas, "linh_thach_inventory.tex" },
+    wb_enhancegem = { material_atlas, "da_cuong_hoa_inventory.tex" },
+    nn_liquidluck = { potion_atlas, "phuc_lac_duoc_1_inventory.tex" },
+    nn_liquidluck_2 = { potion_atlas, "phuc_lac_duoc_2_inventory.tex" },
+}
+local function ModIngredient(prefab, amount)
+    local icon = recipe_ingredient_icons[prefab]
+    return G.Ingredient(prefab, amount, icon[1], nil, icon[2])
+end
+
 AddRecipe2("tbc_forge", { G.Ingredient("cutstone", 4), G.Ingredient("goldnugget", 4), G.Ingredient("boards", 2) },
     G.TECH.SCIENCE_TWO, { placer = "tbc_forge_placer", atlas = "images/lo_ren.xml", image = "lo_ren.tex" }, { "STRUCTURES" })
 AddRecipe2("tbc_suit_build", { G.Ingredient("cutstone", 4), G.Ingredient("goldnugget", 6), G.Ingredient("boards", 4) },
     G.TECH.SCIENCE_TWO, { placer = "tbc_suit_build_placer",
         atlas = "images/hh_icon/hh_suit_build.xml", image = "hh_suit_build.tex" }, { "STRUCTURES" })
-AddRecipe2("hh_essence", { G.Ingredient("hh_effect_tally", 1), G.Ingredient("hh_remove_stone", 2) },
+AddRecipe2("hh_essence", { ModIngredient("hh_effect_tally", 1), ModIngredient("hh_remove_stone", 2) },
     G.TECH.NONE, { numtogive = 1, atlas = "images/vat_pham_inventory_so_1.xml", image = "linh_thach_inventory.tex" }, { "REFINE" })
-AddRecipe2("wb_enhancegem", { G.Ingredient("opalpreciousgem", 1), G.Ingredient("hh_essence", 8) },
+AddRecipe2("wb_enhancegem", { G.Ingredient("opalpreciousgem", 1), ModIngredient("hh_essence", 8) },
     G.TECH.NONE, { numtogive = 8, atlas = "images/vat_pham_inventory_so_1.xml", image = "da_cuong_hoa_inventory.tex" }, { "REFINE" })
-AddRecipe2("nn_magicpaper", { G.Ingredient("goldnugget", 3), G.Ingredient("nightmarefuel", 2), G.Ingredient("wb_enhancegem", 6) },
+AddRecipe2("nn_magicpaper", { G.Ingredient("goldnugget", 3), G.Ingredient("nightmarefuel", 2), ModIngredient("wb_enhancegem", 6) },
     G.TECH.NONE, { atlas = "images/vat_pham_inventory_so_1.xml", image = "bua_ma_thuat_inventory.tex" }, { "REFINE" })
 AddRecipe2("wb_strengthen_strengthen_protectpaper",
-    { G.Ingredient("goldnugget", 3), G.Ingredient("nightmarefuel", 2), G.Ingredient("wb_enhancegem", 10) },
+    { G.Ingredient("goldnugget", 3), G.Ingredient("nightmarefuel", 2), ModIngredient("wb_enhancegem", 10) },
     G.TECH.NONE, { atlas = "images/vat_pham_inventory_so_1.xml", image = "bua_bao_ve_inventory.tex" }, { "REFINE" })
-AddRecipe2("nn_liquidluck", { G.Ingredient("vegstinger", 1), G.Ingredient("wb_enhancegem", 1) },
+AddRecipe2("nn_liquidluck", { G.Ingredient("vegstinger", 1), ModIngredient("wb_enhancegem", 1) },
     G.TECH.SCIENCE_TWO, { atlas = "images/phuc_lac_duoc_inventory.xml", image = "phuc_lac_duoc_1_inventory.tex" }, { "REFINE" })
-AddRecipe2("nn_liquidluck_2", { G.Ingredient("nn_liquidluck", 3), G.Ingredient("purebrilliance", 1) },
+AddRecipe2("nn_liquidluck_2", { ModIngredient("nn_liquidluck", 3), G.Ingredient("purebrilliance", 1) },
     G.TECH.SCIENCE_TWO, { atlas = "images/phuc_lac_duoc_inventory.xml", image = "phuc_lac_duoc_2_inventory.tex" }, { "REFINE" })
-AddRecipe2("nn_liquidluck_3", { G.Ingredient("nn_liquidluck_2", 3), G.Ingredient("purebrilliance", 2) },
+AddRecipe2("nn_liquidluck_3", { ModIngredient("nn_liquidluck_2", 3), G.Ingredient("purebrilliance", 2) },
     G.TECH.SCIENCE_TWO, { atlas = "images/phuc_lac_duoc_inventory.xml", image = "phuc_lac_duoc_3_inventory.tex" }, { "REFINE" })
-AddRecipe2("wb_strengthen_clearpaper", { G.Ingredient("papyrus", 2), G.Ingredient("nightmarefuel", 2), G.Ingredient("wb_enhancegem", 2) },
+AddRecipe2("wb_strengthen_clearpaper", { G.Ingredient("papyrus", 2), G.Ingredient("nightmarefuel", 2), ModIngredient("wb_enhancegem", 2) },
     G.TECH.SCIENCE_TWO, { atlas = "images/inventoryimages.xml", image = "papyrus.tex" }, { "REFINE" })

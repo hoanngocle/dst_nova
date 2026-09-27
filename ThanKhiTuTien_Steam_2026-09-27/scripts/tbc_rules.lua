@@ -1,4 +1,9 @@
 local M = {}
+M.BASE_HEALTH_MULTIPLIERS = { common = 3, elite = 2.5, boss = 2 }
+
+function M.BaseHealthMultiplier(kind)
+    return M.BASE_HEALTH_MULTIPLIERS[kind] or M.BASE_HEALTH_MULTIPLIERS.common
+end
 
 function M.StrengthenCost(level)
     if type(level) ~= "number" or level < 0 or level >= 16 then return nil end
@@ -30,7 +35,7 @@ function M.MonsterMultipliers(kind, days)
     }
     local row = scale[kind] or scale.common
     local capped_days = math.min(math.max(days or 0, 0), 100)
-    return row[1] + capped_days * 0.02, row[2] + capped_days * 0.0025
+    return M.BaseHealthMultiplier(kind) * (row[1] + capped_days * 0.02), row[2] + capped_days * 0.0025
 end
 
 function M.RollLoot(kind, rng)

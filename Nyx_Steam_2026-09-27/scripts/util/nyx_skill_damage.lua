@@ -1,7 +1,7 @@
 local SkillDamage = {}
 
 local NATIVE_SOURCES = {
-    absolute_domain = {"luoshen", "life"},
+    absolute_domain = {"luoshen", "shentong_fx"},
     triflame_fan = {"htz_firefx"},
     yellow_river = {"yunxiao", "jjj_aoeent"},
 }
@@ -57,6 +57,12 @@ function SkillDamage.ScaleNative(owner, damage, source)
     source = string.lower(source)
     for skill, fragments in pairs(NATIVE_SOURCES) do
         if bonuses[skill] ~= nil then
+            local correct_domain_buff = true
+            if skill == "absolute_domain" then
+                local domain = owner.components ~= nil and owner.components.nyx_domain or nil
+                local buff = domain ~= nil and domain.effects[1] or nil
+                correct_domain_buff = buff ~= nil and buff:IsValid()
+            end
             local matches = true
             for _, fragment in ipairs(fragments) do
                 if not string.find(source, fragment, 1, true) then
@@ -64,7 +70,7 @@ function SkillDamage.ScaleNative(owner, damage, source)
                     break
                 end
             end
-            if matches then return damage + bonuses[skill] end
+            if matches and correct_domain_buff then return damage + bonuses[skill] end
         end
     end
     return damage

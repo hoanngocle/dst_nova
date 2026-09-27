@@ -6,7 +6,6 @@ Fox.COOLDOWN = 15
 Fox.COST = 10
 Fox.CAST_RANGE = 20
 Fox.BLINK_DELAY = 0.25
-Fox.LUNGE_DAMAGE = 600
 Fox.LUNGE_SIDE_RANGE = 1
 Fox.LUNGE_PHYSICS_PADDING = 3
 Fox.FADE_TIME = 0.5
@@ -34,6 +33,12 @@ function Fox.IsFiniteNumber(value)
         and value == value
         and value > -math.huge
         and value < math.huge
+end
+
+function Fox.LungeDamage(level)
+    level = Fox.IsFiniteNumber(level) and level or 1
+    if level >= 100 then return 1500 end
+    return math.min(1000, 200 + 100 * math.floor(math.max(0, level) / 10))
 end
 
 local function HasStateTag(owner, tag)

@@ -91,7 +91,7 @@ function M.ApplyMonster(inst, kind, days, level)
     local components = inst.components
     local health = components ~= nil and components.health or nil
     local combat = components ~= nil and components.combat or nil
-    if health == nil or combat == nil or health.maxhealth == nil
+    if health == nil or (combat == nil and kind ~= "realm_only") or health.maxhealth == nil
         or health.maxhealth <= 0 or health.currenthealth == nil
         or health.currenthealth <= 0 then
         return false
@@ -99,7 +99,7 @@ function M.ApplyMonster(inst, kind, days, level)
 
     local state = inst._tbc_monster_scaling
     if state == nil then
-        local day_hp, day_attack = 1, 1
+        local day_hp, day_attack = Rules.BaseHealthMultiplier(inst._tbc_monster_base_kind), 1
         if kind ~= "realm_only" then
             day_hp, day_attack = Rules.MonsterMultipliers(kind, days)
         end
@@ -144,6 +144,8 @@ function M.ApplyMonster(inst, kind, days, level)
         health:SetMaxHealth(target_max)
         health:SetPercent(target_percent, true, "tbc_monster_scaling")
     end
+
+    if combat == nil then return true end
 
     if not state.attack_events_installed and type(inst.ListenForEvent) == "function"
         and type(combat.GetWeapon) == "function" then
