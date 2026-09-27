@@ -1,0 +1,27 @@
+﻿<Atlas>
+	<Texture filename="chasni_trinkets.tex" />
+	<Elements>
+		<Element name="chasnitrinkets_1.tex" u1="0.001" u2="0.124" v1="0.751" v2="0.999" />
+		<Element name="chasnitrinkets_10.tex" u1="0.126" u2="0.249" v1="0.751" v2="0.999" />
+		<Element name="chasnitrinkets_11.tex" u1="0.001" u2="0.124" v1="0.501" v2="0.749" />
+		<Element name="chasnitrinkets_12.tex" u1="0.126" u2="0.249" v1="0.501" v2="0.749" />
+		<Element name="chasnitrinkets_13.tex" u1="0.251" u2="0.374" v1="0.751" v2="0.999" />
+		<Element name="chasnitrinkets_14.tex" u1="0.251" u2="0.374" v1="0.501" v2="0.749" />
+		<Element name="chasnitrinkets_15.tex" u1="0.376" u2="0.499" v1="0.751" v2="0.999" />
+		<Element name="chasnitrinkets_16.tex" u1="0.376" u2="0.499" v1="0.501" v2="0.749" />
+		<Element name="chasnitrinkets_17.tex" u1="0.001" u2="0.124" v1="0.251" v2="0.499" />
+		<Element name="chasnitrinkets_18.tex" u1="0.001" u2="0.124" v1="0.001" v2="0.249" />
+		<Element name="chasnitrinkets_19.tex" u1="0.126" u2="0.249" v1="0.251" v2="0.499" />
+		<Element name="chasnitrinkets_2.tex" u1="0.251" u2="0.374" v1="0.251" v2="0.499" />
+		<Element name="chasnitrinkets_20.tex" u1="0.126" u2="0.249" v1="0.001" v2="0.249" />
+		<Element name="chasnitrinkets_21.tex" u1="0.251" u2="0.374" v1="0.001" v2="0.249" />
+		<Element name="chasnitrinkets_22.tex" u1="0.376" u2="0.499" v1="0.251" v2="0.499" />
+		<Element name="chasnitrinkets_3.tex" u1="0.376" u2="0.499" v1="0.001" v2="0.249" />
+		<Element name="chasnitrinkets_4.tex" u1="0.501" u2="0.624" v1="0.751" v2="0.999" />
+		<Element name="chasnitrinkets_5.tex" u1="0.626" u2="0.749" v1="0.751" v2="0.999" />
+		<Element name="chasnitrinkets_6.tex" u1="0.501" u2="0.624" v1="0.501" v2="0.749" />
+		<Element name="chasnitrinkets_7.tex" u1="0.751" u2="0.874" v1="0.751" v2="0.999" />
+		<Element name="chasnitrinkets_8.tex" u1="0.626" u2="0.749" v1="0.501" v2="0.749" />
+		<Element name="chasnitrinkets_9.tex" u1="0.501" u2="0.624" v1="0.251" v2="0.499" />
+	</Elements>
+</Atlas>

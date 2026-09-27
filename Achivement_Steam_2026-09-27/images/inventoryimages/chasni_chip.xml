@@ -1,0 +1,12 @@
+﻿<Atlas>
+	<Texture filename="chasni_chip.tex" />
+	<Elements>
+		<Element name="chasni_achiev.tex" u1="0.001" u2="0.249" v1="0.501" v2="0.999" />
+		<Element name="chasni_exp.tex" u1="0.251" u2="0.499" v1="0.501" v2="0.999" />
+		<Element name="chasni_moon_soul.tex" u1="0.251" u2="0.499" v1="0.001" v2="0.499" />
+		<Element name="chasni_moon_spear.tex" u1="0.751" u2="0.999" v1="0.501" v2="0.999" />
+		<Element name="chasni_save.tex" u1="0.001" u2="0.249" v1="0.001" v2="0.499" />
+		<Element name="chasni_shadow_monster.tex" u1="0.501" u2="0.749" v1="0.501" v2="0.999" />
+		<Element name="chasni_shadow_shield.tex" u1="0.501" u2="0.749" v1="0.001" v2="0.499" />
+	</Elements>
+</Atlas>

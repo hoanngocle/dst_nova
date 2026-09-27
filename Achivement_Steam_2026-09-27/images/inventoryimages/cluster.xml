@@ -1,0 +1,27 @@
+﻿<Atlas>
+	<Texture filename="cluster.tex" />
+	<Elements>
+		<Element name="cluster_1.tex" u1="0.001" u2="0.124" v1="0.751" v2="0.999" />
+		<Element name="cluster_10.tex" u1="0.001" u2="0.124" v1="0.001" v2="0.249" />
+		<Element name="cluster_11.tex" u1="0.126" u2="0.249" v1="0.251" v2="0.499" />
+		<Element name="cluster_12.tex" u1="0.251" u2="0.374" v1="0.251" v2="0.499" />
+		<Element name="cluster_13.tex" u1="0.126" u2="0.249" v1="0.001" v2="0.249" />
+		<Element name="cluster_14.tex" u1="0.251" u2="0.374" v1="0.001" v2="0.249" />
+		<Element name="cluster_15.tex" u1="0.376" u2="0.499" v1="0.251" v2="0.499" />
+		<Element name="cluster_16.tex" u1="0.376" u2="0.499" v1="0.001" v2="0.249" />
+		<Element name="cluster_17.tex" u1="0.501" u2="0.624" v1="0.751" v2="0.999" />
+		<Element name="cluster_18.tex" u1="0.626" u2="0.749" v1="0.751" v2="0.999" />
+		<Element name="cluster_19.tex" u1="0.501" u2="0.624" v1="0.501" v2="0.749" />
+		<Element name="cluster_2.tex" u1="0.126" u2="0.249" v1="0.751" v2="0.999" />
+		<Element name="cluster_20.tex" u1="0.751" u2="0.874" v1="0.751" v2="0.999" />
+		<Element name="cluster_21.tex" u1="0.626" u2="0.749" v1="0.501" v2="0.749" />
+		<Element name="cluster_22.tex" u1="0.501" u2="0.624" v1="0.251" v2="0.499" />
+		<Element name="cluster_3.tex" u1="0.001" u2="0.124" v1="0.501" v2="0.749" />
+		<Element name="cluster_4.tex" u1="0.126" u2="0.249" v1="0.501" v2="0.749" />
+		<Element name="cluster_5.tex" u1="0.251" u2="0.374" v1="0.751" v2="0.999" />
+		<Element name="cluster_6.tex" u1="0.251" u2="0.374" v1="0.501" v2="0.749" />
+		<Element name="cluster_7.tex" u1="0.376" u2="0.499" v1="0.751" v2="0.999" />
+		<Element name="cluster_8.tex" u1="0.376" u2="0.499" v1="0.501" v2="0.749" />
+		<Element name="cluster_9.tex" u1="0.001" u2="0.124" v1="0.251" v2="0.499" />
+	</Elements>
+</Atlas>

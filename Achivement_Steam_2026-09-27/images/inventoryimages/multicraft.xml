@@ -1,0 +1,66 @@
+﻿<Atlas>
+	<Texture filename="multicraft.tex" />
+	<Elements>
+		<Element name="multicraft_1.tex" u1="0.001" u2="0.124" v1="0.876" v2="0.999" />
+		<Element name="multicraft_10.tex" u1="0.001" u2="0.124" v1="0.501" v2="0.624" />
+		<Element name="multicraft_11.tex" u1="0.126" u2="0.249" v1="0.626" v2="0.749" />
+		<Element name="multicraft_12.tex" u1="0.251" u2="0.374" v1="0.626" v2="0.749" />
+		<Element name="multicraft_13.tex" u1="0.126" u2="0.249" v1="0.501" v2="0.624" />
+		<Element name="multicraft_14.tex" u1="0.251" u2="0.374" v1="0.501" v2="0.624" />
+		<Element name="multicraft_15.tex" u1="0.376" u2="0.499" v1="0.626" v2="0.749" />
+		<Element name="multicraft_16.tex" u1="0.376" u2="0.499" v1="0.501" v2="0.624" />
+		<Element name="multicraft_17.tex" u1="0.501" u2="0.624" v1="0.876" v2="0.999" />
+		<Element name="multicraft_18.tex" u1="0.626" u2="0.749" v1="0.876" v2="0.999" />
+		<Element name="multicraft_19.tex" u1="0.501" u2="0.624" v1="0.751" v2="0.874" />
+		<Element name="multicraft_2.tex" u1="0.126" u2="0.249" v1="0.876" v2="0.999" />
+		<Element name="multicraft_20.tex" u1="0.751" u2="0.874" v1="0.876" v2="0.999" />
+		<Element name="multicraft_21.tex" u1="0.626" u2="0.749" v1="0.751" v2="0.874" />
+		<Element name="multicraft_22.tex" u1="0.501" u2="0.624" v1="0.626" v2="0.749" />
+		<Element name="multicraft_23.tex" u1="0.626" u2="0.749" v1="0.626" v2="0.749" />
+		<Element name="multicraft_24.tex" u1="0.501" u2="0.624" v1="0.501" v2="0.624" />
+		<Element name="multicraft_25.tex" u1="0.751" u2="0.874" v1="0.751" v2="0.874" />
+		<Element name="multicraft_26.tex" u1="0.876" u2="0.999" v1="0.876" v2="0.999" />
+		<Element name="multicraft_27.tex" u1="0.876" u2="0.999" v1="0.751" v2="0.874" />
+		<Element name="multicraft_28.tex" u1="0.751" u2="0.874" v1="0.626" v2="0.749" />
+		<Element name="multicraft_29.tex" u1="0.626" u2="0.749" v1="0.501" v2="0.624" />
+		<Element name="multicraft_3.tex" u1="0.001" u2="0.124" v1="0.751" v2="0.874" />
+		<Element name="multicraft_30.tex" u1="0.751" u2="0.874" v1="0.501" v2="0.624" />
+		<Element name="multicraft_31.tex" u1="0.876" u2="0.999" v1="0.626" v2="0.749" />
+		<Element name="multicraft_32.tex" u1="0.876" u2="0.999" v1="0.501" v2="0.624" />
+		<Element name="multicraft_33.tex" u1="0.001" u2="0.124" v1="0.376" v2="0.499" />
+		<Element name="multicraft_34.tex" u1="0.126" u2="0.249" v1="0.376" v2="0.499" />
+		<Element name="multicraft_35.tex" u1="0.001" u2="0.124" v1="0.251" v2="0.374" />
+		<Element name="multicraft_36.tex" u1="0.126" u2="0.249" v1="0.251" v2="0.374" />
+		<Element name="multicraft_37.tex" u1="0.001" u2="0.124" v1="0.126" v2="0.249" />
+		<Element name="multicraft_38.tex" u1="0.251" u2="0.374" v1="0.376" v2="0.499" />
+		<Element name="multicraft_39.tex" u1="0.126" u2="0.249" v1="0.126" v2="0.249" />
+		<Element name="multicraft_4.tex" u1="0.126" u2="0.249" v1="0.751" v2="0.874" />
+		<Element name="multicraft_40.tex" u1="0.001" u2="0.124" v1="0.001" v2="0.124" />
+		<Element name="multicraft_41.tex" u1="0.251" u2="0.374" v1="0.251" v2="0.374" />
+		<Element name="multicraft_42.tex" u1="0.376" u2="0.499" v1="0.376" v2="0.499" />
+		<Element name="multicraft_43.tex" u1="0.501" u2="0.624" v1="0.376" v2="0.499" />
+		<Element name="multicraft_44.tex" u1="0.251" u2="0.374" v1="0.126" v2="0.249" />
+		<Element name="multicraft_45.tex" u1="0.126" u2="0.249" v1="0.001" v2="0.124" />
+		<Element name="multicraft_46.tex" u1="0.376" u2="0.499" v1="0.251" v2="0.374" />
+		<Element name="multicraft_47.tex" u1="0.251" u2="0.374" v1="0.001" v2="0.124" />
+		<Element name="multicraft_48.tex" u1="0.501" u2="0.624" v1="0.251" v2="0.374" />
+		<Element name="multicraft_49.tex" u1="0.376" u2="0.499" v1="0.126" v2="0.249" />
+		<Element name="multicraft_5.tex" u1="0.251" u2="0.374" v1="0.876" v2="0.999" />
+		<Element name="multicraft_50.tex" u1="0.626" u2="0.749" v1="0.376" v2="0.499" />
+		<Element name="multicraft_51.tex" u1="0.501" u2="0.624" v1="0.126" v2="0.249" />
+		<Element name="multicraft_52.tex" u1="0.376" u2="0.499" v1="0.001" v2="0.124" />
+		<Element name="multicraft_53.tex" u1="0.751" u2="0.874" v1="0.376" v2="0.499" />
+		<Element name="multicraft_54.tex" u1="0.626" u2="0.749" v1="0.251" v2="0.374" />
+		<Element name="multicraft_55.tex" u1="0.751" u2="0.874" v1="0.251" v2="0.374" />
+		<Element name="multicraft_56.tex" u1="0.626" u2="0.749" v1="0.126" v2="0.249" />
+		<Element name="multicraft_57.tex" u1="0.501" u2="0.624" v1="0.001" v2="0.124" />
+		<Element name="multicraft_58.tex" u1="0.876" u2="0.999" v1="0.376" v2="0.499" />
+		<Element name="multicraft_59.tex" u1="0.626" u2="0.749" v1="0.001" v2="0.124" />
+		<Element name="multicraft_6.tex" u1="0.251" u2="0.374" v1="0.751" v2="0.874" />
+		<Element name="multicraft_60.tex" u1="0.876" u2="0.999" v1="0.251" v2="0.374" />
+		<Element name="multicraft_61.tex" u1="0.751" u2="0.874" v1="0.126" v2="0.249" />
+		<Element name="multicraft_7.tex" u1="0.376" u2="0.499" v1="0.876" v2="0.999" />
+		<Element name="multicraft_8.tex" u1="0.376" u2="0.499" v1="0.751" v2="0.874" />
+		<Element name="multicraft_9.tex" u1="0.001" u2="0.124" v1="0.626" v2="0.749" />
+	</Elements>
+</Atlas>

@@ -1,0 +1,19 @@
+﻿<Atlas>
+	<Texture filename="chasni_drawing.tex" />
+	<Elements>
+		<Element name="balloon.tex" u1="0.30178125" u2="0.51853125" v1="0.268578125" v2="0.55759375" />
+		<Element name="bubble.tex" u1="0.001" u2="0.254859375" v1="0.010765625" v2="0.2568125" />
+		<Element name="cactus.tex" u1="0.46975" u2="0.700171875" v1="0.704125" v2="0.999" />
+		<Element name="egg.tex" u1="0.001" u2="0.235328125" v1="0.59475" v2="0.727515625" />
+		<Element name="flower.tex" u1="0.741234375" u2="0.934546875" v1="0.172875" v2="0.37790625" />
+		<Element name="love.tex" u1="0.741234375" u2="0.957984375" v1="0.37990625" v2="0.55759375" />
+		<Element name="merm.tex" u1="0.001" u2="0.29978125" v1="0.2588125" v2="0.55759375" />
+		<Element name="plane.tex" u1="0.46975" u2="0.84275" v1="0.55959375" v2="0.702125" />
+		<Element name="plant.tex" u1="0.702171875" u2="0.969703125" v1="0.751" v2="0.999" />
+		<Element name="rocket.tex" u1="0.25490625" u2="0.46775" v1="0.627953125" v2="0.999" />
+		<Element name="smile.tex" u1="0.52053125" u2="0.735328125" v1="0.1181875" v2="0.340796875" />
+		<Element name="star.tex" u1="0.52053125" u2="0.739234375" v1="0.342796875" v2="0.55759375" />
+		<Element name="thumb.tex" u1="0.256859375" u2="0.44040625" v1="0.061546875" v2="0.2568125" />
+		<Element name="unicorn.tex" u1="0.001" u2="0.25290625" v1="0.729515625" v2="0.999" />
+	</Elements>
+</Atlas>

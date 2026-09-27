@@ -1,0 +1,7 @@
+﻿<Atlas>
+	<Texture filename="level_attr_button.tex" />
+	<Elements>
+		<Element name="level_attr_button_disable.tex" u1="0.001" u2="0.5380625" v1="0.7431875" v2="0.999" />
+		<Element name="level_attr_button_active.tex" u1="0.001" u2="0.5380625" v1="0.485375" v2="0.7411875" />
+	</Elements>
+</Atlas>

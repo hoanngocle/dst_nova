@@ -1,0 +1,7 @@
+﻿<Atlas>
+	<Texture filename="main_button.tex" />
+	<Elements>
+		<Element name="main_button_active.tex" u1="0.001" u2="0.51071875" v1="0.610375" v2="0.999" />
+		<Element name="main_button_disable.tex" u1="0.001" u2="0.51071875" v1="0.21975" v2="0.608375" />
+	</Elements>
+</Atlas>

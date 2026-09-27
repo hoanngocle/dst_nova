@@ -1,0 +1,11 @@
+﻿<Atlas>
+	<Texture filename="memorycard.tex" />
+	<Elements>
+		<Element name="blue.tex" u1="0.001" u2="0.249" v1="0.501" v2="0.999" />
+		<Element name="brown.tex" u1="0.251" u2="0.499" v1="0.501" v2="0.999" />
+		<Element name="green.tex" u1="0.001" u2="0.249" v1="0.001" v2="0.499" />
+		<Element name="pink.tex" u1="0.251" u2="0.499" v1="0.001" v2="0.499" />
+		<Element name="red.tex" u1="0.501" u2="0.749" v1="0.501" v2="0.999" />
+		<Element name="yellow.tex" u1="0.501" u2="0.749" v1="0.001" v2="0.499" />
+	</Elements>
+</Atlas>

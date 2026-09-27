@@ -1,0 +1,240 @@
+-- Gacha pool from Tu Tien's original machine, as audited in dst_wiki.
+-- Category weights: common 35, good 15, rare 5, monster 42, boss 8.
+local Rewards = {}
+
+Rewards.WEIGHTS = { common = 35, good = 15, rare = 5, monster = 42, boss = 8 }
+Rewards.POOLS = {
+    common = {
+        "amulet",
+        "armormarble",
+        "armorslurper",
+        "armorwood",
+        "bandage",
+        "bird_egg_cooked",
+        "butter",
+        "butterfly",
+        "chum",
+        "cutless",
+        "cutreeds",
+        "drumstick",
+        "dug_trap_starfish",
+        "eyemaskhat",
+        "farm_plow_item",
+        "fishingrod",
+        "footballhat",
+        "golden_farm_hoe",
+        "goldenaxe",
+        "goldenpickaxe",
+        "goldenpitchfork",
+        "goldenshovel",
+        "honeycomb",
+        "icehat",
+        "lifeinjector",
+        "lightninggoathorn",
+        "livinglog",
+        "mandrake_planted",
+        "mandrakesoup",
+        "meatballs",
+        "minotaurhorn",
+        "molehat",
+        "monkey_mediumhat",
+        "monkey_smallhat",
+        "moonglass",
+        "multitool_axe_pickaxe",
+        "oceanfishingrod",
+        "panflute",
+        "pigskin",
+        "polly_rogershat",
+        "powcake",
+        "raincoat",
+        "ratatouille",
+        "reflectivevest",
+        "reviver",
+        "saltrock",
+        "sewing_kit",
+        "spidereggsack",
+        "spiderhat",
+        "sweatervest",
+        "taffy",
+        "tentaclespike",
+        "townportaltalisman",
+        "umbrella",
+        "walrushat",
+        "watermelonhat",
+    },
+    good = {
+        "amulet",
+        "armorruins",
+        "bearger_fur",
+        "blueamulet",
+        "boat_item",
+        "boat_rotator_kit",
+        "boatpatch",
+        "bonestew",
+        "bundlewrap",
+        "chestupgrade_stacksize",
+        "deerclops_eyeball",
+        "deerclopseyeball_sentryward_kit",
+        "dragon_scales",
+        "dragonpie",
+        "eyebrellahat",
+        "greenamulet",
+        "icecream",
+        "jellybean",
+        "klaussackkey",
+        "malbatross_beak",
+        "moonglassaxe",
+        "nightsword",
+        "orangeamulet",
+        "perogies",
+        "pickaxe_lunarplant",
+        "purpleamulet",
+        "rock_avocado_fruit_sprout",
+        "ruinshat",
+        "shovel_lunarplant",
+        "shroom_skin",
+        "staff_tornado",
+        "xd_lingshi2",
+        "yellowamulet",
+    },
+    rare = {
+        "alterguardianhat",
+        "armor_lunarplant",
+        "armor_voidcloth",
+        "armordreadstone",
+        "armorskeleton",
+        "beargerfur_sack",
+        "dreadstonehat",
+        "flowersalad_spice_chili",
+        "greengem",
+        "greenstaff",
+        "jellybean_spice_chili",
+        "krampus_sack",
+        "lunarplanthat",
+        "opalstaff",
+        "orangegem",
+        "orangestaff",
+        "seafoodgumbo_spice_chili",
+        "voidcloth_scythe",
+        "voidcloth_umbrella",
+        "voidclothhat",
+        "voltgoatjelly",
+        "xd_danyao_dt",
+        "xd_danyao_hj",
+        "xd_danyao_jq",
+        "xd_danyao_xs",
+        "xd_danyao_yz",
+        "xd_danyao_zj",
+        "xd_fs",
+        "xd_ftj",
+        "xd_qlr",
+        "xd_zhf",
+        "yellowgem",
+        "yellowstaff",
+    },
+    monster = {
+        "bat",
+        "bishop",
+        "bunnyman",
+        "buzzard",
+        "catcoon",
+        "crawlingnightmare",
+        "eyeofterror_mini",
+        "firehound",
+        "frog",
+        "fruitdragon",
+        "fruitfly",
+        "fused_shadeling_bomb",
+        "icehound",
+        "killerbee",
+        "knight",
+        "koalefant_summer",
+        "koalefant_winter",
+        "krampus",
+        "lightninggoat",
+        "lordfruitfly",
+        "lunarfrog",
+        "lunarthrall_plant",
+        "mermguard",
+        "monkey",
+        "spider_moon",
+        "mushgnome",
+        "nightmarebeak",
+        "pigguard",
+        "powder_monkey",
+        "rook",
+        "shadowthrall_hands",
+        "shadowthrall_horns",
+        "shadowthrall_wings",
+        "slurper",
+        "slurtle",
+        "snurtle",
+        "spat",
+        "spider",
+        "spider_healer",
+        "spider_hider",
+        "spider_warrior",
+        "tallbird",
+        "tentacle",
+        "walrus",
+        "warg",
+        "worm",
+    },
+    boss = {
+        "alterguardian_phase3",
+        "bearger",
+        "beequeen",
+        "deerclops",
+        "dragonfly",
+        "klaus",
+        "lunarthrall_plant",
+        "minotaur",
+        "mutatedbearger",
+        "mutateddeerclops",
+        "mutatedwarg",
+        "shadow_bishop",
+        "shadow_knight",
+        "shadow_rook",
+        "spiderqueen",
+        "xd_jfsn",
+        "xd_qlch",
+    },
+}
+
+local ORDER = { "common", "good", "rare", "monster", "boss" }
+
+function Rewards.ChooseOutcome(is_available, roll)
+    is_available = is_available or function() return true end
+    roll = roll or math.random
+    local valid = {}
+    local total_weight = 0
+    for _, category in ipairs(ORDER) do
+        local names = {}
+        for _, prefab in ipairs(Rewards.POOLS[category]) do
+            if is_available(prefab) then
+                names[#names + 1] = prefab
+            end
+        end
+        if #names > 0 then
+            valid[#valid + 1] = { category = category, names = names }
+            total_weight = total_weight + Rewards.WEIGHTS[category]
+        end
+    end
+    if total_weight == 0 then return nil end
+
+    local ticket = roll(total_weight)
+    for _, group in ipairs(valid) do
+        ticket = ticket - Rewards.WEIGHTS[group.category]
+        if ticket <= 0 then
+            local category = group.category
+            return {
+                category = category,
+                kind = category == "monster" and "monster" or category == "boss" and "boss" or "item",
+                prefab = group.names[roll(#group.names)],
+            }
+        end
+    end
+    return nil
+end
+
+return Rewards

@@ -1,0 +1,9 @@
+﻿<Atlas>
+	<Texture filename="chasni_spell_icons.tex" />
+	<Elements>
+		<Element name="shadow_achievist.tex" u1="0.001" u2="0.37790625" v1="0.62209375" v2="0.999" />
+		<Element name="shadow_heal.tex" u1="0.37990625" u2="0.7568125" v1="0.62209375" v2="0.999" />
+		<Element name="shadow_invulnerability.tex" u1="0.001" u2="0.37790625" v1="0.2431875" v2="0.62009375" />
+		<Element name="shadow_wisp.tex" u1="0.37990625" u2="0.7568125" v1="0.2431875" v2="0.62009375" />
+	</Elements>
+</Atlas>

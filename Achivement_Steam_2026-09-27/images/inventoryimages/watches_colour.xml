@@ -1,0 +1,39 @@
+﻿<Atlas>
+	<Texture filename="watches_colour.tex" />
+	<Elements>
+		<Element name="black1.tex" u1="0.001" u2="0.124" v1="0.876" v2="0.999" />
+		<Element name="black2.tex" u1="0.126" u2="0.249" v1="0.876" v2="0.999" />
+		<Element name="blue1.tex" u1="0.001" u2="0.124" v1="0.751" v2="0.874" />
+		<Element name="blue2.tex" u1="0.126" u2="0.249" v1="0.751" v2="0.874" />
+		<Element name="brown1.tex" u1="0.251" u2="0.374" v1="0.876" v2="0.999" />
+		<Element name="brown2.tex" u1="0.251" u2="0.374" v1="0.751" v2="0.874" />
+		<Element name="gray1.tex" u1="0.376" u2="0.499" v1="0.876" v2="0.999" />
+		<Element name="gray2.tex" u1="0.376" u2="0.499" v1="0.751" v2="0.874" />
+		<Element name="green1.tex" u1="0.001" u2="0.124" v1="0.626" v2="0.749" />
+		<Element name="green2.tex" u1="0.001" u2="0.124" v1="0.501" v2="0.624" />
+		<Element name="indigo1.tex" u1="0.126" u2="0.249" v1="0.626" v2="0.749" />
+		<Element name="indigo2.tex" u1="0.251" u2="0.374" v1="0.626" v2="0.749" />
+		<Element name="lime1.tex" u1="0.126" u2="0.249" v1="0.501" v2="0.624" />
+		<Element name="lime2.tex" u1="0.251" u2="0.374" v1="0.501" v2="0.624" />
+		<Element name="mint1.tex" u1="0.376" u2="0.499" v1="0.626" v2="0.749" />
+		<Element name="mint2.tex" u1="0.376" u2="0.499" v1="0.501" v2="0.624" />
+		<Element name="moon1.tex" u1="0.501" u2="0.624" v1="0.876" v2="0.999" />
+		<Element name="moon2.tex" u1="0.626" u2="0.749" v1="0.876" v2="0.999" />
+		<Element name="orange1.tex" u1="0.501" u2="0.624" v1="0.751" v2="0.874" />
+		<Element name="orange2.tex" u1="0.751" u2="0.874" v1="0.876" v2="0.999" />
+		<Element name="pink1.tex" u1="0.626" u2="0.749" v1="0.751" v2="0.874" />
+		<Element name="pink2.tex" u1="0.501" u2="0.624" v1="0.626" v2="0.749" />
+		<Element name="purple2.tex" u1="0.626" u2="0.749" v1="0.626" v2="0.749" />
+		<Element name="purple1.tex" u1="0.501" u2="0.624" v1="0.501" v2="0.624" />
+		<Element name="red1.tex" u1="0.751" u2="0.874" v1="0.751" v2="0.874" />
+		<Element name="red2.tex" u1="0.876" u2="0.999" v1="0.876" v2="0.999" />
+		<Element name="shadow1.tex" u1="0.876" u2="0.999" v1="0.751" v2="0.874" />
+		<Element name="shadow2.tex" u1="0.751" u2="0.874" v1="0.626" v2="0.749" />
+		<Element name="tosca1.tex" u1="0.626" u2="0.749" v1="0.501" v2="0.624" />
+		<Element name="tosca2.tex" u1="0.751" u2="0.874" v1="0.501" v2="0.624" />
+		<Element name="white1.tex" u1="0.876" u2="0.999" v1="0.626" v2="0.749" />
+		<Element name="white2.tex" u1="0.876" u2="0.999" v1="0.501" v2="0.624" />
+		<Element name="yellow1.tex" u1="0.001" u2="0.124" v1="0.376" v2="0.499" />
+		<Element name="yellow2.tex" u1="0.126" u2="0.249" v1="0.376" v2="0.499" />
+	</Elements>
+</Atlas>
