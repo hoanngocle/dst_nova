@@ -8,7 +8,8 @@ Máu: 125 | Đói: 125 | Tinh thần: 200 | Linh Lực: 60
 Tăng 7% sát thương và giảm 7% sát thương nhận từ hệ Bóng Tối, Mặt Trăng.
 
 NĂNG LỰC
-• Tuyệt Đối Lĩnh Vực: dùng hiệu ứng và sát thương Diệt Chi Hoa, cộng thêm sát thương vũ khí. Tốn 30 Linh Lực, hồi chiêu 20 giây.
+Sát thương kỹ năng của Lĩnh Vực, Tam Diễm, Hoàng Hà, Tàn Dạ và Trảm Linh tăng mỗi 10 cấp đến cấp 80, giữ nguyên ở cấp 80–99 rồi tăng thêm ở cấp 100; phần cộng từ vũ khí giữ nguyên. Ở cấp 100, hệ số lần lượt là ×4, ×3,5, ×4, ×3,5 và ×2,5.
+• Tuyệt Đối Lĩnh Vực: dùng hiệu ứng và sát thương Sinh Chi Hoa, cộng thêm sát thương vũ khí. Tốn 30 Linh Lực, hồi chiêu 20 giây.
 • Tam Diễm Phiến: 5 luồng lửa hình quạt và hỏa diễm tỏa quanh người; mở ở Trúc Cơ Tiền Kỳ. Tốn 40 Linh Lực, hồi 30 giây.
 • Cửu Khúc Hoàng Hà Trận: dựng trận quanh người, gây sát thương, làm chậm và hồi máu theo bản gốc Vân Tiêu; mở ở Trúc Cơ Hậu Kỳ. Tốn 40 Linh Lực, hồi 40 giây.
 • Tàn Dạ: hỏa diễm truy đuổi; mở ở Kết Đan Tiền Kỳ. Sát thương gốc ×2. Tốn 50 Linh Lực, hồi 50 giây.
@@ -24,7 +25,7 @@ Khô Vinh Song Sinh và Vạn Linh Phiên (Tôn Hồn Phiên Cô Phẩm), nhận
 YÊU CẦU: [Tu Tiên], Việt Hóa Tu Tiên
 ]]
 author='Nyx'
-version='1.2.8'
+version='1.2.9'
 api_version=10
 dst_compatible=true
 all_clients_require_mod=true

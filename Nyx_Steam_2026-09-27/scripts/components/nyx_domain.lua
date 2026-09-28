@@ -1,4 +1,4 @@
--- Use Tu Tien 18.1 death-flower prefabs for original art and combat behavior.
+-- Use Tu Tien 18.1 life-flower prefabs for original art and combat behavior.
 local SkillDamage=require('util/nyx_skill_damage')
 local NyxDomain=Class(function(self,inst)
     self.inst=inst
@@ -18,6 +18,7 @@ end
 function NyxDomain:Stop()
     self.active=false
     SkillDamage.End(self.inst,'absolute_domain')
+    if self.task then self.task:Cancel(); self.task=nil end
     for _,fx in ipairs(self.effects) do if fx:IsValid() then fx:Remove() end end
     self.effects={}
 end
@@ -25,8 +26,8 @@ function NyxDomain:Activate()
     local owner=self.inst
     if not TheWorld.ismastersim or owner.components.health:IsDead() or owner:HasTag('playerghost') then return false end
     self:Stop()
-    local buff=SpawnPrefab('xd_luoshen_shentong_death_buff')
-    local circle=SpawnPrefab('xd_luoshen_shentong_death_circle')
+    local buff=SpawnPrefab('xd_luoshen_shentong_life_buff')
+    local circle=SpawnPrefab('xd_luoshen_shentong_life_circle')
     if buff then self.effects[#self.effects+1]=buff end
     if circle then self.effects[#self.effects+1]=circle end
     if not buff or not circle or not buff.SetOwner or not circle.SetOwner then self:Stop(); return false end
@@ -36,6 +37,7 @@ function NyxDomain:Activate()
     buff:SetOwner(owner)
     circle:SetOwner(owner)
     self.active=true
+    self.task=owner:DoTaskInTime(16,function() self:Stop() end)
     return true
 end
 function NyxDomain:OnRemoveFromEntity()

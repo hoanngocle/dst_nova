@@ -6,6 +6,14 @@ local NATIVE_SOURCES = {
     yellow_river = {"yunxiao", "jjj_aoeent"},
 }
 
+local LEVEL_RATES = {
+    absolute_domain = 0.3,
+    triflame_fan = 0.25,
+    yellow_river = 0.3,
+    eternal_night = 0.25,
+    spirit_sword = 0.15,
+}
+
 local function IsFiniteNonnegative(value)
     return type(value) == "number" and value == value
         and value >= 0 and value < math.huge
@@ -43,9 +51,19 @@ function SkillDamage.End(owner, skill)
     end
 end
 
+local function LevelMultiplier(owner, skill)
+    local rate = LEVEL_RATES[skill]
+    local level = owner ~= nil and owner.components ~= nil
+        and owner.components.levelsystem ~= nil and owner.components.levelsystem.level or nil
+    if rate == nil or not IsFiniteNonnegative(level) then return 1 end
+    local steps = level >= 100 and 10 or math.min(8, math.floor(level / 10))
+    return 1 + rate * steps
+end
+
 function SkillDamage.Scale(owner, skill, damage)
     local bonuses = owner ~= nil and owner._nyx_skill_damage_bonus or nil
-    return damage + (bonuses ~= nil and bonuses[skill] or 0)
+    return damage * LevelMultiplier(owner, skill)
+        + (bonuses ~= nil and bonuses[skill] or 0)
 end
 
 function SkillDamage.ScaleNative(owner, damage, source)
@@ -70,7 +88,9 @@ function SkillDamage.ScaleNative(owner, damage, source)
                     break
                 end
             end
-            if matches and correct_domain_buff then return damage + bonuses[skill] end
+            if matches and correct_domain_buff then
+                return damage * LevelMultiplier(owner, skill) + bonuses[skill]
+            end
         end
     end
     return damage
