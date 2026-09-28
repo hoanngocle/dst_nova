@@ -1,23 +1,18 @@
 name = "Công Trình Tu Tiên"
 description = [[
-󰀘󰀘 Phiên Bản 1.4 - Công Trình Tu Tiên 󰀘󰀘
+★ Phiên Bản 1.4 - Công Trình Tu Tiên ★
 
-󰀄 Máy Tái Luyện: biến vật phẩm dư thành Linh Thạch Hạ Phẩm.
-
-󰀏 Truyền Tống Trận: dịch chuyển giữa các cổng đã đặt.
-
-󰀧 Tàng Bảo Đồ: lần theo dấu trên bản đồ và đào kho báu.
-
-󰀄 Vĩnh Hằng Thần Hỏa: bốn công trình lửa cho mùa đông và mùa hè.
-
-󰀄 Tường Siêu Cấp: tường, cửa tự động, hàng rào và dụng cụ xây nhanh.
-
-󰀄 Thảm: 15 kiểu sàn trang trí.
+★ Máy Tái Luyện: biến vật phẩm dư thành Linh Thạch Hạ Phẩm.
+★ Truyền Tống Trận: dịch chuyển giữa các cổng đã đặt.
+★ Tàng Bảo Đồ: lần theo dấu trên bản đồ và đào kho báu.
+★ Vĩnh Hằng Thần Hỏa: bốn công trình lửa cho mùa đông và mùa hè.
+★ Tường Siêu Cấp: tường, cửa tự động, hàng rào và dụng cụ xây nhanh.
+★ Thảm: 15 kiểu sàn trang trí.
 
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.4.0"
+version = "1.4.2"
 
 api_version = 10
 dst_compatible = true

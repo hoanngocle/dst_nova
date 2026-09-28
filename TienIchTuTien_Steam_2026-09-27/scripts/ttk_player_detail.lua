@@ -52,6 +52,20 @@ function M.Measure(player, source)
         and upgrade:IsWeaponMilestone() and (upgrade.level or 0) > 0 then
         stats.strengthen_level = upgrade.level
     end
+    if source ~= nil then
+        if source.combat_stats ~= nil then
+            local combat_stats = source.combat_stats(player, weapon)
+            if combat_stats ~= nil then
+                stats.crit_rate = Number(combat_stats.crit_rate)
+                stats.crit_damage = Number(200 + (combat_stats.crit_effect or 0))
+                stats.pierce_percent = Number(combat_stats.pierce)
+            end
+        end
+        if source.flat_pierce ~= nil then
+            stats.flat_pierce = Number(source.flat_pierce(player, weapon,
+                stats.strengthen_level))
+        end
+    end
     return stats
 end
 
@@ -60,7 +74,10 @@ function M.Encode(stats)
     return (stats.armed and "w" or stats.mounted and "m" or "u") .. ";"
         .. (stats.damage ~= nil and Format(stats.damage) or "") .. ";"
         .. (stats.speed ~= nil and Format(stats.speed) or "")
-        .. (stats.strengthen_level ~= nil and ";" .. stats.strengthen_level or "")
+        .. ";" .. (stats.crit_rate ~= nil and Format(stats.crit_rate) or "")
+        .. ";" .. (stats.crit_damage ~= nil and Format(stats.crit_damage) or "")
+        .. ";" .. (stats.pierce_percent ~= nil and Format(stats.pierce_percent) or "")
+        .. ";" .. (stats.flat_pierce ~= nil and Format(stats.flat_pierce) or "")
 end
 
 function M.Read(player, source)
@@ -69,13 +86,19 @@ function M.Read(player, source)
     local snapshot = player._ttk_player_detail
     if (player.components or {}).combat ~= nil then return M.Measure(player, source) end
     local raw = snapshot ~= nil and snapshot:value() or ""
-    local mode, damage, speed, level = raw:match("^([wmu]);([^;]*);([^;]*);(%d+)$")
+    local mode, damage, speed, crit_rate, crit_damage, pierce_percent, flat_pierce =
+        raw:match("^([wmu]);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*)$")
     if mode == nil then
-        mode, damage, speed = raw:match("^([wmu]);([^;]*);([^;]*)$")
+        mode, damage, speed = raw:match("^([wmu]);([^;]*);([^;]*);%d+$")
+        if mode == nil then
+            mode, damage, speed = raw:match("^([wmu]);([^;]*);([^;]*)$")
+        end
     end
     if mode == nil then return nil end
     return {armed=mode=="w", mounted=mode=="m", damage=tonumber(damage),
-        speed=tonumber(speed), strengthen_level=tonumber(level)}
+        speed=tonumber(speed), crit_rate=tonumber(crit_rate),
+        crit_damage=tonumber(crit_damage), pierce_percent=tonumber(pierce_percent),
+        flat_pierce=tonumber(flat_pierce)}
 end
 
 local function DamageRow(row)
@@ -95,18 +118,24 @@ function M.IsPlayerData(data)
     return false
 end
 
-function M.Augment(data, stats, source, Detail)
+function M.Augment(data, stats)
     local result = {}
     for k,v in pairs(data) do result[k]=v end
     result.str = {}
-    local preview = stats.armed and stats.strengthen_level ~= nil
-        and source ~= nil and source.weapon_preview ~= nil
-        and source.weapon_preview(stats.strengthen_level, stats.damage) or nil
-    local pierce_bonus = preview ~= nil and preview.true_damage or 0
+    local pierce_bonus = stats.flat_pierce or 0
     local pierce_added = false
     local function Speed()
         if stats.speed ~= nil and #result.str < 40 then
             result.str[#result.str+1] = {"Tốc chạy: " .. Format(stats.speed)}
+        end
+        for _, entry in ipairs({
+            {"Tỷ lệ bạo kích", stats.crit_rate},
+            {"Sát thương bạo kích", stats.crit_damage},
+            {"Tỷ lệ xuyên giáp", stats.pierce_percent},
+        }) do
+            if entry[2] ~= nil and #result.str < 40 then
+                result.str[#result.str + 1] = {entry[1] .. ": " .. Format(entry[2]) .. "%"}
+            end
         end
     end
     local added = false
@@ -122,9 +151,9 @@ function M.Augment(data, stats, source, Detail)
             Speed()
             added = true
         elseif pierce_bonus > 0 and type(row[1]) == "string"
-            and row[1]:find("Sát thương xuyên giáp", 1, true) == 1 then
+            and row[1]:find("Sát thương xuyên giáp", 1, true) ~= nil then
             local base = tonumber(row[2])
-                or tonumber(row[1]:match("^Sát thương xuyên giáp:?%s*([%d%.]+)$"))
+                or tonumber(row[1]:match("([%d%.]+)%s*$"))
             if base ~= nil then
                 copy = {"Sát thương xuyên giáp: " .. Format(base + pierce_bonus)
                     .. " (+" .. Format(pierce_bonus) .. " từ vũ khí)"}
@@ -139,29 +168,6 @@ function M.Augment(data, stats, source, Detail)
     if pierce_bonus > 0 and not pierce_added and #result.str < 40 then
         result.str[#result.str + 1] = {"Sát thương xuyên giáp từ vũ khí: +"
             .. Format(pierce_bonus)}
-    end
-    if stats.armed and stats.strengthen_level ~= nil and Detail ~= nil
-        and Detail.StrengthenRows ~= nil and #result.str < 40 then
-        result.str[#result.str + 1] = {"CƯỜNG HÓA VŨ KHÍ +" .. stats.strengthen_level}
-        local rows = Detail.StrengthenRows({kind = "weapon",
-            level = stats.strengthen_level, preview = preview})
-        for _, entry in ipairs(rows) do
-            if entry.active and #result.str < 40 then
-                local line = "  " .. (entry.label ~= "" and entry.label .. " " or "") .. entry.text
-                local part = ""
-                for word in line:gmatch("%S+") do
-                    local next_part = part == "" and word or part .. " " .. word
-                    if #next_part:gsub("[\128-\191]", "") > 42 and part ~= "" then
-                        result.str[#result.str + 1] = {part}
-                        if #result.str >= 40 then break end
-                        part = "    " .. word
-                    else
-                        part = next_part
-                    end
-                end
-                if part ~= "" and #result.str < 40 then result.str[#result.str + 1] = {part} end
-            end
-        end
     end
     return result
 end

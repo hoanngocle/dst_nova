@@ -1,4 +1,4 @@
-name = "Thành Tựu"
+name = "Thành Tựu Tu Tiên"
 author = "Nyx"
 description = [[
 󰀘󰀘 THÀNH TỰU TU TIÊN 󰀘󰀘
@@ -14,7 +14,7 @@ Yêu cầu mod: [Tu Tiên]
 ]]
 
 server_filter_tags = {"chasni", "achievement"}
-version = "1.0.0"
+version = "1.1.0"
 priority = -1000
 mod_dependencies = { { workshop = "workshop-3721846643" } }
 forumthread = ""

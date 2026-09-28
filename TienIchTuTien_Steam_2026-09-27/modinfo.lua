@@ -15,7 +15,7 @@ Phiên bản 1.3 - Một cuốn bí lục tập hợp những kỹ năng hỗ tr
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.3.11"
+version = "1.3.12"
 
 api_version = 10
 dst_compatible = true

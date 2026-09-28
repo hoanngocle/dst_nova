@@ -9,6 +9,7 @@ local UIData1 = require "constants/uidata"
 local UIData = UIData1
 local AttributeCaps = require "constants/attributecaps"
 local AchievementPages = require "constants/achievementpages"
+local FoodAchievementGuide = require "constants/foodachievementguide"
 
 local function CenteredTabX(index, count, spacing)
 	return (index - (count + 1) / 2) * spacing
@@ -18,6 +19,15 @@ local SeasonalCatalog = require "constants/seasonaltaskcatalog"
 local SeasonalRewards = require "constants/seasonalrewarddata"
 local SeasonalFoodRecipes = require "constants/seasonalfoodrecipes"
 local TASK_MILESTONES = {1, 2, 4, 6}
+local TASK_ROW_START_Y = -100
+local TASK_ROW_STEP_Y = -80
+local TASK_TOOLTIP_Y = -635
+
+local function TaskHoverOptions(taskid)
+	return { font_size = 18, bg = false, offset_x = 0,
+		offset_y = TASK_TOOLTIP_Y - (TASK_ROW_START_Y + TASK_ROW_STEP_Y * taskid),
+		colour = {1,1,1,1} }
+end
 
 local function MakeSeasonalReceipt(owner, nonce)
 	local now = type(GetTime) == "function" and math.floor(GetTime() * 1000) or 0
@@ -28,6 +38,24 @@ local function GetSeasonalRecipeTooltip(task)
 	return task and task.foodprefab
 		and SeasonalFoodRecipes.GetTooltip(task.foodprefab, STRINGS.NAMES)
 		or nil
+end
+
+local function AchievementHoverText(self, achievementindex)
+	local hovertext = self:getAchievementProgressString(achievementindex)
+	local ach_name = UIData.ach_list[achievementindex]
+	local food = FoodAchievementGuide.ById(ach_name)
+	if food then
+		hovertext = hovertext .. "\n" .. FoodAchievementGuide.Description(food, STRINGS.NAMES)
+		local recipe = FoodAchievementGuide.RecipeTooltip(food, STRINGS.NAMES, AllRecipes)
+		return recipe and hovertext .. "\n" .. recipe or hovertext
+	end
+	local taskgroup = STRINGS.ACHIEVEMENTS[ach_name]["description"]
+	if type(taskgroup) == "number" then
+		local definition = SeasonalCatalog.ById(self.owner["seasonaltaskid"..taskgroup]:value())
+		local recipe = GetSeasonalRecipeTooltip(definition)
+		if recipe then return hovertext .. "\n" .. recipe end
+	end
+	return hovertext
 end
 
 local function GetSeasonalSlot(achievement_name)
@@ -113,12 +141,12 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.achievement_bg.reset.label:SetColour(0,0,0,1)
 
 	self.achpage = 1
-	self.mainui.achievement_bg.achnav = self.mainui.achievement_bg:AddChild(Widget("achnav"))
-	self.mainui.achievement_bg.achnav:SetPosition(0, 332, 0)
+	self.mainui.achievement_bg.achnav = self.mainui:AddChild(Widget("achnav"))
+	self.mainui.achievement_bg.achnav:SetPosition(0, 370, 0)
 	self.mainui.achievement_bg.achnav:Hide()
 	local nav = self.mainui.achievement_bg.achnav
 	nav.previous = nav:AddChild(ImageButton("images/hud/main_button.xml", "main_button_active.tex", nil, "main_button_disable.tex"))
-	nav.previous:SetPosition(-165, 0, 0)
+	nav.previous:SetPosition(-445, 0, 0)
 	nav.previous:SetOnClick(function()
 		self.achpage = math.max(1, self.achpage - 1)
 		self:build()
@@ -126,7 +154,7 @@ local uiachievement = Class(Widget, function(self, owner)
 	nav.previous.label = nav.previous:AddChild(Text(BUTTONFONT, 28, "<"))
 	nav.previous.label:SetColour(0, 0, 0, 1)
 	nav.next = nav:AddChild(ImageButton("images/hud/main_button.xml", "main_button_active.tex", nil, "main_button_disable.tex"))
-	nav.next:SetPosition(165, 0, 0)
+	nav.next:SetPosition(445, 0, 0)
 	nav.next:SetOnClick(function()
 		self.achpage = math.min(AchievementPages.PageCount(UIData.ach_tab[self.numpage]), self.achpage + 1)
 		self:build()
@@ -134,6 +162,7 @@ local uiachievement = Class(Widget, function(self, owner)
 	nav.next.label = nav.next:AddChild(Text(BUTTONFONT, 28, ">"))
 	nav.next.label:SetColour(0, 0, 0, 1)
 	nav.page = nav:AddChild(Text(BUTTONFONT, 28))
+	nav.page:SetPosition(-280, 0, 0)
 
 	--self.mainui.achievement_bg.sort = self.mainui.achievement_bg:AddChild(ImageButton("images/hud/main_button.xml", "main_button_active.tex", nil, "main_button_disable.tex"))
 	--self.mainui.achievement_bg.sort:SetPosition(450, 385, 0)
@@ -964,7 +993,7 @@ function uiachievement:updateachievepage(i)
 		local active = completed and "1" or "2"
 		self.achivlisttile[i]:SetTexture("images/hud/ach/ach_text_bg_"..active..".xml", "ach_text_bg_"..active..".tex")
 
-		self.achivlisttile[i]:SetHoverText(self:getAchievementProgressString(i))
+		self.achivlisttile[i]:SetHoverText(AchievementHoverText(self, i))
 
 		if ach_list_lists[ach_name] then
 			if self["infoopen"..ach_name] then
@@ -991,9 +1020,7 @@ function uiachievement:updatetaskpage()
 		local recipe = GetSeasonalRecipeTooltip(task.definition)
 		local hovertext = task.definition and task.definition.description or STRINGS.GUI["unknowntask"]
 		if recipe then hovertext = hovertext .. "\n" .. recipe end
-		local hoveroptions = { size = 9, offset_x = 0, offset_y = -45, colour = {1,1,1,1} }
-		self.tasklisttile[i]:SetHoverText(hovertext, hoveroptions)
-		self.tasklisttile[i].name:SetHoverText(hovertext, hoveroptions)
+		self.tasklisttile[i]:SetHoverText(hovertext, TaskHoverOptions(i))
 	end
 	self.mainui.alltask.barfill:SetScale(math.min(1, taskdone / 6),1,1)
 	for i=1,4 do
@@ -1436,6 +1463,7 @@ function uiachievement:build()
 	local nav = self.mainui.achievement_bg.achnav
 	if total > 1 then
 		nav:Show()
+		nav:MoveToFront()
 		nav.page:SetString(page .. " / " .. total)
 		if page == 1 then nav.previous:Disable() else nav.previous:Enable() end
 		if page == total then nav.next:Disable() else nav.next:Enable() end
@@ -1483,15 +1511,7 @@ function uiachievement:build_achievpage(j,i)
 	local y = 22 - (93 * (math.ceil(j / 2) + 1))
 	local button = self.mainui.allachiv:AddChild(Image("images/hud/ach/ach_text_bg_" .. active .. ".xml", "ach_text_bg_" .. active .. ".tex"))
 	button:SetPosition(x - 9.5, y, 0)
-	local hovertext = self:getAchievementProgressString(i)
-	local taskgroup = STRINGS.ACHIEVEMENTS[ach_name]["description"]
-	if type(taskgroup) == "number" then
-		local definition = SeasonalCatalog.ById(self.owner["seasonaltaskid"..taskgroup]:value())
-		local recipe = GetSeasonalRecipeTooltip(definition)
-		if recipe then
-			hovertext = hovertext .. "\n" .. recipe
-		end
-	end
+	local hovertext = AchievementHoverText(self, i)
 	button:SetHoverText(hovertext,{ size = 9, offset_y = y > -500 and 0 or -35, colour = {1,1,1,1}})
 
 	button.name = button:AddChild(Text(HEADERFONT, 30))
@@ -1674,17 +1694,17 @@ function uiachievement:build_perkpage(j,i, adaptivecost, name)
 end
 
 function uiachievement:build_taskpage()
-	local y1 = -100
-	local y2 = -80
 	for taskid=1,6 do
 		self.tasklisttile[taskid] = self.mainui.alltask:AddChild(Image("images/hud/task/task_text_bg.xml", "task_text_bg.tex"))
 		self.tasklisttile[taskid].checkmark = self.tasklisttile[taskid]:AddChild(Image("images/hud/task/task_check.xml", "task_check.tex"))
 		self.tasklisttile[taskid].checkmark:SetPosition(455, 1, 0)
+		self.tasklisttile[taskid].checkmark:SetClickable(false)
 		self.tasklisttile[taskid].checkmark:Hide()
 		self.tasklisttile[taskid].count = self.tasklisttile[taskid]:AddChild(Text(NUMBERFONT, 34))
 		self.tasklisttile[taskid].count:SetPosition(405, 0, 0)
 		self.tasklisttile[taskid].count:SetHAlign(ANCHOR_RIGHT)
-		self.tasklisttile[taskid]:SetPosition(0, y1 + (y2*taskid), 0)
+		self.tasklisttile[taskid].count:SetClickable(false)
+		self.tasklisttile[taskid]:SetPosition(0, TASK_ROW_START_Y + TASK_ROW_STEP_Y * taskid, 0)
 
 		local definition = self.tasklist[taskid].definition
 		local desctext = definition and definition.name or STRINGS.GUI["unknowntask"]
@@ -1695,12 +1715,11 @@ function uiachievement:build_taskpage()
 		self.tasklisttile[taskid].name:SetString(desctext)
 		self.tasklisttile[taskid].name:SetRegionSize(850,60)
 		self.tasklisttile[taskid].name:SetColour(0,0,0,1)
+		self.tasklisttile[taskid].name:SetClickable(false)
 		local recipe = GetSeasonalRecipeTooltip(definition)
 		local hovertext = definition and definition.description or STRINGS.GUI["unknowntask"]
 		if recipe then hovertext = hovertext .. "\n" .. recipe end
-		local hoveroptions = { size = 9, offset_x = 0, offset_y = -45, colour = {1,1,1,1} }
-		self.tasklisttile[taskid]:SetHoverText(hovertext, hoveroptions)
-		self.tasklisttile[taskid].name:SetHoverText(hovertext, hoveroptions)
+		self.tasklisttile[taskid]:SetHoverText(hovertext, TaskHoverOptions(taskid))
 	end
 
 	self.mainui.alltask.barfill = self.mainui.alltask:AddChild(Image("images/hud/task/task_bar_fill.xml", "task_bar_fill.tex"))

@@ -213,7 +213,7 @@ function M.Install(class, G, Detail, Image, Player, Text)
             if target ~= nil and target.HasTag ~= nil and target:HasTag("player") then
                 local stats = Player.Read(target, G.TTK_EQUIPMENT_DETAIL_SOURCE)
                 if stats ~= nil then
-                    data = Player.Augment(data, stats, G.TTK_EQUIPMENT_DETAIL_SOURCE, Detail)
+                    data = Player.Augment(data, stats)
                 end
             end
         end

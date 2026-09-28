@@ -31,6 +31,11 @@ G.TTK_EQUIPMENT_DETAIL_SOURCE = {
     stone_detail = Stone.Detail,
     stone_colour = Stone.Colour,
     weapon_preview = require("tbc_strengthen_effects").Preview,
+    combat_stats = Combat.StatsForOwner,
+    flat_pierce = function(player, _, level)
+        return Combat.SoloArmorPierce(player)
+            + require("tbc_strengthen_effects").TrueDamage(level or 0)
+    end,
 }
 
 PrefabFiles = { "tbc_items", "tbc_forge", "tbc_equipment_container", "tbc_suit_build",
@@ -88,7 +93,6 @@ if modimport ~= nil then
     modimport("main/lucmachthankiem.lua")
     modimport("main/ttk_weapon_solo.lua")
     modimport("main/ttk_solo_six.lua")
-    modimport("main/tbc_damagefx.lua")
 end
 
 local function GetRealmWorld()

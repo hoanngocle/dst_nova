@@ -27,7 +27,7 @@ local function Button(parent, controller, x, y, operation)
     button:SetFocusScale(1.02, 1.02)
     -- Scale setters write directly to image:SetScale, so the forced atlas
     -- region size must be applied last or the button expands on first draw.
-    button:ForceImageSize(230, 76)
+    button:ForceImageSize(230, 60)
     button:SetOnClick(function() controller:Submit(operation) end)
     return button
 end

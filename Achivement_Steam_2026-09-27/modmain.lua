@@ -96,9 +96,14 @@ end
 modimport("main_strings_vi.lua")
 
 local nova_achievements = require "constants/novaachievements"
+local FoodAchievementGuide = require "constants/foodachievementguide"
 if #nova_achievements > 0 then
 	_G.STRINGS.GUI.nova = "Mới"
 	for _, achievement in ipairs(nova_achievements) do
+		local food_description = FoodAchievementGuide.Description(achievement, _G.STRINGS.NAMES)
+		if food_description then
+			achievement.strings.vi.description = food_description
+		end
 		_G.STRINGS.ACHIEVEMENTS[achievement.id] =
 			achievement.strings.vi
 	end
