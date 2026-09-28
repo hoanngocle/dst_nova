@@ -1,32 +1,45 @@
 local M = {}
 
+-- Increase this value to move the Lạc Thần Hoa backpack farther left.
+local RIGHT_EDGE_PADDING = 25
+local SLOT_HALF_WIDTH = 38
+
 function M.Install(add_class_post_construct)
     add_class_post_construct('widgets/containerwidget', function(widget)
         local open = widget.Open
         widget.Open = function(self, container, doer)
-            if container ~= nil and container.prefab == 'xd_luoshen_huaxia'
-                and container.replica ~= nil and container.replica.container ~= nil then
-                local config = container.replica.container:GetWidget()
-                if config ~= nil and not config._nyx_backpack_aligned then
-                    local original_pos = config.pos
-                    local original_posfn = config.posfn
-                    local backpack = require('containers').params.backpack
-                    local backpack_pos = backpack ~= nil and backpack.widget ~= nil
-                        and backpack.widget.pos or nil
-                    if backpack_pos ~= nil then
-                        config._nyx_backpack_aligned = true
-                        config.posfn = function(item, player)
-                            local pos = original_posfn ~= nil
-                                and original_posfn(item, player) or original_pos
-                            if pos == nil or player == nil or player.prefab ~= 'nyx' then
-                                return pos
-                            end
-                            return Vector3(backpack_pos.x, pos.y, pos.z)
-                        end
-                    end
-                end
+            local result = open(self, container, doer)
+
+            if container == nil or container.prefab ~= 'xd_luoshen_huaxia'
+                or doer == nil or doer.prefab ~= 'nyx'
+                or container.replica == nil or container.replica.container == nil then
+                return result
             end
-            return open(self, container, doer)
+
+            local config = container.replica.container:GetWidget()
+            if config == nil then
+                return result
+            end
+
+            local right_edge = 0
+            local slotpos = config.slotposfn ~= nil
+                and config.slotposfn(container, doer) or config.slotpos
+            for _, slot in ipairs(slotpos or {}) do
+                right_edge = math.max(right_edge, slot.x + SLOT_HALF_WIDTH)
+            end
+
+            if self.bgimage ~= nil and self.bgimage.texture ~= nil then
+                local width = self.bgimage:GetSize()
+                right_edge = math.max(right_edge, width / 2)
+            end
+
+            local pos = self:GetPosition()
+            local x = math.min(pos.x, -right_edge - RIGHT_EDGE_PADDING)
+            if x < pos.x then
+                self:SetPosition(x, pos.y, pos.z)
+            end
+
+            return result
         end
     end)
 end

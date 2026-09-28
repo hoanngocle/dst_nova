@@ -143,7 +143,6 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.achpage = 1
 	self.mainui.achievement_bg.achnav = self.mainui:AddChild(Widget("achnav"))
 	self.mainui.achievement_bg.achnav:SetPosition(0, 370, 0)
-	self.mainui.achievement_bg.achnav:Hide()
 	local nav = self.mainui.achievement_bg.achnav
 	nav.previous = nav:AddChild(ImageButton("images/hud/main_button.xml", "main_button_active.tex", nil, "main_button_disable.tex"))
 	nav.previous:SetPosition(-445, 0, 0)
@@ -163,6 +162,7 @@ local uiachievement = Class(Widget, function(self, owner)
 	nav.next.label:SetColour(0, 0, 0, 1)
 	nav.page = nav:AddChild(Text(BUTTONFONT, 28))
 	nav.page:SetPosition(-280, 0, 0)
+	nav:Hide()
 
 	--self.mainui.achievement_bg.sort = self.mainui.achievement_bg:AddChild(ImageButton("images/hud/main_button.xml", "main_button_active.tex", nil, "main_button_disable.tex"))
 	--self.mainui.achievement_bg.sort:SetPosition(450, 385, 0)
@@ -1461,7 +1461,7 @@ function uiachievement:build()
 	local start, count, page, total = self:getVisibleAchievementRange()
 	self.achpage = page
 	local nav = self.mainui.achievement_bg.achnav
-	if total > 1 then
+	if total > 1 and self.mainui.allachiv.shown then
 		nav:Show()
 		nav:MoveToFront()
 		nav.page:SetString(page .. " / " .. total)

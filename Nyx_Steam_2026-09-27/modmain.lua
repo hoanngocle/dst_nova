@@ -65,6 +65,18 @@ if #recipes_missing > 0 then
     print('[Nyx] Tu Tiên source recipes unavailable: '..table.concat(recipes_missing, ', '))
 end
 if not TheNet:IsDedicated() then
+    AddClassPostConstruct('widgets/hoverer',function(hoverer)
+        local OnUpdate=hoverer.OnUpdate
+        hoverer.OnUpdate=function(self,...)
+            OnUpdate(self,...)
+            local owner=self.owner
+            local controller=owner and owner.prefab=='nyx' and owner.components and owner.components.playercontroller
+            local action=controller and controller:GetRightMouseAction()
+            if action and action.action==ACTIONS.NYX_BLINK then
+                self.secondarytext:Hide()
+            end
+        end
+    end)
     require('nyx/huaxia_layout').Install(AddClassPostConstruct)
     local Panel=require('widgets/nyx_skillpanel')
     local Resource=require('widgets/nyx_resource')

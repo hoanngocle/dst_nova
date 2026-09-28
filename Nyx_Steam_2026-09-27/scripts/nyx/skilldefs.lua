@@ -6,7 +6,7 @@ local rows={
     {'Cửu Khúc Hoàng Hà Trận',40,40,'realm',5,'self',0,'Hoàng Hà'},
     {'Tàn Dạ – Vĩnh Hằng Lĩnh Vực',50,50,'realm',6,'point',14,'Tàn Dạ'},
     {'Huyền Thiên Trảm Linh Kiếm',80,60,'realm',9,'point',14,'Trảm Linh'},
-    {'Tử Phong Tụ Linh',3,10,'level',10,'point',12,'Tụ Linh'},
+    {'Tử Phong Tụ Linh',20,10,'level',10,'point',12,'Tụ Linh'},
     {'Tử Tiêu Thần Nhãn',0,0,'level',30,'toggle',0,'Thần Nhãn'},
     {'Tinh Vũ Nguyệt Dực',0,0,'level',50,'toggle',0,'Nguyệt Dực'},
 }

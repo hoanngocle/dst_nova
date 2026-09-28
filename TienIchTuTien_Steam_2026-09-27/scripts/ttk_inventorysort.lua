@@ -154,17 +154,21 @@ function M.Install(env, options)
         if player._ttk_lastsort and now - player._ttk_lastsort < 0.25 then return end
         player._ttk_lastsort = now
         local backpack = inv:GetOverflowContainer()
-        local has_open_chest = false
+        if backpack == nil then
+            local equipped = inv:GetEquippedItem(G.EQUIPSLOTS.BACK)
+            backpack = equipped and equipped.components.container
+        end
+        local sorted = false
         for inst in pairs(inv.opencontainers or {}) do
             local c = inst.components.container
             if c and c ~= backpack and c.type ~= "pack" and c:IsOpenedBy(player) then
-                has_open_chest = true
-                M.Sort(c, maxlights)
+                sorted = M.Sort(c, maxlights) or sorted
             end
         end
-        if not has_open_chest then
-            M.Sort(inv, maxlights)
-            M.Sort(backpack, maxlights)
+        sorted = M.Sort(inv, maxlights) or sorted
+        sorted = M.Sort(backpack, maxlights) or sorted
+        if sorted and player.SoundEmitter then
+            player.SoundEmitter:PlaySound("dontstarve/creatures/perd/gobble")
         end
     end
     env.AddModRPCHandler(env.modname, "ttk_sort_inventory", sortplayer)
@@ -178,9 +182,6 @@ function M.Install(env, options)
                 sortplayer(player)
             else
                 env.SendModRPCToServer(env.MOD_RPC[env.modname].ttk_sort_inventory)
-            end
-            if options.funMode == "yes" and player.SoundEmitter then
-                player.SoundEmitter:PlaySound("dontstarve/creatures/perd/gobble")
             end
         end)
     end
