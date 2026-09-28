@@ -124,7 +124,6 @@ function achievfuncs.currentcursedtrinket(self,cursedtrinketamount) self.inst.cu
 function achievfuncs.checkequipingkrampussack(self,equipingkrampussack) local c = 0 if equipingkrampussack then c=1 end self.inst.checkequipingkrampussack:set(c) end
 function achievfuncs.checkequipingskin(self,equipingskin) local c = 0 if equipingskin then c=1 end self.inst.checkequipingskin:set(c) end
 function achievfuncs.checkdarkheart(self,darkheart) local c = 0 if darkheart then c=1 end self.inst.checkdarkheart:set(c) end
-function achievfuncs.checkluckyrabbit(self,luckyrabbit) local c = 0 if luckyrabbit then c=1 end self.inst.checkluckyrabbit:set(c) end
 function achievfuncs.checkgiantplant(self,giantplant) local c = 0 if giantplant then c=1 end self.inst.checkgiantplant:set(c) end
 function achievfuncs.currentgiantplant(self,giantplantamount) self.inst.currentgiantplant:set(giantplantamount) end
 function achievfuncs.currentgiantplantlist(self,giantplantlist) self.inst.currentgiantplantlist:set(arrayToString(giantplantlist)) end

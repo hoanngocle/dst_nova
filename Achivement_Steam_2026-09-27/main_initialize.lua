@@ -1,5 +1,6 @@
 GLOBAL.setmetatable(env,{__index=function(_,k) return GLOBAL.rawget(GLOBAL,k) end})
 local ShardGameIndex = ShardIndex()
+local removedperks = require "constants/removedperks"
 
 local function RemoveRetiredGlobalPerks(perkdata)
     perkdata.bosshp = nil
@@ -17,6 +18,7 @@ local function Chasni_CreateJSON()
             end
         end
     end
+    removedperks.clearGlobal(savefile)
     TUNING.ACH = savefile
     TheSim:SetPersistentString("chasni_perk_global.json", json.encode(savefile), false)
 end
@@ -34,6 +36,7 @@ local function Chasni_LoadJSON(load_success, data)
                     end
                 end
             end
+            removedperks.clearGlobal(perkdata)
             TheSim:SetPersistentString("chasni_perk_global.json", json.encode(perkdata), false)
             TUNING.ACH = perkdata
         else

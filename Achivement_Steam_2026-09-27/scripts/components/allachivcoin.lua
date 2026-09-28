@@ -1,5 +1,7 @@
 require "functions/helperfunctions"
 local perkfuncs = require "functions/perkfunctions"
+local removedperks = require "constants/removedperks"
+local attributecaps = require "constants/attributecaps"
 
 local allachivcoin = Class(
         function(self, inst)
@@ -25,6 +27,7 @@ local allachivcoin = Class(
 )
 
 function allachivcoin:OnSave()
+    removedperks.clearGlobal(TUNING.ACH)
     local data = {
         coinamount = self.coinamount,
         starsspent = self.starsspent,
@@ -43,6 +46,7 @@ function allachivcoin:OnSave()
 end
 
 function allachivcoin:OnLoad(data)
+    removedperks.clearGlobal(TUNING.ACH)
     self.coinamount = data.coinamount or 0
     self.starsspent = data.starsspent or 0
 
@@ -57,6 +61,35 @@ function allachivcoin:OnLoad(data)
                 self[perkname] = data[perkname] or false
             end
         end
+    end
+    for perkname, cap in pairs(attributecaps) do
+        local amount = self[perkname .. "amount"]
+        if amount > cap then
+            local perk = perk_lists[perkname]
+            local refund = removedperks.refundMulti(amount, perk.cost, perk.multi)
+                - removedperks.refundMulti(cap, perk.cost, perk.multi)
+            self.coinamount = self.coinamount + refund
+            self.starsspent = math.max(0, self.starsspent - refund)
+            self[perkname .. "amount"] = cap
+            self[perkname .. "cost"] = perk.cost + math.floor(cap / perk.multi)
+        end
+    end
+    for perkname, cost in pairs(removedperks.costs) do
+        if data[perkname] then
+            self.coinamount = self.coinamount + cost
+            self.starsspent = math.max(0, self.starsspent - cost)
+        end
+        self[perkname] = false
+    end
+    for perkname, details in pairs(removedperks.multi) do
+        local refund = removedperks.refundMulti(data[perkname .. "amount"], details.cost, details.multi)
+        self.coinamount = self.coinamount + refund
+        self.starsspent = math.max(0, self.starsspent - refund)
+        self[perkname .. "amount"] = 0
+        self[perkname .. "cost"] = details.cost
+    end
+    for perkname in pairs(removedperks.global) do
+        self[perkname] = 0
     end
 end
 
@@ -83,6 +116,14 @@ end
 
 -- # ATTRIBUTE
 function allachivcoin:pickperk1(inst, perk)
+    if removedperks.isRemoved(perk) then
+        self:cantgetcoin(inst)
+        return false
+    end
+    if attributecaps[perk] and self[perk .. "amount"] >= attributecaps[perk] then
+        self:cantgetcoin(inst)
+        return false
+    end
     if self.coinamount >= self[perk.."cost"] then
         self[perk.."amount"] = self[perk.."amount"] + 1
 
@@ -97,53 +138,6 @@ function allachivcoin:pickperk1(inst, perk)
     end
     self:cantgetcoin(inst)
     return false
-end
-function allachivcoin:hungerrateuppick(inst)
-    if inst.components.hunger.hungerrate > .01 then
-        return self:pickperk1(inst, "hungerrateup")
-    end
-    self:cantgetcoin(inst)
-end
-function allachivcoin:hungerrateupfn(inst)
-    local newmodifier = math.max(0, 1-self.hungerrateupamount*allachiv_coindata["hungerrateup"])
-    inst.components.hunger.burnratemodifiers:SetModifier("achievementperk", newmodifier)
-end
-function allachivcoin:healthregenupfn(inst)
-    if self.healthregenupamount > 0 then
-        if inst.healthregenuptask then
-            inst.healthregenuptask:Cancel()
-            inst.healthregenuptask = nil
-        end
-        inst.healthregenuptask = inst:DoPeriodicTask(1, function()
-            if self.healthregenupamount > 0
-                    and inst
-                    and inst.components.health
-                    and inst.components.health.currenthealth < inst.components.health.maxhealth
-                    and inst.components.health.currenthealth > 0
-            then
-                inst.components.health:DoDelta(allachiv_coindata["healthregenup"] * self.healthregenupamount, true)
-            end
-        end)
-    end
-end
-function allachivcoin:sanityregenupfn(inst)
-    if self.sanityregenupamount > 0 then
-        if inst.sanityregenuptask then
-            inst.sanityregenuptask:Cancel()
-            inst.sanityregenuptask = nil
-        end
-        inst.sanityregenuptask = inst:DoPeriodicTask(1, function()
-            if self.sanityregenupamount > 0
-                    and inst
-                    and inst.components.sanity
-                    and inst.components.sanity.current < inst.components.sanity.max
-                    and inst.components.health
-                    and inst.components.health.currenthealth > 0
-            then
-                inst.components.sanity:DoDelta(allachiv_coindata["sanityregenup"] * self.sanityregenupamount, true)
-            end
-        end)
-    end
 end
 function allachivcoin:speedupfn(inst)
     if self.speedupamount > 0 then
@@ -358,6 +352,10 @@ end
 
 -- # ABILITY
 function allachivcoin:pickperk3(inst, perk)
+    if removedperks.isRemoved(perk) then
+        self:cantgetcoin(inst)
+        return false
+    end
     local cost = perk_lists[perk].cost
     if self[perk] ~= true and self.coinamount >= cost then
         if self[perk.."prefn"] then
@@ -572,6 +570,10 @@ function allachivcoin:expertwx1fn(inst)
 end
 -- # GLOBAL
 function allachivcoin:pickperk5(inst, perk)
+    if removedperks.isRemoved(perk) then
+        self:cantgetcoin(inst)
+        return false
+    end
     local cost = perk_lists[perk].cost
     if TUNING.ACH[perk] == 0 and self.coinamount >= cost then
         TUNING.ACH[perk] = 1
@@ -741,8 +743,18 @@ function allachivcoin:resetbuff(inst)
     end
 end
 
+function allachivcoin:RemoveLegacyTrinketSlot(inst)
+    local inventory = inst.components.inventory
+    local slot = inventory and inventory:GetEquippedItem("chasni_trinket_container")
+    if slot and slot.prefab == "trinketslot" then
+        slot.components.container:DropEverything()
+        slot:Remove()
+    end
+end
+
 function allachivcoin:Init(inst)
     inst:DoTaskInTime(.1, function()
+        self:RemoveLegacyTrinketSlot(inst)
         for perkname, perk in pairs(perk_lists) do
             if perk.single ~= true then
                 if self[perkname .."fn"] then

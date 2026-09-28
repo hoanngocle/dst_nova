@@ -87,10 +87,8 @@ configuration_options = {
     toggle("PICKXP", "Kinh nghiệm khi thu hoạch", true, "Nhận kinh nghiệm khi hái và thu hoạch."),
     option("LEVEL_LIMIT", "Giới hạn cấp độ", {
         { description = "50", data = 50 }, { description = "100", data = 100 },
-        { description = "250", data = 250 }, { description = "500", data = 500 },
-        { description = "1000", data = 1000 }, { description = "5000", data = 5000 },
-        { description = "Không giới hạn", data = 0 },
-    }, 0, "Cấp độ tối đa của nhân vật."),
+        { description = "200", data = 200 },
+    }, 200, "Cấp độ tối đa của nhân vật và thú nuôi. Ở cấp 200, 100 EXP dư đổi thành 1 Linh Thạch Hạ Phẩm."),
 
     heading("Thành tựu"),
     option("PLAYS", "Số vòng thành tựu", values({ 0, 1, 2, 3, 999 }), 2,

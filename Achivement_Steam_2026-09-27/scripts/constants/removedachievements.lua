@@ -29,6 +29,7 @@ return {
     healwortox = true,
     spore = true,
     cursedtrinket = true,
+    luckyrabbit = true,
     equipingskin = true,
     darkheart = true,
     giantplant = true,

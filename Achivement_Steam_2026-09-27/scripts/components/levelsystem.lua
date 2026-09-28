@@ -1,5 +1,17 @@
 require "functions/helperfunctions"
 local levelfuncs = require "functions/levelfunctions"
+local levelcaprewards = require "functions/levelcaprewards"
+
+local MAX_LEVEL = 200
+
+local function getLevelLimit()
+	local configured = tonumber(_G.LEVEL_LIMIT)
+	return configured and configured > 0 and math.min(configured, MAX_LEVEL) or MAX_LEVEL
+end
+
+local function capLevelXP(level, xp)
+	return level >= getLevelLimit() and math.min(xp, chasni_getxpgoals(level) - 1) or xp
+end
 
 local levelsystem = Class(function(self, inst)
 	self.inst = inst
@@ -7,6 +19,7 @@ local levelsystem = Class(function(self, inst)
 	self.level = 1
 	self.levelxp = 0
 	self.overallxp = 0
+	self.capxp = 0
 
 	self.attributepoints = 0
 	self.attributepointsspent = 0
@@ -59,6 +72,7 @@ function levelsystem:OnSave()
 		level = self.level,
 		levelxp = self.levelxp,
 		overallxp = self.overallxp,
+		capxp = self.capxp,
 		attributepoints = self.attributepoints,
 		attributepointsspent = returnattributepoints,
 
@@ -81,14 +95,15 @@ function levelsystem:OnSave()
 end
 
 function levelsystem:OnLoad(data)
-	self.level = data.level or 1
-	self.levelxp = data.levelxp or 0
+	self.level = math.min(data.level or 1, getLevelLimit())
+	self.levelxp = capLevelXP(self.level, data.levelxp or 0)
 	self.overallxp = data.overallxp or 0
+	self.capxp = data.capxp or 0
 	self.attributepoints = data.attributepoints or 0
 	self.attributepointsspent = data.attributepointsspent or 0
 
-	self.petlevel = data.petlevel or 1
-	self.petlevelxp = data.petlevelxp or 0
+	self.petlevel = math.min(data.petlevel or 1, getLevelLimit())
+	self.petlevelxp = capLevelXP(self.petlevel, data.petlevelxp or 0)
 	self.petoverallxp = data.petoverallxp or 0
 	self.petattributepoints = data.petattributepoints or 0
 	self.petattributepointsspent = data.petattributepointsspent or 0
@@ -145,14 +160,25 @@ function levelsystem:levelDoDelta(inst)
 end
 
 function levelsystem:xpDoLevelUp(inst)
+	if self.level >= getLevelLimit() then return end
 	local currentXPGoal = chasni_getxpgoals(self.level)
 	self:xpDoDelta(currentXPGoal - self.levelxp + 1, inst, true)
+end
+
+function levelsystem:addCapXP(value, inst)
+	self.capxp = self.capxp + math.max(0, math.floor(value))
+	local stones = math.floor(self.capxp / levelcaprewards.XP_PER_STONE)
+	if stones > 0 then
+		local delivered = levelcaprewards.GiveLowerSpiritStones(inst, stones)
+		self.capxp = self.capxp - delivered * levelcaprewards.XP_PER_STONE
+	end
 end
 
 local EXPCHIPXP = {1.25, 1.5, 2, 3}
 function levelsystem:xpDoDelta(value, inst, fixed, sharable)
 	local goal = chasni_getxpgoals(self.level)
-	if _G.LEVEL_LIMIT > 0 and _G.LEVEL_LIMIT <= self.level then
+	local levelLimit = getLevelLimit()
+	if self.level >= levelLimit and (levelLimit < MAX_LEVEL or self.level > MAX_LEVEL) then
 		self.levelxp = goal - 1
 		return
 	end
@@ -222,6 +248,12 @@ function levelsystem:xpDoDelta(value, inst, fixed, sharable)
 		end
 	end
 	value = math.floor(value)
+	if self.level == MAX_LEVEL then
+		self.overallxp = self.overallxp + value
+		self.levelxp = goal - 1
+		self:addCapXP(value, inst)
+		return
+	end
 
 	-- give sharable xp to pet
 	if sharable and inst.components.allachivcoin and inst.components.allachivcoin.duppercritter then
@@ -240,11 +272,17 @@ function levelsystem:xpDoDelta(value, inst, fixed, sharable)
 
 	self.overallxp = self.overallxp + value
 	self.levelxp = self.levelxp + value
-	while(self.levelxp > goal) do
+	while self.levelxp > goal and self.level < levelLimit do
 		self.levelxp = self.levelxp - goal
 		self:levelDoDelta(inst)
 		self:onlevelup(inst)
 		goal = chasni_getxpgoals(self.level)
+	end
+	if self.level == MAX_LEVEL then
+		self:addCapXP(self.levelxp - 1, inst)
+		self.levelxp = goal - 1
+	else
+		self.levelxp = capLevelXP(self.level, self.levelxp)
 	end
 end
 
@@ -260,7 +298,7 @@ end
 
 function levelsystem:petxpDoDelta(value, inst)
 	local goal = chasni_getxpgoals(self.petlevel)
-	if _G.LEVEL_LIMIT > 0 and _G.LEVEL_LIMIT <= self.petlevel then
+	if self.petlevel >= getLevelLimit() then
 		self.petlevelxp = goal - 1
 		return
 	end
@@ -268,12 +306,13 @@ function levelsystem:petxpDoDelta(value, inst)
 
 	self.petoverallxp = self.petoverallxp + value
 	self.petlevelxp = self.petlevelxp + value
-	while(self.petlevelxp > goal) do
+	while self.petlevelxp > goal and self.petlevel < getLevelLimit() do
 		self.petlevelxp = self.petlevelxp - goal
 		self:petlevelDoDelta(inst)
 		self:onlevelup(inst)
 		goal = chasni_getxpgoals(self.petlevel)
 	end
+	self.petlevelxp = capLevelXP(self.petlevel, self.petlevelxp)
 end
 
 function levelsystem:freepickattribute(inst, attr)
@@ -444,6 +483,7 @@ function levelsystem:onreroll(inst)
 		SaveLevel["level"] = self.level or 1
 		SaveLevel["levelxp"] = self.levelxp or 0
 		SaveLevel["overallxp"] = self.overallxp or 0
+		SaveLevel["capxp"] = self.capxp or 0
 		SaveLevel["attributepoints"] = self.attributepoints + returnattributepoints or 0
 		SaveLevel["petlevel"] = self.petlevel or 1
 		SaveLevel["petlevelxp"] = self.petlevelxp or 0
@@ -468,12 +508,13 @@ function levelsystem:intogamefn(inst)
 		end
 		if self.overallxp == 0 and _name and LevelData[_name] then
 			local leveldata = LevelData[_name]
-			self.level = leveldata["level"]
-			self.levelxp = leveldata["levelxp"]
+			self.level = math.min(leveldata["level"] or 1, getLevelLimit())
+			self.levelxp = capLevelXP(self.level, leveldata["levelxp"] or 0)
 			self.overallxp = leveldata["overallxp"]
+			self.capxp = leveldata["capxp"] or 0
 			self.attributepoints = leveldata["attributepoints"]
-			self.petlevel = leveldata["petlevel"]
-			self.petlevelxp = leveldata["petlevelxp"]
+			self.petlevel = math.min(leveldata["petlevel"] or 1, getLevelLimit())
+			self.petlevelxp = capLevelXP(self.petlevel, leveldata["petlevelxp"] or 0)
 			self.petoverallxp = leveldata["petoverallxp"]
 			self.petattributepoints = leveldata["petattributepoints"]
 			self.petcanevolve = leveldata["petcanevolve"]
@@ -481,6 +522,9 @@ function levelsystem:intogamefn(inst)
 			self.zoomlevel = leveldata["zoomlevel"]
 			self.mainhudtype = leveldata["mainhudtype"]
 			LevelData[_name] = nil
+		end
+		if self.level == MAX_LEVEL then
+			self:addCapXP(0, inst)
 		end
 	end)
 end

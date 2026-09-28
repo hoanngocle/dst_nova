@@ -8,6 +8,9 @@ local prefabs = {
     "chasni_buff",
     "ground_ring",
     "new_trinkets",
+    "trinketslot", -- Load old equipped containers so their contents can be returned.
+    "clusteritem", -- Keep previously crafted items loadable.
+    "multiitem",
 }
 
 local groups = {
@@ -176,15 +179,6 @@ local groups = {
     },
     ["icyweed"] = {
         "icyweed",
-    },
-    ["trinketowner"] = {
-        "trinketslot",
-    },
-    ["clustercraft"] = {
-        "clusteritem",
-    },
-    ["multicraft"] = {
-        "multiitem",
     },
 
     ["expertwicker3"] = {

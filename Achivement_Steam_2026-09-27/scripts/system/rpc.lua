@@ -1,19 +1,22 @@
 -- PERK
+local removedperks = require "constants/removedperks"
 for perkname, perk in pairs(perk_lists) do
-	AddModRPCHandler("DSTAchievement", perkname, function(player)
-		local coin = player.components.allachivcoin
-		if perk.custom then
-			coin[perk.custom](coin, player)
-		elseif perk.multi then
-			coin:pickperk1(player, perkname)
-		elseif perk.expert then
-			coin:pickperk4(player, perkname, perk.expert)
-		elseif perk.global then
-			coin:pickperk5(player, perkname)
-		else
-			coin:pickperk3(player, perkname)
-		end
-	end)
+	if not removedperks.isRemoved(perkname) then
+		AddModRPCHandler("DSTAchievement", perkname, function(player)
+			local coin = player.components.allachivcoin
+			if perk.custom then
+				coin[perk.custom](coin, player)
+			elseif perk.multi then
+				coin:pickperk1(player, perkname)
+			elseif perk.expert then
+				coin:pickperk4(player, perkname, perk.expert)
+			elseif perk.global then
+				coin:pickperk5(player, perkname)
+			else
+				coin:pickperk3(player, perkname)
+			end
+		end)
+	end
 end
 
 -- Reset perk

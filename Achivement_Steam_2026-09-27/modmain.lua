@@ -34,6 +34,8 @@ _G.UI_PERK_TOGGLE		= 120
 _G.UI_LEVEL_TOGGLE		= 118
 _G.KEYBOARD_SHORTCUT    = GetModConfigData('SHORTCUT')
 
+require("constants/removedperks").apply(_G.TUNING)
+
 PrefabFiles = require "system/prefabs"
 Assets = require "system/assets"
 

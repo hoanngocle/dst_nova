@@ -1,15 +1,15 @@
 local ach_tab_counts = {
-    food = 7, life = 2, hurt = 8, work = 14, have = 3, stat = 9,
+    food = 7, life = 2, hurt = 8, work = 14, have = 2, stat = 9,
     vile = 4, slay = 9, duel = 12, boss = 13, misc = 8, mile = 11
 }
 local ach_tab_names = { "food", "life", "hurt", "work", "have", "stat", "vile", "slay", "duel", "boss", "misc", "mile" }
 
 local perk_tab_counts = {
-    attributes = 18, abilities = 19, crafting = 15, global = 11
+    attributes = 11, abilities = 14, crafting = 12, global = 7
 }
 local perk_tab_names = { "attributes", "abilities", "crafting", "global" }
 
-local ach_names = {
+local base_ach_names = {
     -- Food 7
     "supereat", "eathot", "eatcold", "eatmandrake", "eatguardianhorn", "eatnightberry", "eatmonsterlasagna",
     --Life 2
@@ -18,8 +18,8 @@ local ach_names = {
      "pacifist", "damagedeal", "tank", "dmgnodmg", "burn", "freeze", "drown", "lightning",
     --Work 14
     "plantmaster", "fishmaster", "pickmaster", "chopmaster", "minemaster", "cookmaster", "buildmaster", "honeymaster", "jerkymaster", "flowermaster", "fertilizemaster", "fertilizebigmaster", "wallmaster", "picktumbleweed",
-    --Have 3
-    "equipingkrampussack", "luckyrabbit", "iridescentgems",
+    --Have 2
+    "equipingkrampussack", "iridescentgems",
     --Stat 9
     "fullsanity", "fullhunger", "sanitymaxwell", "nosanity", "lunacy", "starve", "icebody", "firebody", "moistbody",
     --Vile 4
@@ -37,27 +37,47 @@ local ach_names = {
 }
 
 local nova_achievements = require "constants/novaachievements"
-if #nova_achievements > 0 then
-    ach_tab_counts.nova = #nova_achievements
-    table.insert(ach_tab_names, "nova")
-    for _, achievement in ipairs(nova_achievements) do
-        table.insert(ach_names, achievement.id)
-    end
+local nova_group_tab = {
+    survival = "life", food = "food", collection = "have",
+    labor = "work", crafting = "work", farming = "work",
+    combat = "slay", boss = "boss", level_rank = "mile",
+    seasonal = "mile", gacha_shop = "misc",
+}
+local added_by_tab = {}
+for _, achievement in ipairs(nova_achievements) do
+    local tab = nova_group_tab[achievement.group]
+    assert(tab and ach_tab_counts[tab], "Unknown achievement group: " .. tostring(achievement.group))
+    added_by_tab[tab] = added_by_tab[tab] or {}
+    table.insert(added_by_tab[tab], achievement.id)
 end
+
+local ach_names = {}
+local base_index = 1
+for _, tab in ipairs(ach_tab_names) do
+    local base_count = ach_tab_counts[tab]
+    for _ = 1, base_count do
+        table.insert(ach_names, base_ach_names[base_index])
+        base_index = base_index + 1
+    end
+    for _, id in ipairs(added_by_tab[tab] or {}) do
+        table.insert(ach_names, id)
+    end
+    ach_tab_counts[tab] = base_count + #(added_by_tab[tab] or {})
+end
+assert(base_index == #base_ach_names + 1, "Base achievement tab counts do not match their list")
 
 local perk_names = {
     -- Attributes [speedup, absorbup, damageup]
-    "hungerup", "healthup", "sanityup", "healthregenup", "hungerrateup", "sanityregenup", "planarabsorbup", "planardamageup", "criticalup", "criticaldmgup", "lifestealup", "fireflylightup", "scaleup", "xpmultup", "repairitemup", "repairmagiup", "repairfoodup", "krampussackup",
+    "hungerup", "healthup", "sanityup", "planarabsorbup", "planardamageup", "criticalup", "criticaldmgup", "lifestealup", "fireflylightup", "scaleup", "xpmultup",
     -- Ability [sharemap, strongergrip] christmastbulb
-    "nomoist", "icemaster", "firemaster", "fastworker", "minefaster", "chopfaster", "fishfaster", "cookfaster", "warlychef", "trinketowner", "doublehealed", "doublepick", "doubledrop", "doubleworkdrop", "buildcheaper", "supercritter", "blueprintextractor", "itemmerger", "itemcleaner",
+    "nomoist", "icemaster", "firemaster", "fastworker", "minefaster", "chopfaster", "fishfaster", "cookfaster", "warlychef", "doublehealed", "doublepick", "doubledrop", "doubleworkdrop", "buildcheaper",
     -- Crafting [carpentercraft]
-    "ancientstation", "lunarcraft", "pearlcraft", "rabbitkingcraft", "crittercraft", "madsciencecraft", "eventcraft", "carnivalcraft", "klaussackbuilder", "bossitemcraft", "dencraft", "trinketcraft", "clustercraft", "multicraft", "duppercritter",
+    "ancientstation", "lunarcraft", "pearlcraft", "rabbitkingcraft", "crittercraft", "madsciencecraft", "eventcraft", "carnivalcraft", "klaussackbuilder", "bossitemcraft", "dencraft", "duppercritter",
     -- Global []
-    "eternalcage", "eternalicebox", "eternalthermal", "easyfarm", "easybeef", "icyweed", "bosshunting", "stackinfinite", "insightinfinite", "groundedscream", "riftcontroller"
+    "eternalcage", "eternalthermal", "easyfarm", "icyweed", "bosshunting", "groundedscream", "riftcontroller"
 }
 local perk_character_exceptions = {
     healthup = { wanda = true },
-    healthregenup = { wanda = true },
     lifestealup = { wanda = true },
     strongergrip = { wurt = true },
     warlychef = { warly = true },
@@ -104,13 +124,10 @@ return {
     perk_tab = generate_table(perk_tab_names, perk_tab_counts),
     perk_list = perk_list,
     ui_hidden_list = {
-        trinketowner = get_hideperk_value("trinketowner"),
+        trinketowner = get_hideperk_value("TRINKETOWNER"),
         expertwoodie1 = true,
         expertwendy3 = true,
-        trinket = get_hideperk_value("trinketowner"),
-        trinket = get_hideperk_value("trinketowner"),
-        trinket = get_hideperk_value("trinketowner"),
-        trinket = get_hideperk_value("trinketowner"),
+        trinket = get_hideperk_value("TRINKETOWNER"),
     }
 }
 --example data :

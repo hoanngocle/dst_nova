@@ -269,11 +269,6 @@ STRINGS.ACHIEVEMENTS={
         ["description"] = "Có một túi Krampus",
         ["info"] = "Đã có một túi Krampus",
     },
-    ["luckyrabbit"] = {
-        ["name"] = "Oswald, chú thỏ may mắn",
-        ["description"] = "Có một chú thỏ may mắn",
-        ["info"] = "Đã có một chú thỏ may mắn",
-    },
     ["iridescentgems"] = {
         ["name"] = "7 Sắc cầu vồng",
         ["description"] = "Chế tạo đá quý bảy màu",
@@ -665,18 +660,6 @@ STRINGS.PERKS={
     ["sanityup"] = {
         ["name"]="Tinh thần +",
         ["description"]="Tăng tinh thần thêm "..allachiv_coindata["sanityup"],
-    },
-    ["healthregenup"] = {
-        ["name"]="Hồi máu +",
-        ["description"]="Tăng tốc độ hồi máu thêm "..allachiv_coindata["healthregenup"].."/s",
-    },
-    ["hungerrateup"] = {
-        ["name"]="Tốc độ đói -",
-        ["description"]="Giảm tốc độ tiêu hao độ no đi "..(math.ceil(allachiv_coindata["hungerrateup"]*100)).."%",
-    },
-    ["sanityregenup"] = {
-        ["name"]="Hồi tinh thần +",
-        ["description"]="Tăng tốc độ hồi tinh thần thêm "..allachiv_coindata["sanityregenup"].."/s",
     },
     ["speedup"] = {
         ["name"]="Tốc độ +",

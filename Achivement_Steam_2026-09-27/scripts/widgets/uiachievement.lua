@@ -7,6 +7,12 @@ local UIAnim = require "widgets/uianim"
 local UIData1 = require "constants/uidata"
 --local UIData2 = require "constants/uidata_easy"
 local UIData = UIData1
+local AttributeCaps = require "constants/attributecaps"
+local AchievementPages = require "constants/achievementpages"
+
+local function CenteredTabX(index, count, spacing)
+	return (index - (count + 1) / 2) * spacing
+end
 
 local SeasonalCatalog = require "constants/seasonaltaskcatalog"
 local SeasonalRewards = require "constants/seasonalrewarddata"
@@ -106,15 +112,15 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.achievement_bg.reset.label:SetMultilineTruncatedString(STRINGS.GUI["resetR"], 1, 100, 50, "", true)
 	self.mainui.achievement_bg.reset.label:SetColour(0,0,0,1)
 
-	self.novapage = 1
-	self.mainui.achievement_bg.navanova = self.mainui.achievement_bg:AddChild(Widget("navanova"))
-	self.mainui.achievement_bg.navanova:SetPosition(0, 332, 0)
-	self.mainui.achievement_bg.navanova:Hide()
-	local nav = self.mainui.achievement_bg.navanova
+	self.achpage = 1
+	self.mainui.achievement_bg.achnav = self.mainui.achievement_bg:AddChild(Widget("achnav"))
+	self.mainui.achievement_bg.achnav:SetPosition(0, 332, 0)
+	self.mainui.achievement_bg.achnav:Hide()
+	local nav = self.mainui.achievement_bg.achnav
 	nav.previous = nav:AddChild(ImageButton("images/hud/main_button.xml", "main_button_active.tex", nil, "main_button_disable.tex"))
 	nav.previous:SetPosition(-165, 0, 0)
 	nav.previous:SetOnClick(function()
-		self.novapage = math.max(1, self.novapage - 1)
+		self.achpage = math.max(1, self.achpage - 1)
 		self:build()
 	end)
 	nav.previous.label = nav.previous:AddChild(Text(BUTTONFONT, 28, "<"))
@@ -122,8 +128,7 @@ local uiachievement = Class(Widget, function(self, owner)
 	nav.next = nav:AddChild(ImageButton("images/hud/main_button.xml", "main_button_active.tex", nil, "main_button_disable.tex"))
 	nav.next:SetPosition(165, 0, 0)
 	nav.next:SetOnClick(function()
-		local count = UIData.ach_tab[self.numpage].count
-		self.novapage = math.min(math.ceil(count / 14), self.novapage + 1)
+		self.achpage = math.min(AchievementPages.PageCount(UIData.ach_tab[self.numpage]), self.achpage + 1)
 		self:build()
 	end)
 	nav.next.label = nav.next:AddChild(Text(BUTTONFONT, 28, ">"))
@@ -517,9 +522,6 @@ local uiachievement = Class(Widget, function(self, owner)
 
 	-- EXTRA ACTIVE SKILL UI
 	local extraskills = {
-		{ child = "blueprintextractor", atlas = "images/hud/activeskill/perk_bp.xml", tex = "perk_bp.tex", scale = .6, fn = function() SendModRPCToServer(MOD_RPC["Active_Perk"]["blueprintextractor"]) end },
-		{ child = "itemmerger", atlas = "images/hud/activeskill/perk_atom.xml", tex = "perk_atom.tex", scale = .6, fn = function() SendModRPCToServer(MOD_RPC["Active_Perk"]["itemmerger"]) end },
-		{ child = "itemcleaner", atlas = "images/hud/activeskill/perk_trash.xml", tex = "perk_trash.tex", scale = .6, fn = function() SendModRPCToServer(MOD_RPC["Active_Perk"]["itemcleaner"]) end },
 		{ child = "sharemap", atlas = "images/hud/activeskill/perk_map.xml", tex = "perk_map.tex", scale = .6, fn = function() SendModRPCToServer(MOD_RPC["Active_Perk"]["sharemap"]) end },
 	}
 	self.mainbutton.activeskills.extraskills = self.mainbutton.activeskills:AddChild(Widget("extraskills"))
@@ -551,30 +553,25 @@ local uiachievement = Class(Widget, function(self, owner)
 	-- GUIDE END
 
 	self.mainui.ach_cat = self.mainui:AddChild(Widget("ach_cat"))
-	self.mainui.ach_cat:SetPosition(339, 85, 0)
+	self.mainui.ach_cat:SetPosition(0, 85, 0)
 	self.mainui.ach_cat:Hide()
 
 	self.mainui.perk_cat = self.mainui:AddChild(Widget("perk_cat"))
-	self.mainui.perk_cat:SetPosition(500, 85, 0)
+	self.mainui.perk_cat:SetPosition(0, 85, 0)
 	self.mainui.perk_cat:Hide()
 
 	--Main Tab Buttons
-	local posX = -810
-	local posY = -453
+	local first_row_count = math.min(8, #UIData.ach_tab)
+	local second_row_count = #UIData.ach_tab - first_row_count
 	for i = 1, #UIData.ach_tab do
-		if i == 9 then
-			posX = -750
-			posY = -510
-		end
-		self:initAchCategory(i, UIData.ach_tab[i].name, posX, posY)
-		posX = posX + 135;
+		local first_row = i <= first_row_count
+		local index = first_row and i or i - first_row_count
+		local count = first_row and first_row_count or second_row_count
+		self:initAchCategory(i, UIData.ach_tab[i].name, CenteredTabX(index, count, 135), first_row and -453 or -510)
 	end
 
-	posX = -921
-	posY = -515
 	for i = 1, #UIData.perk_tab  do
-		self:initPerkCategory(i, UIData.perk_tab[i].name, posX, posY)
-		posX = posX + 140;
+		self:initPerkCategory(i, UIData.perk_tab[i].name, CenteredTabX(i, #UIData.perk_tab, 140), -515)
 	end
 
 	-- Level MainPage
@@ -850,7 +847,7 @@ function uiachievement:initAchCategory(id, name, posx, posy)
 	self.mainui.ach_cat["cat".._id]:SetOnClick(function()
 		if self.mainui.allachiv.shown then
 			self.numpage = id
-			self.novapage = 1
+			self.achpage = 1
 			self:build()
 			self:setAllAchivCategoriesActive()
 			self.mainui.ach_cat["cat".._id]:Disable()
@@ -929,7 +926,7 @@ function uiachievement:hideAll()
 	self.mainui.levelbg:Hide()
 	self.mainui.petlevelbg:Hide()
 	self.mainui.achievement_bg.reset:Hide()
-	self.mainui.achievement_bg.navanova:Hide()
+	self.mainui.achievement_bg.achnav:Hide()
 	--self.mainui.achievement_bg.sort:Hide()
 	self.mainui.achievement_bg.info:Hide()
 	self.mainui.alltask:Hide()
@@ -1331,21 +1328,6 @@ function uiachievement:OnUpdate(dt)
 	end
 
 	-- Extra UI
-	if self.owner.currentblueprintextractor:value() == 1 then
-		self:showactiveskill(self.mainbutton.activeskills.extraskills, "extraskills", "blueprintextractor")
-	else
-		self:hideactiveskill(self.mainbutton.activeskills.extraskills, "extraskills", "blueprintextractor")
-	end
-	if self.owner.currentitemmerger:value() == 1 then
-		self:showactiveskill(self.mainbutton.activeskills.extraskills, "extraskills", "itemmerger")
-	else
-		self:hideactiveskill(self.mainbutton.activeskills.extraskills, "extraskills", "itemmerger")
-	end
-	if self.owner.currentitemcleaner:value() == 1 then
-		self:showactiveskill(self.mainbutton.activeskills.extraskills, "extraskills", "itemcleaner")
-	else
-		self:hideactiveskill(self.mainbutton.activeskills.extraskills, "extraskills", "itemcleaner")
-	end
 	if self.owner.currentsharemap:value() == 1 then
 		self:showactiveskill(self.mainbutton.activeskills.extraskills, "extraskills", "sharemap")
 	else
@@ -1444,23 +1426,19 @@ end
 
 function uiachievement:getVisibleAchievementRange()
 	local category = UIData.ach_tab[self.numpage]
-	if category.name == "nova" then
-		local offset = (self.novapage - 1) * 14
-		return category.start + offset, math.min(14, category.count - offset)
-	end
-	return category.start, category.count
+	return AchievementPages.Range(category, self.achpage)
 end
 
 function uiachievement:build()
 	self.mainui.allachiv:KillAllChildren()
-	local category = UIData.ach_tab[self.numpage]
-	local start, count = self:getVisibleAchievementRange()
-	local nav = self.mainui.achievement_bg.navanova
-	if category.name == "nova" then
+	local start, count, page, total = self:getVisibleAchievementRange()
+	self.achpage = page
+	local nav = self.mainui.achievement_bg.achnav
+	if total > 1 then
 		nav:Show()
-		nav.page:SetString(self.novapage .. " / " .. math.ceil(category.count / 14))
-		if self.novapage == 1 then nav.previous:Disable() else nav.previous:Enable() end
-		if self.novapage * 14 >= category.count then nav.next:Disable() else nav.next:Enable() end
+		nav.page:SetString(page .. " / " .. total)
+		if page == 1 then nav.previous:Disable() else nav.previous:Enable() end
+		if page == total then nav.next:Disable() else nav.next:Enable() end
 	else
 		nav:Hide()
 	end
@@ -1621,6 +1599,7 @@ function uiachievement:build_perkpage(j,i, adaptivecost, name)
 
 	local perk_current = self.owner["current"..perk_name] and self.owner["current"..perk_name]:value() or 0
 	local perk_cost = adaptivecost and self.owner[perk_name.."cost"] and self.owner[perk_name.."cost"]:value() or perk_data.cost or 0
+	local at_cap = adaptivecost and AttributeCaps[perk_name] and perk_current >= AttributeCaps[perk_name]
 	local active = perk_current == 0 and "1" or "2"
 
 	local x = -372 + ((j-1)%3) * 368
@@ -1633,6 +1612,7 @@ function uiachievement:build_perkpage(j,i, adaptivecost, name)
 	button.bg:SetScale(1, 1.15, 1)
 	button.bg:SetFocusScale(1.05, 1.05, 1)
 	button.bg:SetOnClick(function()
+		if at_cap then return end
 		SendModRPCToServer(MOD_RPC["DSTAchievement"][perk_name])
 		self.owner:DoTaskInTime(.3, function()
 			if ThePlayer and ThePlayer.PushEvent then
@@ -1650,7 +1630,7 @@ function uiachievement:build_perkpage(j,i, adaptivecost, name)
 		button.expertise:SetScale(0.75, 0.75, 1)
 	end
 
-	if perk_current ~= 0 then
+	if perk_current ~= 0 or (name == "attributes" and AttributeCaps[perk_name]) then
 		if name == "global" and toggleableglobalperk[perk_name] then
 			button.globalswitch = button:AddChild(Text(HEADERFONT, 24))
 			button.globalswitch:SetPosition(157, -17, 0)
@@ -1661,7 +1641,7 @@ function uiachievement:build_perkpage(j,i, adaptivecost, name)
 			button.attributecounter = button:AddChild(Text(HEADERFONT, 24))
 			button.attributecounter:SetPosition(157, -17, 0)
 			button.attributecounter:SetHAlign(ANCHOR_RIGHT)
-			button.attributecounter:SetString(perk_current.." X")
+			button.attributecounter:SetString(AttributeCaps[perk_name] and (perk_current.."/"..AttributeCaps[perk_name]) or (perk_current.." X"))
 			button.attributecounter:SetColour(0, 0, 0, 1)
 		end
 	end
@@ -1684,9 +1664,10 @@ function uiachievement:build_perkpage(j,i, adaptivecost, name)
 	button.cost:SetPosition(127, 25, 0)
 	button.cost:SetHAlign(ANCHOR_RIGHT)
 	button.cost:SetRegionSize(50, 30)
-	button.cost:SetString("-" .. perk_cost)
+	button.cost:SetString(at_cap and "MAX" or "-" .. perk_cost)
 	button.star = button:AddChild(Image("images/hud/small_star.xml", "small_star.tex"))
 	button.star:SetPosition(162, 25, 0)
+	if at_cap then button.star:Hide() end
 
 	self.coinlistbutton[i] = button
 	return true

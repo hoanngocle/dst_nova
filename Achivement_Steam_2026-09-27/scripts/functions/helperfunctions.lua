@@ -1028,7 +1028,7 @@ function chasni_checkslayachievement(inst, victim)
 end
 
 function chasni_getxpgoals(level)
-	local goal = 50 + math.floor(level * level * 0.1)
+	local goal = 2 * (50 + math.floor(level * level * 0.1))
 	return math.min(9999999, goal)
 end
 
