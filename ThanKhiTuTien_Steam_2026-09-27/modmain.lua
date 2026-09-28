@@ -30,6 +30,7 @@ G.TTK_EQUIPMENT_DETAIL_SOURCE = {
     description = Stone.Description,
     stone_detail = Stone.Detail,
     stone_colour = Stone.Colour,
+    weapon_preview = require("tbc_strengthen_effects").Preview,
 }
 
 PrefabFiles = { "tbc_items", "tbc_forge", "tbc_equipment_container", "tbc_suit_build",
@@ -44,11 +45,16 @@ Assets = {
     Asset("ATLAS", "images/phuc_lac_duoc_inventory.xml"), Asset("IMAGE", "images/phuc_lac_duoc_inventory.tex"),
     Asset("ATLAS", "images/ttk_forge/frame.xml"), Asset("IMAGE", "images/ttk_forge/frame.tex"),
     Asset("ATLAS", "images/ttk_forge/controls.xml"), Asset("IMAGE", "images/ttk_forge/controls.tex"),
+    Asset("ATLAS", "images/ttk_forge/strengthen.xml"), Asset("IMAGE", "images/ttk_forge/strengthen.tex"),
     Asset("ATLAS", "images/ttk_forge/close_icon.xml"), Asset("IMAGE", "images/ttk_forge/close_icon.tex"),
     Asset("ATLAS", "images/ttk_forge/equipment_buttons/add.xml"),
     Asset("IMAGE", "images/ttk_forge/equipment_buttons/add.tex"),
+    Asset("ATLAS", "images/ttk_forge/equipment_buttons/remove.xml"),
+    Asset("IMAGE", "images/ttk_forge/equipment_buttons/remove.tex"),
+    Asset("ATLAS", "images/ttk_forge/equipment_buttons/reroll.xml"),
+    Asset("IMAGE", "images/ttk_forge/equipment_buttons/reroll.tex"),
 }
-for _, name in ipairs({ "inherit", "reroll", "line1", "line2", "line3", "clean" }) do
+for _, name in ipairs({ "inherit", "reroll", "line1", "line2", "line3", "line4", "line5", "clean" }) do
     local path = "images/ttk_forge/suit_buttons/" .. name
     Assets[#Assets + 1] = Asset("ATLAS", path .. ".xml")
     Assets[#Assets + 1] = Asset("IMAGE", path .. ".tex")
@@ -152,9 +158,9 @@ containers.params.tbc_forge = {
     widget = {
         slotpos = {
             G.Vector3(-198, 50, 0),
-            G.Vector3(-250, -115, 0),
-            G.Vector3(-145, -115, 0),
-            G.Vector3(-40, -115, 0),
+            G.Vector3(-250, -95, 0),
+            G.Vector3(-145, -95, 0),
+            G.Vector3(-40, -95, 0),
         }, pos = G.Vector3(0, 0, 0), top_align_tip = 50,
         animbank = "ui_bundle_2x2", animbuild = "ui_bundle_2x2",
     },
@@ -182,7 +188,6 @@ EquipmentContainers.RegisterParams(containers, G.Vector3)
 
 if not G.TheNet:IsDedicated() then
     require("tbc_ui_hooks").Install(AddClassPostConstruct, modname)
-    require("tbc_equipment/ui_hooks").Install(AddClassPostConstruct, modname)
     DetailHooks.Install(AddClassPostConstruct, G.STRINGS.NAMES,
         solo_hover_enabled, utility_detail_enabled)
 end
@@ -265,30 +270,6 @@ local function Say(player, message)
     local talker = player ~= nil and player.components ~= nil and player.components.talker or nil
     if talker ~= nil then talker:Say(message) end
 end
-
-AddModRPCHandler(modname, "tbc_equipment_open", function(player)
-    if not G.TheWorld.ismastersim or player == nil or not player:IsValid()
-        or player:HasTag("playerghost") or player.components.inventory == nil then return end
-    local box = player._tbc_equipment_box
-    if box == nil or not box:IsValid() then
-        box = G.SpawnPrefab("tbc_equipment_box")
-        if box == nil then return end
-        box.tbc_owner = player
-        box.Transform:SetPosition(0, 0, 0)
-        box.entity:SetParent(player.entity)
-        player._tbc_equipment_box = box
-        player:ListenForEvent("onremove", function()
-            if box:IsValid() then box:Remove() end
-        end)
-    end
-    local container = box.components.container
-    if container.openlist ~= nil and container.openlist[player] then
-        container:Close(player)
-    else
-        SyncEquipmentWallet(player)
-        container:Open(player)
-    end
-end)
 
 AddModRPCHandler(modname, "tbc_equipment_use", function(player, box, operation, arg)
     if not G.TheWorld.ismastersim or player == nil or box == nil

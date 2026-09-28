@@ -86,7 +86,7 @@ local UI = Class(Widget, function(self, owner, container, container_widget, rpc_
     Label(self.pages.clean, "Trang bị cần tẩy", -190, 66, 19, BLUE)
     for index = 1, AffixDefs.MAX_SLOTS do
         Button(self.pages.clean, "Dòng " .. index,
-            index <= 3 and "line" .. index or nil, 110, 80 - (index - 1) * 50,
+            "line" .. index, 110, 80 - (index - 1) * 50,
             function() self:ConfirmClean(index) end)
     end
     Label(self.pages.clean,

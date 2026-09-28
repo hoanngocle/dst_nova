@@ -11,15 +11,40 @@ local STONE_TIERS = { I = 1, II = 2, III = 3, IV = 4, V = 5, UTILITY = 4 }
 M.HEADER_COLOUR = {.45, .88, 1, 1}
 M.ACTIVE_COLOUR = {.68, .90, .58, 1}
 M.LOCKED_COLOUR = {.50, .50, .50, 1}
-local WEAPON_MILESTONES = {
-    {3, "Bộc Liệt: Tấn công gây sát thương lan."},
-    {5, "Bạo Vũ: Gây thêm sát thương khi tấn công."},
-    {9, "Ngự Lôi: Miễn nhiễm sát thương từ sét."},
-    {11, "Địa Chấn: Có cơ hội giữ chân mục tiêu."},
-    {13, "Ảnh Tập: Có cơ hội tạo phân thân tấn công."},
-    {13, "Vĩnh Cửu: Không tiêu hao độ bền.", true},
-    {16, "Thiên Kiếp: +500 xuyên giáp, +50% sát thương bạo kích."},
-}
+local function WeaponMilestones(preview)
+    local p = preview or {}
+    local splash = p.splash_damage ~= nil
+        and ("Tấn công gây khoảng " .. string.format("%g", p.splash_damage)
+            .. " sát thương lan (" .. string.format("%g", p.splash_percent) .. "% đòn đánh).")
+        or p.splash_percent ~= nil
+            and ("Tấn công gây " .. string.format("%g", p.splash_percent)
+                .. "% sát thương đòn đánh thành sát thương lan.")
+        or "Tấn công gây sát thương lan."
+    local shadow = p.shadow_damage ~= nil
+        and ("Có " .. p.shadow_chance .. "% cơ hội tạo 4–6 phân thân, tổng khoảng "
+            .. string.format("%g", p.shadow_damage) .. " sát thương.")
+        or p.shadow_chance ~= nil
+            and ("Có " .. p.shadow_chance .. "% cơ hội tạo 4–6 phân thân, tổng "
+                .. p.shadow_multiplier .. " lần sát thương đòn đánh.")
+        or "Có cơ hội tạo phân thân tấn công."
+    local extra = p.bonus_damage ~= nil
+        and ("Gây thêm " .. p.bonus_damage .. " sát thương khi tấn công.")
+        or "Gây thêm sát thương khi tấn công."
+    local stun = p.stun_chance ~= nil
+        and (p.stun_chance .. "% cơ hội giữ chân mục tiêu trong 2 giây.")
+        or "Có cơ hội giữ chân mục tiêu."
+    return {
+        {3, "Bộc Liệt: " .. splash},
+        {5, "Bạo Vũ: " .. extra},
+        {9, "Ngự Lôi: Miễn nhiễm sát thương từ sét."},
+        {11, "Địa Chấn: " .. stun},
+        {13, "Ảnh Tập: " .. shadow},
+        {13, "Vĩnh Cửu: Không tiêu hao độ bền.", true},
+        {16, "Thiên Kiếp: +" .. (p.true_damage or 500)
+            .. " sát thương xuyên giáp mỗi đòn, +" .. (p.crit_effect or 50)
+            .. "% sát thương bạo kích."},
+    }
+end
 local HEAD_MILESTONES = {
     {3, "Nhập Định: Giảm tiêu hao độ đói theo cấp."},
     {5, "Hoá Thần: Đảo ngược hào quang tinh thần tiêu cực."},
@@ -55,7 +80,7 @@ function M.StrengthenRows(detail)
     local rows = {}
     local milestones = detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.HEAD) and HEAD_MILESTONES
         or detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.BODY) and BODY_MILESTONES
-        or detail.kind == "weapon" and WEAPON_MILESTONES or nil
+        or detail.kind == "weapon" and WeaponMilestones(detail.preview) or nil
     if milestones == nil then return rows end
     for _, entry in ipairs(milestones) do
         local active = detail.level >= entry[1]
@@ -102,6 +127,15 @@ function M.Read(item, source)
         detail.kind = "equipment"
     end
     detail.damage_bonus = tonumber(stat:match("%(%+([%d%.]+) từ cường hóa%)"))
+    if detail.kind == "weapon" then
+        detail.weapon_damage = tonumber(stat:match("^Sát thương hiện tại: ([%d%.]+)"))
+            or (type(components.weapon) == "table"
+                and type(components.weapon.damage) == "number"
+                and components.weapon.damage or nil)
+        if source.weapon_preview ~= nil then
+            detail.preview = source.weapon_preview(level, detail.weapon_damage)
+        end
+    end
     -- A hosted world can read the authoritative component immediately.
     local upgrade = components.tbc_upgrade
     if detail.damage_bonus == nil and upgrade ~= nil

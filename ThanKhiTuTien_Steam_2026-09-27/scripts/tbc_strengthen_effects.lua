@@ -40,6 +40,32 @@ function M.TrueDamage(level)
     return type(level) == "number" and level >= 16 and 500 or 0
 end
 
+-- Values before target-specific damage reduction; damage is the current
+-- weapon hit used for the item/player preview.
+function M.Preview(level, damage)
+    level = type(level) == "number" and level or 0
+    local tier = Tier(level)
+    local estimate = type(damage) == "number" and damage == damage
+        and damage > 0 and damage < math.huge and damage or nil
+    local result = {}
+    if level >= 3 then
+        result.splash_percent = EXPLODE[tier] * 100
+        result.splash_damage = estimate ~= nil and estimate * EXPLODE[tier] or nil
+    end
+    if level >= 5 then result.bonus_damage = tier * 10 end
+    if level >= 11 then result.stun_chance = SHADOW_CHANCE[tier] end
+    if level >= 13 then
+        result.shadow_chance = SHADOW_CHANCE[tier]
+        result.shadow_multiplier = SHADOW_MULT[tier]
+        result.shadow_damage = estimate ~= nil and estimate * SHADOW_MULT[tier] or nil
+    end
+    if level >= 16 then
+        result.true_damage = M.TrueDamage(level)
+        result.crit_effect = 50
+    end
+    return result
+end
+
 function M.OnHit(upgrade, attacker, target, damage, rng)
     if upgrade == nil or not upgrade:IsWeaponMilestone() or not Valid(target)
         or type(damage) ~= "number" or damage <= 0 then return end

@@ -77,10 +77,10 @@ local UI = Class(Widget, function(self, owner, container, container_widget, embe
 
     Button(self.pages.add, "Thêm thuộc tính", 0, -165, 180,
         function() self:Submit("affix_add") end, "add")
-    Button(self.pages.edit, "Tẩy ngẫu nhiên", -100, -165, 180,
-        function() self:Submit("affix_remove") end)
-    Button(self.pages.edit, "Đổi giá trị", 100, -165, 180,
-        function() self:Submit("affix_reroll") end)
+    Button(self.pages.edit, "Tẩy Thuộc Tính", -100, -165, 180,
+        function() self:Submit("affix_remove") end, "remove")
+    Button(self.pages.edit, "Đổi Giá Trị", 100, -165, 180,
+        function() self:Submit("affix_reroll") end, "reroll")
     self.notice = Label(self, "Đặt trang bị và đá/giấy vào hai ô.", 0,
         -210, 16)
 

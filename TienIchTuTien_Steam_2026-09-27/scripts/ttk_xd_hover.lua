@@ -211,8 +211,10 @@ function M.Install(class, G, Detail, Image, Player, Text)
         if detail == nil and Player ~= nil and Player.IsPlayerData(data) then
             local target = HoveredItem(G)
             if target ~= nil and target.HasTag ~= nil and target:HasTag("player") then
-                local stats = Player.Read(target)
-                if stats ~= nil then data = Player.Augment(data, stats) end
+                local stats = Player.Read(target, G.TTK_EQUIPMENT_DETAIL_SOURCE)
+                if stats ~= nil then
+                    data = Player.Augment(data, stats, G.TTK_EQUIPMENT_DETAIL_SOURCE, Detail)
+                end
             end
         end
         local result = original(widget, data, ...)

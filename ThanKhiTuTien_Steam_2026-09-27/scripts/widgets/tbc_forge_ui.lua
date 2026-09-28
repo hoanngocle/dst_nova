@@ -6,6 +6,7 @@ local Display = require("tbc_display")
 
 local FONT = BODYTEXTFONT
 local SKIN = "images/ttk_forge/controls.xml"
+local STRENGTHEN_SKIN = "images/ttk_forge/strengthen.xml"
 local CLOSE_SKIN = "images/ttk_forge/close_icon.xml"
 local WHITE = { .93, .96, 1, 1 }
 local BLUE = { .54, .84, 1, 1 }
@@ -18,22 +19,15 @@ local function Label(parent, value, x, y, size, colour)
     return label
 end
 
-local function Button(parent, controller, label, x, y, operation, width, size)
-    local button = parent:AddChild(ImageButton(SKIN, "primary.tex"))
+local function Button(parent, controller, x, y, operation)
+    local button = parent:AddChild(ImageButton(STRENGTHEN_SKIN, "strengthen.tex"))
     button.ignore_standard_scaling = true
     button:SetPosition(x, y)
     button:SetNormalScale(1, 1)
     button:SetFocusScale(1.02, 1.02)
     -- Scale setters write directly to image:SetScale, so the forced atlas
     -- region size must be applied last or the button expands on first draw.
-    button:ForceImageSize(width or 175, 48)
-    button:SetFont(FONT)
-    button:SetDisabledFont(FONT)
-    button:SetTextSize(size or 21)
-    button:SetText(label)
-    button:SetTextColour(unpack(WHITE))
-    button:SetTextFocusColour(1, 1, 1, 1)
-    button.text:SetPosition(0, 3)
+    button:ForceImageSize(230, 76)
     button:SetOnClick(function() controller:Submit(operation) end)
     return button
 end
@@ -85,10 +79,10 @@ local ForgeUI = Class(Widget, function(self, owner, container, _, rpc_namespace)
     self.luck = Label(self.root, "Phúc Lạc Dược: không dùng", 126, -43, 19, BLUE)
     self.chance = Label(self.root, "Tỷ lệ thành công: —", 126, -74, 19)
     self.risk = Label(self.root, "", 126, -102, 15, MUTED)
-    self.strengthen = Button(self.root, self, "CƯỜNG HÓA", 126, -143, "strengthen", 220, 16)
+    self.strengthen = Button(self.root, self, 126, -149, "strengthen")
     self.footer = Label(self.root,
         "Đá và bùa dùng từ các ô; lấy trang bị ra khi xong.",
-        0, -185, 20, MUTED)
+        0, -209, 20, MUTED)
 
     self.close = self.root:AddChild(ImageButton(CLOSE_SKIN, "close_icon.tex"))
     self.close.ignore_standard_scaling = true
@@ -154,7 +148,6 @@ function ForgeUI:Refresh()
         or current_level >= 9 and "Thất bại: có thể mất trang bị"
         or current_level >= 5 and "Thất bại: có thể mất 1 cấp"
         or "Thất bại: không giảm cấp")
-    self.strengthen:SetText(current_level ~= nil and current_level >= 16 and "ĐÃ TỐI ĐA" or "CƯỜNG HÓA")
 end
 
 function ForgeUI:Submit(operation)

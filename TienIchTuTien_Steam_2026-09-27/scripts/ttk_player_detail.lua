@@ -8,7 +8,7 @@ local function Format(v)
     return string.format("%.2f", v):gsub("0+$", ""):gsub("%.$", "")
 end
 
-function M.Measure(player)
+function M.Measure(player, source)
     local components = player.components or {}
     local combat, loco = components.combat, components.locomotor
     if combat == nil then return nil end -- Clients use the server snapshot.
@@ -44,6 +44,14 @@ function M.Measure(player)
             * (external ~= nil and external:Get() or 1) + (combat.damagebonus or 0))
     end
     if loco ~= nil then stats.speed = Number(loco:GetRunSpeed()) end
+    local source_item = weapon ~= nil
+        and (weapon._tbc_source_item or weapon._source_weapon or weapon) or nil
+    local upgrade = source_item ~= nil and source_item.components ~= nil
+        and source_item.components.tbc_upgrade or nil
+    if upgrade ~= nil and upgrade.IsWeaponMilestone ~= nil
+        and upgrade:IsWeaponMilestone() and (upgrade.level or 0) > 0 then
+        stats.strengthen_level = upgrade.level
+    end
     return stats
 end
 
@@ -52,17 +60,22 @@ function M.Encode(stats)
     return (stats.armed and "w" or stats.mounted and "m" or "u") .. ";"
         .. (stats.damage ~= nil and Format(stats.damage) or "") .. ";"
         .. (stats.speed ~= nil and Format(stats.speed) or "")
+        .. (stats.strengthen_level ~= nil and ";" .. stats.strengthen_level or "")
 end
 
-function M.Read(player)
+function M.Read(player, source)
     if player == nil then return nil end
     if player.HasTag ~= nil and player:HasTag("playerghost") then return nil end
     local snapshot = player._ttk_player_detail
-    if (player.components or {}).combat ~= nil then return M.Measure(player) end
+    if (player.components or {}).combat ~= nil then return M.Measure(player, source) end
     local raw = snapshot ~= nil and snapshot:value() or ""
-    local mode, damage, speed = raw:match("^([wmu]);([^;]*);([^;]*)$")
+    local mode, damage, speed, level = raw:match("^([wmu]);([^;]*);([^;]*);(%d+)$")
+    if mode == nil then
+        mode, damage, speed = raw:match("^([wmu]);([^;]*);([^;]*)$")
+    end
     if mode == nil then return nil end
-    return {armed=mode=="w", mounted=mode=="m", damage=tonumber(damage), speed=tonumber(speed)}
+    return {armed=mode=="w", mounted=mode=="m", damage=tonumber(damage),
+        speed=tonumber(speed), strengthen_level=tonumber(level)}
 end
 
 local function DamageRow(row)
@@ -82,10 +95,15 @@ function M.IsPlayerData(data)
     return false
 end
 
-function M.Augment(data, stats)
+function M.Augment(data, stats, source, Detail)
     local result = {}
     for k,v in pairs(data) do result[k]=v end
     result.str = {}
+    local preview = stats.armed and stats.strengthen_level ~= nil
+        and source ~= nil and source.weapon_preview ~= nil
+        and source.weapon_preview(stats.strengthen_level, stats.damage) or nil
+    local pierce_bonus = preview ~= nil and preview.true_damage or 0
+    local pierce_added = false
     local function Speed()
         if stats.speed ~= nil and #result.str < 40 then
             result.str[#result.str+1] = {"Tốc chạy: " .. Format(stats.speed)}
@@ -103,11 +121,48 @@ function M.Augment(data, stats)
             result.str[#result.str+1] = copy
             Speed()
             added = true
+        elseif pierce_bonus > 0 and type(row[1]) == "string"
+            and row[1]:find("Sát thương xuyên giáp", 1, true) == 1 then
+            local base = tonumber(row[2])
+                or tonumber(row[1]:match("^Sát thương xuyên giáp:?%s*([%d%.]+)$"))
+            if base ~= nil then
+                copy = {"Sát thương xuyên giáp: " .. Format(base + pierce_bonus)
+                    .. " (+" .. Format(pierce_bonus) .. " từ vũ khí)"}
+                pierce_added = true
+            end
+            result.str[#result.str + 1] = copy
         elseif type(row[1]) ~= "string" or row[1]:find("Tốc chạy:",1,true) ~= 1 then
             result.str[#result.str+1] = copy
         end
     end
     if not added then Speed() end
+    if pierce_bonus > 0 and not pierce_added and #result.str < 40 then
+        result.str[#result.str + 1] = {"Sát thương xuyên giáp từ vũ khí: +"
+            .. Format(pierce_bonus)}
+    end
+    if stats.armed and stats.strengthen_level ~= nil and Detail ~= nil
+        and Detail.StrengthenRows ~= nil and #result.str < 40 then
+        result.str[#result.str + 1] = {"CƯỜNG HÓA VŨ KHÍ +" .. stats.strengthen_level}
+        local rows = Detail.StrengthenRows({kind = "weapon",
+            level = stats.strengthen_level, preview = preview})
+        for _, entry in ipairs(rows) do
+            if entry.active and #result.str < 40 then
+                local line = "  " .. (entry.label ~= "" and entry.label .. " " or "") .. entry.text
+                local part = ""
+                for word in line:gmatch("%S+") do
+                    local next_part = part == "" and word or part .. " " .. word
+                    if #next_part:gsub("[\128-\191]", "") > 42 and part ~= "" then
+                        result.str[#result.str + 1] = {part}
+                        if #result.str >= 40 then break end
+                        part = "    " .. word
+                    else
+                        part = next_part
+                    end
+                end
+                if part ~= "" and #result.str < 40 then result.str[#result.str + 1] = {part} end
+            end
+        end
+    end
     return result
 end
 
@@ -117,7 +172,7 @@ function M.Attach(player, G)
     if not G.TheWorld.ismastersim then return end
     local previous
     local function Sync()
-        local ok, stats = pcall(M.Read, player)
+        local ok, stats = pcall(M.Read, player, G.TTK_EQUIPMENT_DETAIL_SOURCE)
         local encoded = ok and M.Encode(stats) or ""
         if encoded ~= previous then player._ttk_player_detail:set(encoded); previous=encoded end
     end
