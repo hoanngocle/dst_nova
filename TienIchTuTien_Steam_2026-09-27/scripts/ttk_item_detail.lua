@@ -11,7 +11,7 @@ local STONE_TIERS = { I = 1, II = 2, III = 3, IV = 4, V = 5, UTILITY = 4 }
 M.HEADER_COLOUR = {.45, .88, 1, 1}
 M.ACTIVE_COLOUR = {.68, .90, .58, 1}
 M.LOCKED_COLOUR = {.50, .50, .50, 1}
-local MILESTONES = {
+local WEAPON_MILESTONES = {
     {3, "Bộc Liệt: Tấn công gây sát thương lan."},
     {5, "Bạo Vũ: Gây thêm sát thương khi tấn công."},
     {9, "Ngự Lôi: Miễn nhiễm sát thương từ sét."},
@@ -20,11 +20,44 @@ local MILESTONES = {
     {13, "Vĩnh Cửu: Không tiêu hao độ bền.", true},
     {16, "Thiên Kiếp: +500 xuyên giáp, +50% sát thương bạo kích."},
 }
+local HEAD_MILESTONES = {
+    {3, "Nhập Định: Giảm tiêu hao độ đói theo cấp."},
+    {5, "Hoá Thần: Đảo ngược hào quang tinh thần tiêu cực."},
+    {9, "Kim Quang: Phát sáng phạm vi lớn."},
+    {11, "Huyết Chú: Hồi đầy máu khi dưới 30% máu, có hồi chiêu."},
+    {13, "Bất Diệt: Không hao độ bền; có cơ hội hồi máu khi giáp đỡ đòn."},
+    {16, "Giảm 50% sát thương nhận vào khi đội."},
+}
+local BODY_MILESTONES = {
+    {3, "Lưu Vân: Tăng tốc độ di chuyển theo cấp."},
+    {5, "Hồi Phong: Có cơ hội đẩy lùi mục tiêu khi bị đánh."},
+    {7, "Phản Chấn: Phản sát thương giáp hấp thụ."},
+    {9, "Ngạo Tuyết: Kháng lửa và miễn nhiễm mưa axit."},
+    {11, "Vô Ngã: Chống hất ngã."},
+    {13, "Bất Diệt: Không hao độ bền; có cơ hội hồi máu khi giáp đỡ đòn."},
+    {16, "+500 máu tối đa khi mặc."},
+}
+
+local function EquipSlot(item)
+    local components = item.components or {}
+    local equipped = components.equippable
+    if equipped ~= nil and equipped.equipslot ~= nil then return equipped.equipslot end
+    equipped = item.replica ~= nil and item.replica.equippable or nil
+    if equipped ~= nil and equipped.EquipSlot ~= nil then return equipped:EquipSlot() end
+    if item.HasTag ~= nil and EQUIPSLOTS ~= nil then
+        if item:HasTag("equippable-head") then return EQUIPSLOTS.HEAD end
+        if item:HasTag("equippable-body") then return EQUIPSLOTS.BODY end
+        if item:HasTag("equippable-hands") then return EQUIPSLOTS.HANDS end
+    end
+end
 
 function M.StrengthenRows(detail)
     local rows = {}
-    if detail.kind ~= "weapon" then return rows end
-    for _, entry in ipairs(MILESTONES) do
+    local milestones = detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.HEAD) and HEAD_MILESTONES
+        or detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.BODY) and BODY_MILESTONES
+        or detail.kind == "weapon" and WEAPON_MILESTONES or nil
+    if milestones == nil then return rows end
+    for _, entry in ipairs(milestones) do
         local active = detail.level >= entry[1]
         rows[#rows + 1] = {label = entry[3] and "" or "(+" .. entry[1] .. ")",
             text = entry[2], active = active,
@@ -57,12 +90,16 @@ function M.Read(item, source)
         and item._tbc_strengthen_stat:value() or ""
     local detail = { level = level, affixes = {}, other_affixes = {}, stat = stat,
         max_affixes = source.max_affixes or M.MAX_AFFIXES }
+    detail.slot = EquipSlot(item)
     local components = item.components or {}
     if components.weapon ~= nil or stat:find("Sát thương", 1, true) == 1
         or (item.HasTag ~= nil and item:HasTag("weapon")) then
         detail.kind = "weapon"
     elseif components.armor ~= nil or stat:find("Giảm sát thương", 1, true) == 1 then
         detail.kind = "armor"
+    elseif detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.HEAD)
+        or detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.BODY) then
+        detail.kind = "equipment"
     end
     detail.damage_bonus = tonumber(stat:match("%(%+([%d%.]+) từ cường hóa%)"))
     -- A hosted world can read the authoritative component immediately.
