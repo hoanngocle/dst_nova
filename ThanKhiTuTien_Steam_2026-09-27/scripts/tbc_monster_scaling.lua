@@ -116,7 +116,7 @@ function M.ApplyMonster(inst, kind, days, level)
     state.level = level
 
     local realm_hp, realm_attack = 1, 1
-    if components.xd_guaiwu_skills ~= nil then
+    if kind ~= "realm_only" or components.xd_guaiwu_skills ~= nil then
         realm_hp, realm_attack = M.GetRealmMultipliers(level)
     end
     local hp_multiplier = state.day_hp * realm_hp

@@ -52,7 +52,7 @@ function M.SoloHoverRows(rows, item)
         and item._tbc_detail:value() or ""
     local equipment = item ~= nil and item._tbc_equip_state ~= nil
         and item._tbc_equip_state:value() or ""
-    local detail = Display.Format(state)
+    local detail = Display.Format(state, nil, item)
     local extra = M.FormatEquipmentState(equipment)
     if extra ~= "" then detail = detail ~= "" and detail .. "\n" .. extra or extra end
     local current = rows[SOLO_AFFIX_KEY]
@@ -156,7 +156,7 @@ function M.Install(add_class_post_construct, names, solo_hover_enabled, utility_
                         description = description .. "\n" .. section.title .. ": " .. section.desc
                     end
                 else
-                    local detail = Display.Format(state, names)
+                    local detail = Display.Format(state, names, item)
                     if detail ~= "" then description = description .. "\n" .. detail end
                 end
             end

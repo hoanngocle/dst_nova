@@ -2,6 +2,7 @@ local Defs = require("tbc_affix/defs")
 
 local M = {}
 local SPEED_KEY = "tbc_affix"
+local HEAD_ABSORB_KEY = "tbc_strengthen_head16"
 
 function M.Sum(entries)
     local result = {speed=0, attack_speed=0, health_percent=0, health_regen=0}
@@ -38,16 +39,19 @@ function M.Tick(player, seconds)
     health:DoDelta(state.health_regen * seconds)
 end
 
-function M.Reconcile(player, entries)
+function M.Reconcile(player, entries, strengthen)
     if player == nil then return end
     local stats = M.Sum(entries)
+    strengthen = strengthen or {}
+    local body_health = strengthen.body_health or 0
+    local head_absorb = strengthen.head_absorb or 0
     local components = player.components or {}
     local locomotor = components.locomotor
     local combat = components.combat
     local health = components.health
     local state = player._tbc_passive_state
     if state == nil then
-        state = {speed=0, attack_speed=0, health_percent=0,
+        state = {speed=0, attack_speed=0, health_percent=0, body_health=0, head_absorb=0,
             health_bonus=0, health_regen=0}
         player._tbc_passive_state = state
     end
@@ -64,17 +68,28 @@ function M.Reconcile(player, entries)
         combat:SetAttackPeriod(math.max(0.1, base / (1 + stats.attack_speed / 100)))
     end
     if health ~= nil and type(health.maxhealth) == "number"
-        and health.SetMaxHealth ~= nil and state.health_percent ~= stats.health_percent then
+        and health.SetMaxHealth ~= nil
+        and (state.health_percent ~= stats.health_percent or state.body_health ~= body_health) then
         local base = math.max(1, health.maxhealth - state.health_bonus)
-        local bonus = base * stats.health_percent / 100
+        local bonus = base * stats.health_percent / 100 + body_health
         local percent = health.GetPercent ~= nil and health:GetPercent() or nil
         health:SetMaxHealth(math.max(1, base + bonus))
         if percent ~= nil and health.SetPercent ~= nil then health:SetPercent(percent) end
         state.health_bonus = bonus
     end
+    if health ~= nil and health.externalabsorbmodifiers ~= nil
+        and state.head_absorb ~= head_absorb then
+        if head_absorb > 0 then
+            health.externalabsorbmodifiers:SetModifier(player, head_absorb, HEAD_ABSORB_KEY)
+        else
+            health.externalabsorbmodifiers:RemoveModifier(player, HEAD_ABSORB_KEY)
+        end
+    end
     state.speed = stats.speed
     state.attack_speed = stats.attack_speed
     state.health_percent = stats.health_percent
+    state.body_health = body_health
+    state.head_absorb = head_absorb
     state.health_regen = stats.health_regen
     if stats.health_regen > 0 and state.task == nil and player.DoPeriodicTask ~= nil then
         state.task = player:DoPeriodicTask(1, function() M.Tick(player, 1) end)

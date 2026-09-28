@@ -43,10 +43,11 @@ local function Button(parent, name, art, x, y, on_click)
     return button
 end
 
-local UI = Class(Widget, function(self, owner, container, container_widget)
+local UI = Class(Widget, function(self, owner, container, container_widget, rpc_namespace)
     Widget._ctor(self, "Hợp Thành Đài")
     self.owner, self.container = owner, container
     self.container_widget = container_widget
+    self.rpc_namespace = rpc_namespace
     self.frame = self:AddChild(Image("images/ttk_forge/frame.xml", "frame.tex"))
     self.frame:SetSize(720, 480)
     Label(self, "HỢP THÀNH ĐÀI", 0, 184, 27)
@@ -111,7 +112,8 @@ local UI = Class(Widget, function(self, owner, container, container_widget)
         "Đá Thuộc Tính ở ô trên, 5 Linh Thạch ở ô dưới.", 0, -190, 16)
 
     self.equipment_ui = self.pages.equipment:AddChild(
-        require("widgets/tbc_equipment_ui")(owner, container, container_widget, true))
+        require("widgets/tbc_equipment_ui")(owner, container, container_widget, true, rpc_namespace))
+    self.rpc_notice = Label(self, "", 0, -218, 16)
 
     self.close = self:AddChild(ImageButton("images/ttk_forge/close_icon.xml", "close_icon.tex"))
     self.close.ignore_standard_scaling = true
@@ -162,8 +164,20 @@ function UI:SwitchTab(name)
 end
 
 function UI:Submit(operation, arg)
-    local rpc = MOD_RPC.ThanKhiTuTien ~= nil and MOD_RPC.ThanKhiTuTien.tbc_equipment_use or nil
-    if rpc ~= nil then SendModRPCToServer(rpc, self.container, operation, arg) end
+    local namespace = MOD_RPC ~= nil and MOD_RPC[self.rpc_namespace] or nil
+    local rpc = namespace ~= nil and namespace.tbc_equipment_use or nil
+    if rpc == nil then
+        if self.rpc_notice ~= nil then
+            self.rpc_notice:SetString("Không tìm thấy lệnh trang bị; hãy tải lại world")
+        end
+        return
+    end
+    if self.rpc_notice ~= nil then self.rpc_notice:SetString("") end
+    if arg ~= nil then
+        SendModRPCToServer(rpc, self.container, operation, arg)
+    else
+        SendModRPCToServer(rpc, self.container, operation)
+    end
 end
 
 function UI:ConfirmClean(index)

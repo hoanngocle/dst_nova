@@ -17,8 +17,8 @@ local function WeaponUpgrade(attacker, weapon)
     local source = weapon ~= nil and (weapon._tbc_source_item or weapon._source_weapon or weapon)
         or attacker ~= nil and attacker._tbc_current_weapon or nil
     local upgrade = UpgradeOf(source)
-    return upgrade ~= nil and upgrade.GetKind ~= nil
-        and upgrade:GetKind() == "weapon" and upgrade or nil
+    return upgrade ~= nil and upgrade.IsWeaponMilestone ~= nil
+        and upgrade:IsWeaponMilestone() and upgrade or nil
 end
 
 local function OwnerEffects(owner)
@@ -180,6 +180,7 @@ function M.Install(combat, achievement_enabled, rng)
             or stimuli == "ttk_lucnguyen_auxiliary"
             or stimuli == "tbc_affix_burn"
             or stimuli == "tbc_affix_poison"
+            or stimuli == "tbc_strengthen_reflect"
             or stimuli == "tbc_strengthen_auxiliary" then
             return original(self, attacker, damage, weapon, stimuli, spdamage, ...)
         end

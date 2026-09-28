@@ -7,7 +7,7 @@ description = [[
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.0.0"
+version = "1.0.1"
 api_version = 10
 dst_compatible = true
 all_clients_require_mod = true

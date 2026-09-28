@@ -10,6 +10,7 @@ local EquipmentOperations = require("tbc_equipment/operations")
 local EquipmentInstall = require("tbc_equipment/install")
 local EquipmentWalletDrops = require("tbc_equipment/wallet_drops")
 local FastAct = require("tbc_equipment/fast_act")
+require("tbc_equipment/compat").SetRpcNamespace(modname)
 local DetailHooks = require("tbc_detail_hooks")
 local Combat = require("tbc_combat")
 local MonsterScaling = require("tbc_monster_scaling")
@@ -32,11 +33,13 @@ G.TTK_EQUIPMENT_DETAIL_SOURCE = {
 }
 
 PrefabFiles = { "tbc_items", "tbc_forge", "tbc_equipment_container", "tbc_suit_build",
-    "tbc_strengthen_shadow" }
+    "tbc_strengthen_shadow", "tbc_strengthen_light" }
 
 Assets = {
     Asset("ATLAS", "images/lo_ren.xml"), Asset("IMAGE", "images/lo_ren.tex"),
     Asset("ATLAS", "images/vat_pham_inventory_so_1.xml"), Asset("IMAGE", "images/vat_pham_inventory_so_1.tex"),
+    Asset("ATLAS", "images/inventoryimages/ttk_huyen_tinh_cuc_pham.xml"),
+    Asset("IMAGE", "images/inventoryimages/ttk_huyen_tinh_cuc_pham.tex"),
     Asset("ATLAS", "images/hh_icon/hh_items.xml"), Asset("IMAGE", "images/hh_icon/hh_items.tex"),
     Asset("ATLAS", "images/phuc_lac_duoc_inventory.xml"), Asset("IMAGE", "images/phuc_lac_duoc_inventory.tex"),
     Asset("ATLAS", "images/ttk_forge/frame.xml"), Asset("IMAGE", "images/ttk_forge/frame.tex"),
@@ -178,13 +181,17 @@ containers.MAXITEMSLOTS = math.max(containers.MAXITEMSLOTS, 4)
 EquipmentContainers.RegisterParams(containers, G.Vector3)
 
 if not G.TheNet:IsDedicated() then
-    require("tbc_ui_hooks").Install(AddClassPostConstruct)
+    require("tbc_ui_hooks").Install(AddClassPostConstruct, modname)
+    require("tbc_equipment/ui_hooks").Install(AddClassPostConstruct, modname)
     DetailHooks.Install(AddClassPostConstruct, G.STRINGS.NAMES,
         solo_hover_enabled, utility_detail_enabled)
 end
 
 local names = {
-    wb_enhancegem = "Đá Cường Hoá",
+    wb_enhancegem = "Huyền Tinh Cực Phẩm",
+    ttk_huyen_tinh_ha_pham = "Huyền Tinh Hạ Phẩm",
+    ttk_huyen_tinh_trung_pham = "Huyền Tinh Trung Phẩm",
+    ttk_huyen_tinh_thuong_pham = "Huyền Tinh Thượng Phẩm",
     hh_effect_stone = "Đá Thuộc Tính",
     hh_effect_tally = "Giấy Thuộc Tính",
     hh_remove_stone = "Lục Bảo Thạch",
@@ -309,7 +316,11 @@ AddModRPCHandler(modname, "tbc_equipment_use", function(player, box, operation, 
     if ok then
         SyncEquipmentWallet(player)
         if operation == "affix_add" then Say(player, "Đã thêm thuộc tính vào trang bị.") end
+        if operation == "affix_remove" then Say(player, "Đã tẩy ngẫu nhiên một dòng thuộc tính.") end
+        if operation == "affix_reroll" then Say(player, "Đã đổi giá trị thuộc tính.") end
         if operation == "affix_clean" then Say(player, "Đã tẩy dòng " .. arg .. ".") end
+        if operation == "inherit" then Say(player, "Đã kế thừa thuộc tính trang bị.") end
+        if operation == "stone_reroll" then Say(player, "Đã ngẫu luyện Đá Thuộc Tính.") end
     end
 end)
 
@@ -369,11 +380,11 @@ local function ApplyItem(act)
         if container ~= nil then
             local stackable = item.components ~= nil and item.components.stackable or nil
             if container:GetItemInSlot(4) ~= item or stackable == nil or stackable:StackSize() < cost then
-                Say(player, "Không đủ Đá Cường Hóa trong ô: cần " .. cost)
+                Say(player, "Không đủ Huyền Tinh Cực Phẩm trong ô: cần " .. cost)
                 return false
             end
         elseif not inventory:Has(id, cost) then
-            Say(player, "Không đủ Đá Cường Hoá: cần " .. cost)
+            Say(player, "Không đủ Huyền Tinh Cực Phẩm: cần " .. cost)
             return false
         end
         local protect_item = container ~= nil and container:GetItemInSlot(3) or nil
@@ -496,7 +507,7 @@ local function ForgeUse(player, station, operation)
     if upgrade == nil then Say(player, "Đặt trang bị vào ô Lò Rèn") return false end
     local material = container:GetItemInSlot(4)
     if material == nil or material.prefab ~= "wb_enhancegem" then
-        Say(player, "Đặt Đá Cường Hóa vào ô của Lò Rèn")
+        Say(player, "Đặt Huyền Tinh Cực Phẩm vào ô của Lò Rèn")
         return false
     end
     local ok = ApplyItem({ doer = player, invobject = material, target = target,
@@ -615,7 +626,7 @@ local recipe_ingredient_icons = {
     hh_effect_tally = { material_atlas, "giay_thuoc_tinh_inventory.tex" },
     hh_remove_stone = { material_atlas, "luc_bao_thach_inventory.tex" },
     hh_essence = { material_atlas, "linh_thach_inventory.tex" },
-    wb_enhancegem = { material_atlas, "da_cuong_hoa_inventory.tex" },
+    wb_enhancegem = { "images/inventoryimages/ttk_huyen_tinh_cuc_pham.xml", "ttk_huyen_tinh_cuc_pham.tex" },
     nn_liquidluck = { potion_atlas, "phuc_lac_duoc_1_inventory.tex" },
     nn_liquidluck_2 = { potion_atlas, "phuc_lac_duoc_2_inventory.tex" },
 }
@@ -623,6 +634,28 @@ local function ModIngredient(prefab, amount)
     local icon = recipe_ingredient_icons[prefab]
     return G.Ingredient(prefab, amount, icon[1], nil, icon[2])
 end
+
+for _, tier in ipairs({ "ha", "trung", "thuong" }) do
+    local id = "ttk_huyen_tinh_" .. tier .. "_pham"
+    local atlas = "images/inventoryimages/" .. id .. ".xml"
+    recipe_ingredient_icons[id] = { atlas, id .. ".tex" }
+    Assets[#Assets + 1] = Asset("ATLAS", atlas)
+    Assets[#Assets + 1] = Asset("IMAGE", "images/inventoryimages/" .. id .. ".tex")
+end
+G.STRINGS.RECIPE_DESC.TTK_HUYEN_TINH_TRUNG_PHAM = "Ghép 5 Huyền Tinh Hạ Phẩm thành 1 Trung Phẩm."
+G.STRINGS.RECIPE_DESC.TTK_HUYEN_TINH_THUONG_PHAM = "Ghép 4 Huyền Tinh Trung Phẩm thành 1 Thượng Phẩm."
+G.STRINGS.NAMES.TTK_HUYEN_TINH_CUC_PHAM_FUSION = "Huyền Tinh Cực Phẩm"
+G.STRINGS.RECIPE_DESC.TTK_HUYEN_TINH_CUC_PHAM_FUSION = "Ghép 3 Huyền Tinh Thượng Phẩm thành 1 Cực Phẩm."
+AddRecipe2("ttk_huyen_tinh_trung_pham", { ModIngredient("ttk_huyen_tinh_ha_pham", 5) },
+    G.TECH.NONE, { numtogive = 1, atlas = "images/inventoryimages/ttk_huyen_tinh_trung_pham.xml",
+        image = "ttk_huyen_tinh_trung_pham.tex" }, { "REFINE" })
+AddRecipe2("ttk_huyen_tinh_thuong_pham", { ModIngredient("ttk_huyen_tinh_trung_pham", 4) },
+    G.TECH.NONE, { numtogive = 1, atlas = "images/inventoryimages/ttk_huyen_tinh_thuong_pham.xml",
+        image = "ttk_huyen_tinh_thuong_pham.tex" }, { "REFINE" })
+AddRecipe2("ttk_huyen_tinh_cuc_pham_fusion", { ModIngredient("ttk_huyen_tinh_thuong_pham", 3) },
+    G.TECH.NONE, { product = "wb_enhancegem", numtogive = 1,
+        atlas = "images/inventoryimages/ttk_huyen_tinh_cuc_pham.xml",
+        image = "ttk_huyen_tinh_cuc_pham.tex" }, { "REFINE" })
 
 AddRecipe2("tbc_forge", { G.Ingredient("cutstone", 4), G.Ingredient("goldnugget", 4), G.Ingredient("boards", 2) },
     G.TECH.SCIENCE_TWO, { placer = "tbc_forge_placer", atlas = "images/lo_ren.xml", image = "lo_ren.tex" }, { "STRUCTURES" })
@@ -632,7 +665,7 @@ AddRecipe2("tbc_suit_build", { G.Ingredient("cutstone", 4), G.Ingredient("goldnu
 AddRecipe2("hh_essence", { ModIngredient("hh_effect_tally", 1), ModIngredient("hh_remove_stone", 2) },
     G.TECH.NONE, { numtogive = 1, atlas = "images/vat_pham_inventory_so_1.xml", image = "linh_thach_inventory.tex" }, { "REFINE" })
 AddRecipe2("wb_enhancegem", { G.Ingredient("opalpreciousgem", 1), ModIngredient("hh_essence", 8) },
-    G.TECH.NONE, { numtogive = 8, atlas = "images/vat_pham_inventory_so_1.xml", image = "da_cuong_hoa_inventory.tex" }, { "REFINE" })
+    G.TECH.NONE, { numtogive = 8, atlas = "images/inventoryimages/ttk_huyen_tinh_cuc_pham.xml", image = "ttk_huyen_tinh_cuc_pham.tex" }, { "REFINE" })
 AddRecipe2("nn_magicpaper", { G.Ingredient("goldnugget", 3), G.Ingredient("nightmarefuel", 2), ModIngredient("wb_enhancegem", 6) },
     G.TECH.NONE, { atlas = "images/vat_pham_inventory_so_1.xml", image = "bua_ma_thuat_inventory.tex" }, { "REFINE" })
 AddRecipe2("wb_strengthen_strengthen_protectpaper",

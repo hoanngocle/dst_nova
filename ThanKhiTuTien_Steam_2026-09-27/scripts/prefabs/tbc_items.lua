@@ -15,7 +15,14 @@ local assets = {
     Asset("IMAGE", "images/inventoryimages/ttk_refreshstone.tex"),
     Asset("ATLAS", "images/inventoryimages/ttk_cleanstone.xml"),
     Asset("IMAGE", "images/inventoryimages/ttk_cleanstone.tex"),
+    Asset("ATLAS", "images/inventoryimages/ttk_huyen_tinh_cuc_pham.xml"),
+    Asset("IMAGE", "images/inventoryimages/ttk_huyen_tinh_cuc_pham.tex"),
 }
+for _, tier in ipairs({ "ha", "trung", "thuong" }) do
+    local path = "images/inventoryimages/ttk_huyen_tinh_" .. tier .. "_pham"
+    assets[#assets + 1] = Asset("ATLAS", path .. ".xml")
+    assets[#assets + 1] = Asset("IMAGE", path .. ".tex")
+end
 for _, row in ipairs(Defs.rows) do
     local atlas = "images/tbc_affixes/" .. row.image_id .. ".xml"
     assets[#assets + 1] = Asset("ATLAS", atlas)
@@ -29,7 +36,7 @@ local potion_atlas = "images/phuc_lac_duoc_inventory.xml"
 local refresh_atlas = "images/inventoryimages/ttk_refreshstone.xml"
 local clean_atlas = "images/inventoryimages/ttk_cleanstone.xml"
 local definitions = {
-    wb_enhancegem = { icon = "da_cuong_hoa_inventory", atlas = material_atlas, anim = "idle_da_cuong_hoa", stack = true },
+    wb_enhancegem = { icon = "ttk_huyen_tinh_cuc_pham", atlas = "images/inventoryimages/ttk_huyen_tinh_cuc_pham.xml", anim = "idle_da_cuong_hoa", stack = true },
     hh_effect_stone = { icon = "hh_effect_stone", atlas = effect_atlas, anim = "idle", stack = false },
     hh_effect_tally = { icon = "giay_thuoc_tinh_inventory", atlas = material_atlas, anim = "idle_giay_thuoc_tinh", stack = true },
     hh_remove_stone = { icon = "luc_bao_thach_inventory", atlas = material_atlas, anim = "idle_luc_bao_thach", stack = true },
@@ -43,6 +50,13 @@ local definitions = {
     nn_liquidluck_3 = { icon = "phuc_lac_duoc_3_inventory", atlas = potion_atlas, anim = "idle_phuc_lac_duoc_3", bank = "hh_phuc_lac_duoc", luck = 3 },
     wb_strengthen_clearpaper = { icon = "papyrus", anim = "idle_giay_thuoc_tinh" },
 }
+for _, tier in ipairs({ "ha", "trung", "thuong" }) do
+    local id = "ttk_huyen_tinh_" .. tier .. "_pham"
+    definitions[id] = {
+        icon = id, atlas = "images/inventoryimages/" .. id .. ".xml",
+        anim = "idle_da_cuong_hoa", stack = true,
+    }
+end
 for level = 6, 12 do
     definitions["wb_strengthen_strengthen_" .. level .. "_levelpaper"] = {
         icon = "sketch", anim = "idle_giay_thuoc_tinh",

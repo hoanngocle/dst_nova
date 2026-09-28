@@ -38,9 +38,10 @@ local function Button(parent, controller, label, x, y, operation, width, size)
     return button
 end
 
-local ForgeUI = Class(Widget, function(self, owner, container)
+local ForgeUI = Class(Widget, function(self, owner, container, _, rpc_namespace)
     Widget._ctor(self, "Lò Rèn Trang Bị")
     self.owner, self.container = owner, container
+    self.rpc_namespace = rpc_namespace
     self.root = self:AddChild(Widget("ROOT"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
@@ -56,20 +57,20 @@ local ForgeUI = Class(Widget, function(self, owner, container)
     self.equipment_slot:SetClickable(false)
     self.name = Label(self.root, "Chưa có trang bị", -198, -20, 19)
     local magic_slot = self.root:AddChild(Image(SKIN, "slot.tex"))
-    magic_slot:SetPosition(-250, -115)
+    magic_slot:SetPosition(-250, -95)
     magic_slot:SetSize(66, 66)
     magic_slot:SetClickable(false)
     local protect_slot = self.root:AddChild(Image(SKIN, "slot.tex"))
-    protect_slot:SetPosition(-145, -115)
+    protect_slot:SetPosition(-145, -95)
     protect_slot:SetSize(66, 66)
     protect_slot:SetClickable(false)
     self.stone_slot = self.root:AddChild(Image(SKIN, "slot.tex"))
-    self.stone_slot:SetPosition(-40, -115)
+    self.stone_slot:SetPosition(-40, -95)
     self.stone_slot:SetSize(66, 66)
     self.stone_slot:SetClickable(false)
-    self.magic_label = Label(self.root, "Bùa Giữ Cấp", -250, -160, 19, BLUE)
-    self.protect_label = Label(self.root, "Bùa Bảo Vệ", -145, -160, 19, BLUE)
-    self.stone_label = Label(self.root, "Đá Cường Hóa", -40, -160, 19, BLUE)
+    self.magic_label = Label(self.root, "Bùa Giữ Cấp", -250, -152, 19, BLUE)
+    self.protect_label = Label(self.root, "Bùa Bảo Vệ", -145, -152, 19, BLUE)
+    self.stone_label = Label(self.root, "Huyền Tinh\nCực Phẩm", -40, -148, 15, BLUE)
 
     self.level_label = Label(self.root, "Cấp", -2, 68, 19)
     self.level_current = Label(self.root, "—", 124, 68, 22)
@@ -80,7 +81,7 @@ local ForgeUI = Class(Widget, function(self, owner, container)
     Label(self.root, "CHỈ SỐ", -2, 111, 19, BLUE)
     Label(self.root, "HIỆN TẠI", 124, 111, 19, BLUE)
     Label(self.root, "SAU CƯỜNG HÓA", 256, 111, 19, BLUE)
-    self.material = Label(self.root, "Đá Cường Hóa: —", 126, -12, 19, BLUE)
+    self.material = Label(self.root, "Huyền Tinh Cực Phẩm: —", 126, -12, 19, BLUE)
     self.luck = Label(self.root, "Phúc Lạc Dược: không dùng", 126, -43, 19, BLUE)
     self.chance = Label(self.root, "Tỷ lệ thành công: —", 126, -74, 19)
     self.risk = Label(self.root, "", 126, -102, 15, MUTED)
@@ -138,8 +139,8 @@ function ForgeUI:Refresh()
         and (string.format("%.1f", tonumber(current)) .. suffix) or "—")
     self.stat_next:SetString(tonumber(next_value) ~= nil
         and (string.format("%.1f", tonumber(next_value)) .. suffix) or "—")
-    self.material:SetString(self.can_strengthen and ("Đá Cường Hóa cần: " .. cost)
-        or "Đá Cường Hóa cần: —")
+    self.material:SetString(self.can_strengthen and ("Huyền Tinh Cực Phẩm cần: " .. cost)
+        or "Huyền Tinh Cực Phẩm cần: —")
     local bonus = tonumber(luck) or 0
     local luck_name = bonus >= 24.5 and "III" or bonus >= 14.5 and "II"
         or bonus >= 4.5 and "I" or nil
@@ -158,8 +159,13 @@ end
 
 function ForgeUI:Submit(operation)
     if operation ~= "strengthen" or not self.can_strengthen then return end
-    local rpc = MOD_RPC.ThanKhiTuTien and MOD_RPC.ThanKhiTuTien.forge_use
-    if rpc ~= nil then SendModRPCToServer(rpc, self.container, operation) end
+    local namespace = MOD_RPC ~= nil and MOD_RPC[self.rpc_namespace] or nil
+    local rpc = namespace ~= nil and namespace.forge_use or nil
+    if rpc ~= nil then
+        SendModRPCToServer(rpc, self.container, operation)
+    elseif self.risk ~= nil then
+        self.risk:SetString("Không tìm thấy lệnh cường hóa; hãy tải lại world")
+    end
 end
 
 return ForgeUI

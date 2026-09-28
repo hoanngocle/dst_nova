@@ -34,8 +34,9 @@ function M.MonsterMultipliers(kind, days)
         boss = { 1.75, 1.35 },
     }
     local row = scale[kind] or scale.common
-    local capped_days = math.min(math.max(days or 0, 0), 100)
-    return M.BaseHealthMultiplier(kind) * (row[1] + capped_days * 0.02), row[2] + capped_days * 0.0025
+    local capped_days = math.min(math.max(days or 0, 0), 200)
+    return M.BaseHealthMultiplier(kind) * (row[1] + capped_days * 0.01),
+        row[2] + (2 - row[2]) * capped_days / 200
 end
 
 function M.RollLoot(kind, rng)
@@ -60,22 +61,42 @@ function M.RollLoot(kind, rng)
         end
     end
 
-    local enhancement_count = 0
-    if kind == "common" then
-        if rng() < 0.01 then enhancement_count = 1 end
-    elseif kind == "elite" then
-        if rng() < 0.5 then
-            enhancement_count = rng() < 0.6 and 1 or 2
-        end
-    elseif kind == "boss" then
+    local crystal_chance = kind == "boss" and 1 or kind == "elite" and 0.5
+        or kind == "common" and 0.05 or 0
+    if rng() < crystal_chance then
         local roll = rng()
-        enhancement_count = roll < 0.6 and 2
-            or roll < 0.8 and 3
-            or roll < 0.9 and 4
-            or roll < 0.99 and 5 or 10
-    end
-    for _ = 1, enhancement_count do
-        result[#result + 1] = "wb_enhancegem"
+        local prefab, count
+        if kind == "common" then
+            prefab = roll < 0.8 and "ttk_huyen_tinh_ha_pham" or "ttk_huyen_tinh_trung_pham"
+            count = 1
+        elseif kind == "elite" then
+            if roll < 0.5 then
+                prefab, count = "ttk_huyen_tinh_ha_pham", 2
+            elseif roll < 0.85 then
+                prefab, count = "ttk_huyen_tinh_ha_pham", 3
+            elseif roll < 0.95 then
+                prefab, count = "ttk_huyen_tinh_trung_pham", 1
+            else
+                prefab, count = "ttk_huyen_tinh_trung_pham", 2
+            end
+        else -- boss: the reward percentages total 100%.
+            if roll < 0.25 then
+                prefab, count = "ttk_huyen_tinh_ha_pham", 3
+            elseif roll < 0.5 then
+                prefab, count = "ttk_huyen_tinh_trung_pham", 1
+            elseif roll < 0.75 then
+                prefab, count = "ttk_huyen_tinh_trung_pham", 2
+            elseif roll < 0.85 then
+                prefab, count = "ttk_huyen_tinh_trung_pham", 3
+            elseif roll < 0.95 then
+                prefab, count = "ttk_huyen_tinh_thuong_pham", 1
+            else
+                prefab, count = "ttk_huyen_tinh_thuong_pham", 2
+            end
+        end
+        for _ = 1, count do
+            result[#result + 1] = prefab
+        end
     end
 
     if rng() < 0.15 then

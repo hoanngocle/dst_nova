@@ -59,7 +59,7 @@ local function SetFiniteImmune(state, finite, wanted)
     end
 end
 
-local function SetArmorImmune(state, armor, wanted)
+local function SetArmorImmune(state, armor, wanted, item)
     if armor == nil then return end
     -- DST subtracts armor condition in TakeDamage, not via the
     -- indestructible field. Keep the field untouched so saves stay clean.
@@ -68,6 +68,11 @@ local function SetArmorImmune(state, armor, wanted)
         state.original_armor_take_damage = original
         state.armor_wrapper = function(self, ...)
             if not state.armor_immune_active then return original(self, ...) end
+            local amount = select(1, ...)
+            if state.strengthen_immune and type(amount) == "number"
+                and item.PushEvent ~= nil then
+                item:PushEvent("armordamaged", amount)
+            end
         end
         armor.TakeDamage = state.armor_wrapper
     end
@@ -79,7 +84,7 @@ local function SetArmorImmune(state, armor, wanted)
     end
 end
 
-function M.Reconcile(item, entries)
+function M.Reconcile(item, entries, strengthen_immune)
     if item == nil then return end
     local components = item.components or {}
     local finite, armor = components.finiteuses, components.armor
@@ -91,7 +96,7 @@ function M.Reconcile(item, entries)
     end
     local finite_bonus, armor_bonus = 0, 0
     local regen_flat, regen_percent = 0, 0
-    local finite_immune, armor_immune = false, false
+    local finite_immune, armor_immune = strengthen_immune == true, strengthen_immune == true
     for _, entry in ipairs(entries or {}) do
         local row = Defs.by_code[entry.code or entry.id]
         if row ~= nil then
@@ -115,7 +120,8 @@ function M.Reconcile(item, entries)
     SetBonus(armor, "maxcondition", state.armor_bonus, armor_bonus)
     state.finite_bonus, state.armor_bonus = finite_bonus, armor_bonus
     SetFiniteImmune(state, finite, finite_immune)
-    SetArmorImmune(state, armor, armor_immune)
+    state.strengthen_immune = strengthen_immune == true
+    SetArmorImmune(state, armor, armor_immune, item)
     state.regen_flat, state.regen_percent = regen_flat, regen_percent
     if regen_flat + regen_percent > 0 and state.task == nil and item.DoPeriodicTask ~= nil then
         state.task = item:DoPeriodicTask(1, function() M.Tick(item, 1) end)

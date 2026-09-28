@@ -29,7 +29,19 @@ end)
 function Upgrade:GetKind()
     if self.inst.components.weapon ~= nil then return "weapon" end
     if self.inst.components.armor ~= nil then return "armor" end
+    local equippable = self.inst.components.equippable
+    local slot = equippable ~= nil and equippable.equipslot or nil
+    if EQUIPSLOTS ~= nil and (slot == EQUIPSLOTS.HEAD or slot == EQUIPSLOTS.BODY) then
+        return "equipment"
+    end
     return nil
+end
+
+function Upgrade:IsWeaponMilestone()
+    local equippable = self.inst.components.equippable
+    local slot = equippable ~= nil and equippable.equipslot or nil
+    return self:GetKind() == "weapon" and (EQUIPSLOTS == nil
+        or slot ~= EQUIPSLOTS.HEAD and slot ~= EQUIPSLOTS.BODY)
 end
 
 function Upgrade:GetStrengthenPreview()
@@ -111,7 +123,7 @@ end
 
 function Upgrade:GetCombatStats()
     local stats = { crit_rate = 0, crit_effect = 0, pierce = 0 }
-    if self:GetKind() == "weapon" and self.level >= 16 then
+    if self:IsWeaponMilestone() and self.level >= 16 then
         stats.crit_effect = 50
     end
     for _, affix in ipairs(self.affixes) do
@@ -157,6 +169,7 @@ function Upgrade:SetLevel(level)
     self.level = math.min(16, math.max(0, math.floor(level)))
     self:ApplyStats()
     StrengthenEffects.Sync(self.inst, self.level)
+    require("tbc_affix/coordinator").OnItemChanged(self.inst)
     return true
 end
 
@@ -250,6 +263,7 @@ function Upgrade:OnLoad(data)
         end
     end
     self:ApplyStats()
+    StrengthenEffects.Sync(self.inst, self.level)
     self:NotifyAffixesChanged()
 end
 

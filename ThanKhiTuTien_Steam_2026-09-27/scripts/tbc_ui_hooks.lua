@@ -1,6 +1,6 @@
 local M = {}
 
-function M.Install(add_class_post_construct)
+function M.Install(add_class_post_construct, rpc_namespace)
     add_class_post_construct("widgets/redux/craftingmenu_skinselector", function(self)
         if self.recipe ~= nil and self.recipe.name == "tbc_forge"
             and self.spinner ~= nil and self.spinner.fgimage ~= nil then
@@ -30,7 +30,10 @@ function M.Install(add_class_post_construct)
             widget.bganim:Hide()
             widget.bgimage:Hide()
             local owner = (...) or widget.owner or rawget(_G, "ThePlayer")
-            widget.tbc_ui = widget:AddChild(require(ui_path)(owner, container, widget))
+            local ui = require(ui_path)
+            widget.tbc_ui = widget:AddChild(container.prefab == "tbc_equipment_box"
+                and ui(owner, container, widget, false, rpc_namespace)
+                or ui(owner, container, widget, rpc_namespace))
             widget.tbc_ui:MoveToBack()
             widget.tbc_refresh = function()
                 if widget.tbc_ui ~= nil then widget.tbc_ui:Refresh() end

@@ -1,5 +1,9 @@
 local M = {}
 
+function M.SetRpcNamespace(namespace)
+    M.rpc_namespace = namespace
+end
+
 function M:IsHHType(value, expected)
     return type(value) == expected
 end
@@ -47,8 +51,8 @@ function M:HHClientRpc(inst, key, value)
     else
         error("tbc_equipment unsupported client value: " .. tostring(key))
     end
-    local rpc = CLIENT_MOD_RPC ~= nil and CLIENT_MOD_RPC.ThanKhiTuTien ~= nil
-        and CLIENT_MOD_RPC.ThanKhiTuTien.tbc_equipment_client_value or nil
+    local namespace = CLIENT_MOD_RPC ~= nil and CLIENT_MOD_RPC[self.rpc_namespace] or nil
+    local rpc = namespace ~= nil and namespace.tbc_equipment_client_value or nil
     if rpc ~= nil and SendModRPCToClient ~= nil and inst.userid ~= nil then
         SendModRPCToClient(rpc, inst.userid, key, value)
     end

@@ -2,6 +2,7 @@ local Durability = require("tbc_affix/durability")
 local Passives = require("tbc_affix/passives")
 local Immunity = require("tbc_affix/immunity")
 local Mana = require("tbc_affix/mana")
+local StrengthenArmor = require("tbc_strengthen_armor")
 local Defs = require("tbc_affix/defs")
 
 local M = {}
@@ -29,22 +30,33 @@ function M.Reconcile(player)
         and {} or EquippedItems(player)
     local current = {}
     local entries = {}
+    local strengthen = {body_health = 0, head_absorb = 0}
     for _, item in ipairs(equipped) do
         current[item] = true
         local own = {}
         local upgrade = item.components ~= nil and item.components.tbc_upgrade or nil
+        local slot = item.components ~= nil and item.components.equippable ~= nil
+            and item.components.equippable.equipslot or nil
+        local level = upgrade ~= nil and upgrade.level or 0
+        if slot == EQUIPSLOTS.BODY and level >= 16 then
+            strengthen.body_health = 500
+        elseif slot == EQUIPSLOTS.HEAD and level >= 16 then
+            strengthen.head_absorb = .5
+        end
         for _, affix in ipairs(upgrade ~= nil and upgrade.affixes or {}) do
             local entry = {source=item, code=affix.id, value=affix.value}
             own[#own + 1] = entry
             entries[#entries + 1] = entry
         end
-        Durability.Reconcile(item, own)
+        Durability.Reconcile(item, own, level >= 13
+            and (slot == EQUIPSLOTS.HEAD or slot == EQUIPSLOTS.BODY))
     end
     for item in pairs(player._tbc_affix_equipped or {}) do
         if not current[item] then Durability.Reconcile(item, {}) end
     end
     player._tbc_affix_equipped = current
-    Passives.Reconcile(player, entries)
+    Passives.Reconcile(player, entries, strengthen)
+    StrengthenArmor.Reconcile(player, equipped)
     Immunity.Reconcile(player, entries)
     local max_mana, mana_regen = 0, 0
     for _, entry in ipairs(entries) do
@@ -63,6 +75,7 @@ end
 
 function M.Clear(player)
     if player == nil then return end
+    StrengthenArmor.Reconcile(player, {})
     for item in pairs(player._tbc_affix_equipped or {}) do
         Durability.Reconcile(item, {})
     end

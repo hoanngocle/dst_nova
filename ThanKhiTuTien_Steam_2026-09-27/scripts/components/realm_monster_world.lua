@@ -17,11 +17,12 @@ function RealmMonsterWorld:SetMaxLevel(level)
 
     self.max_level = level
     for _, mob in pairs(Ents) do
-        if mob:IsValid() and mob.components ~= nil
-            and mob.components.xd_guaiwu_skills ~= nil then
-            if standalone_enabled then
+        if mob:IsValid() and mob.components ~= nil then
+            if standalone_enabled and mob.components.xd_guaiwu_skills ~= nil then
                 scaling.ApplyMonster(mob, level)
-            elseif mob._tbc_monster_kind ~= nil then
+            elseif not standalone_enabled and mob._tbc_monster_kind ~= nil
+                and (mob._tbc_monster_kind ~= "realm_only"
+                    or mob.components.xd_guaiwu_skills ~= nil) then
                 scaling.ApplyMonster(mob, mob._tbc_monster_kind,
                     mob._tbc_monster_days, level)
             end

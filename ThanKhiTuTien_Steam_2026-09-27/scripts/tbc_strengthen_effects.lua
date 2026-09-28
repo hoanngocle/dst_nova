@@ -41,7 +41,7 @@ function M.TrueDamage(level)
 end
 
 function M.OnHit(upgrade, attacker, target, damage, rng)
-    if upgrade == nil or upgrade:GetKind() ~= "weapon" or not Valid(target)
+    if upgrade == nil or not upgrade:IsWeaponMilestone() or not Valid(target)
         or type(damage) ~= "number" or damage <= 0 then return end
     local level = upgrade.level or 0
     if level < 3 then return end
@@ -143,6 +143,11 @@ end
 
 function M.Sync(item, level)
     if item == nil or item.components == nil or item.components.weapon == nil then return end
+    local equippable = item.components.equippable
+    local slot = equippable ~= nil and equippable.equipslot or nil
+    if EQUIPSLOTS ~= nil and (slot == EQUIPSLOTS.HEAD or slot == EQUIPSLOTS.BODY) then
+        return
+    end
     if level >= 9 and not item._tbc_strengthen_events_installed and item.ListenForEvent ~= nil then
         item._tbc_strengthen_events_installed = true
         item:ListenForEvent("equipped", function(inst, data)

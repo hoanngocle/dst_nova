@@ -33,11 +33,12 @@ local function Button(parent, title, x, y, width, action, art)
     return button
 end
 
-local UI = Class(Widget, function(self, owner, container, container_widget, embedded)
+local UI = Class(Widget, function(self, owner, container, container_widget, embedded, rpc_namespace)
     Widget._ctor(self, "Thuộc tính trang bị")
     self.owner, self.container = owner, container
     self.container_widget = container_widget
     self.embedded = embedded == true
+    self.rpc_namespace = rpc_namespace
     if not self.embedded then
         self.frame = self:AddChild(Image("images/ttk_forge/frame.xml", "frame.tex"))
         self.frame:SetSize(660, 500)
@@ -131,8 +132,17 @@ function UI:SwitchTab(name)
 end
 
 function UI:Submit(operation, arg)
-    local rpc = MOD_RPC.ThanKhiTuTien ~= nil and MOD_RPC.ThanKhiTuTien.tbc_equipment_use or nil
-    if rpc ~= nil then SendModRPCToServer(rpc, self.container, operation, arg) end
+    local namespace = MOD_RPC ~= nil and MOD_RPC[self.rpc_namespace] or nil
+    local rpc = namespace ~= nil and namespace.tbc_equipment_use or nil
+    if rpc == nil then
+        if self.notice ~= nil then self.notice:SetString("Không tìm thấy lệnh trang bị; hãy tải lại world") end
+        return
+    end
+    if arg ~= nil then
+        SendModRPCToServer(rpc, self.container, operation, arg)
+    else
+        SendModRPCToServer(rpc, self.container, operation)
+    end
 end
 
 function UI:Refresh()
@@ -149,7 +159,7 @@ function UI:Refresh()
     self.last_equipment_state = equipment_state
     self.affix_info:SetString(affix_item ~= nil and affix_item:GetDisplayName()
         or "Đặt trang bị vào ô")
-    local details = Display.Format(detail_state)
+    local details = Display.Format(detail_state, nil, affix_item)
     local solo_details = DetailHooks.FormatEquipmentState(equipment_state)
     if solo_details ~= "" then
         details = details ~= "" and details .. "\n" .. solo_details or solo_details

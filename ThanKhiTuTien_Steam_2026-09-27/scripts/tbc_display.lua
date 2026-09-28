@@ -9,6 +9,25 @@ local PURPLE = { .86, .70, .98, 1 }
 local YELLOW = { 1, .91, .55, 1 }
 local RED = { 1, .16, .16, 1 }
 
+local function Slot(item)
+    if item == nil then return nil end
+    local equippable = item.components ~= nil and item.components.equippable or nil
+    if equippable ~= nil then return equippable.equipslot end
+    equippable = item.replica ~= nil and item.replica.equippable or nil
+    if equippable ~= nil and equippable.EquipSlot ~= nil then
+        return equippable:EquipSlot()
+    end
+    if item.HasTag ~= nil then
+        if item:HasTag("equippable-head") then return EQUIPSLOTS.HEAD end
+        if item:HasTag("equippable-body") then return EQUIPSLOTS.BODY end
+        if item:HasTag("equippable-hands") then return EQUIPSLOTS.HANDS end
+    end
+end
+
+local function Tier(level)
+    return math.min(9, math.floor(math.min(level, 13) * 9 / 12))
+end
+
 function M.NameColour(level)
     level = tonumber(level) or 0
     if level >= 16 then return RED end
@@ -40,8 +59,12 @@ function M.Encode(upgrade)
     return tostring(upgrade.level) .. ";" .. table.concat(affixes, "|")
 end
 
-function M.Format(state, names)
+function M.Format(state, names, item)
     if state == nil or state == "" then return "" end
+    if item ~= nil then
+        local sections = M.SectionsFromState(state, item, names)
+        if sections[1] ~= nil then return sections[1].desc end
+    end
     local level, affix_ids = state:match("^(%d+);(.*)$")
     if level == nil then return "" end
     local lines = tonumber(level) > 0 and { "Cường hóa: +" .. level } or {}
@@ -67,14 +90,51 @@ function M.Sections(upgrade, names)
     if level == 0 and #affixes == 0 then return {} end
 
     local kind = upgrade.GetKind ~= nil and upgrade:GetKind() or nil
-    local bonus = level > 0 and (kind == "weapon" and ("Sát thương +" .. string.format("%g%%", level * 5))
+    local slot = Slot(upgrade.inst)
+    local armor_slot = EQUIPSLOTS ~= nil
+        and (slot == EQUIPSLOTS.HEAD or slot == EQUIPSLOTS.BODY)
+    local bonus = level > 0 and not armor_slot
+        and (kind == "weapon" and ("Sát thương +" .. string.format("%g%%", level * 5))
         or kind == "armor" and ("Giảm sát thương +" .. string.format("%g%%", level * 1.5)))
         or nil
     local sections = {}
 
     local lines = {"Cấp +" .. level .. "/16"
         .. (bonus ~= nil and (" | " .. bonus) or "")}
-    if kind == "weapon" then
+    if slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.HEAD) then
+        local tier = Tier(level)
+        if level >= 3 then
+            lines[#lines + 1] = "Nhập Định: giảm "
+                .. math.min(100, math.floor(math.min(level, 13) * 10 / 13) * 10) .. "% tiêu hao độ đói"
+        end
+        if level >= 5 then
+            local aura = {.05, .1, .15, .25, .4, .55, .7, .85, 1}
+            lines[#lines + 1] = "Hoá Thần: đảo ngược hào quang tinh thần tiêu cực ("
+                .. string.format("%g%%", aura[tier] * 100) .. " hiệu lực mũ Hive Hat)"
+        end
+        if level >= 9 then lines[#lines + 1] = "Kim Quang: phát sáng phạm vi lớn" end
+        if level >= 11 then lines[#lines + 1] = "Huyết Chú: hồi đầy máu khi dưới 30% máu" end
+        if level >= 13 then lines[#lines + 1] = "Bất Diệt: không hao độ bền; có cơ hội hồi máu khi giáp đỡ đòn" end
+        if level >= 16 then lines[#lines + 1] = "Giảm 50% sát thương nhận vào khi đội" end
+    elseif slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.BODY) then
+        local tier = Tier(level)
+        if level >= 3 then
+            local speed = math.floor((1 + (1 + math.min(level, 13)) / (34 + math.min(level, 13))) * 100) / 100
+            lines[#lines + 1] = "Lưu Vân: tốc độ di chuyển x" .. string.format("%.2f", speed)
+        end
+        if level >= 5 then
+            local pushback = {3, 5, 8, 12, 20, 30, 40, 50, 60}
+            lines[#lines + 1] = "Hồi Phong: " .. pushback[tier] .. "% đẩy lùi khi bị đánh"
+        end
+        if level >= 7 then
+            local reflect = {5, 10, 15, 20, 30, 40, 60, 80, 100}
+            lines[#lines + 1] = "Phản Chấn: phản " .. reflect[tier] .. "% sát thương giáp hấp thụ"
+        end
+        if level >= 9 then lines[#lines + 1] = "Ngạo Tuyết: kháng lửa và miễn nhiễm mưa axit" end
+        if level >= 11 then lines[#lines + 1] = "Vô Ngã: chống hất ngã" end
+        if level >= 13 then lines[#lines + 1] = "Bất Diệt: không hao độ bền; có cơ hội hồi máu khi giáp đỡ đòn" end
+        if level >= 16 then lines[#lines + 1] = "+500 máu tối đa khi mặc" end
+    elseif kind == "weapon" then
         if level >= 3 then lines[#lines + 1] = "Bộc Liệt: sát thương lan" end
         if level >= 5 then lines[#lines + 1] = "Bạo Vũ: thêm sát thương khi đánh" end
         if level >= 9 then lines[#lines + 1] = "Ngự Lôi: miễn nhiễm sát thương điện" end
@@ -107,7 +167,7 @@ function M.SectionsFromState(state, item, names)
     local level, affix_ids = state:match("^(%d+);(.*)$")
     if level == nil then return {} end
 
-    local upgrade = {level = tonumber(level), affixes = {}}
+    local upgrade = {inst = item, level = tonumber(level), affixes = {}}
     local kind = nil
     if item ~= nil and item.HasTag ~= nil then
         if item:HasTag("weapon") then kind = "weapon"
