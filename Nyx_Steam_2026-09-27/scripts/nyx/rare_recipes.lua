@@ -29,8 +29,7 @@ function M.Register(api)
             api.AddCharacterRecipe(alias, {
                 G.Ingredient(boss, 1),
                 G.Ingredient('xd_lingshi3', stones, 'images/inventoryimages/xd_lingshi3.xml', nil, 'xd_lingshi3.tex'),
-                G.Ingredient('ttk_huyen_tinh_thuong_pham', crystals,
-                    'images/inventoryimages/ttk_huyen_tinh_thuong_pham.xml', nil, 'ttk_huyen_tinh_thuong_pham.tex'),
+                G.Ingredient('ttk_huyen_tinh_thuong_pham', crystals),
                 G.Ingredient(gem, gems),
             }, G.TECH.NONE, {
                 product = product,

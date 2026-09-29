@@ -26,6 +26,9 @@ local calls = {}
 local G = {
     AllRecipes={}, TECH={NONE={}}, STRINGS={NAMES={}, RECIPE_DESC={}},
     Ingredient=function(prefab, amount, atlas, _, image)
+        -- DST resolves an explicit atlas immediately. Thần Khí loads after Nyx.
+        assert(atlas ~= 'images/inventoryimages/ttk_huyen_tinh_thuong_pham.xml',
+            'crystal atlas is unavailable while Nyx registers recipes')
         return {prefab=prefab, amount=amount, atlas=atlas, image=image}
     end,
 }

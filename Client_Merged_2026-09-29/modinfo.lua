@@ -12,7 +12,7 @@ Chỉ cần cài phía Client.
 
 ]]
 author = "Nyx"
-version = "1.0.2"
+version = "1.0.3"
 api_version = 10
 api_version_dst = 10
 dst_compatible = true

@@ -19,13 +19,12 @@ NĂNG LỰC
 ★ Thuấn Ảnh: lướt gây 200 sát thương ở cấp 1, tăng 100 mỗi 10 cấp đến tối đa 1000 ở cấp 80–99, cấp 100 gây 1500; tốn 10 Linh Lực, hồi 15 giây.
 
 VŨ KHÍ KHỞI ĐẦU
-Khô Vinh Song Sinh và Vạn Linh Phiên (Tôn Hồn Phiên Cô Phẩm), nhận khi tạo nhân vật mới.
+Khô Vinh Song Sinh và Vạn Linh Phiên, nhận khi tạo nhân vật mới.
 
 YÊU CẦU: [Tu Tiên], Việt Hóa Tu Tiên
-CÔNG THỨC PHÁP BẢO CẦN: Thần Khí Tu Tiên (Huyền Tinh Thượng Phẩm)
 ]]
 author='Nyx'
-version='1.3.2'
+version='1.3.3'
 api_version=10
 dst_compatible=true
 all_clients_require_mod=true
