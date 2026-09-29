@@ -2,7 +2,7 @@ local P = {}
 function P.Finite(v) return type(v)=='number' and v==v and v>-math.huge and v<math.huge end
 function P.Radius(level)
     local steps = math.floor(math.max(0,level-10)/10)
-    return math.min(8,2+steps*0.5
+    return math.min(12,6+steps*0.5
         +(level>=50 and 0.5 or 0)
         +(level>=70 and 0.5 or 0)
         +(level>=100 and 0.5 or 0))

@@ -1,4 +1,6 @@
 local Router = require "nyx/input"
+local Net = require "nyx/skillnet"
+local Progression = require "nyx/progression"
 
 local function Atlas(definition)
     return definition.atlas or (GetInventoryItemAtlas ~= nil
@@ -33,9 +35,25 @@ local function ConfigureImmediate(book, skill)
     end
 end
 
+local function UpdateReticulePosition(book, pos, fx)
+    fx.Transform:SetPosition(pos.x, 0, pos.z)
+    if fx.prefab == "reticuleaoe_1_6" then
+        -- The native idle_1_6 reticule has a 1.6-unit radius.
+        local scale = (book._nyx_preview_radius or 1.6) / 1.6
+        fx.Transform:SetScale(scale, scale, scale)
+    end
+end
+
 local function ConfigurePointSkill(book, skill)
     local definition = Router.SKILLS[skill]
     book._nyx_selected_skill = skill
+    if skill == 'purple_gather' then
+        local owner = GetOwner(book)
+        local level = owner ~= nil and Net.Read(owner).level or 0
+        book._nyx_preview_radius = Progression.Radius(level)
+    else
+        book._nyx_preview_radius = nil
+    end
     book.components.spellbook:SetSpellName(definition.label)
     book.components.spellbook:SetSpellAction(nil)
     local targeting = book.components.aoetargeting
@@ -44,11 +62,13 @@ local function ConfigurePointSkill(book, skill)
     targeting:SetAllowRiding(false)
     targeting:SetDeployRadius(0)
     targeting:SetShouldRepeatCastFn(nil)
-    targeting.reticule.reticuleprefab = "reticuleaoesummontarget_1"
+    targeting.reticule.reticuleprefab = skill == 'purple_gather'
+        and "reticuleaoe_1_6" or "reticuleaoesummontarget_1"
     targeting.reticule.pingprefab = "reticuleaoeping"
     targeting.reticule.targetfn = ReticuleTargetAllowWater
     targeting.reticule.mousetargetfn = nil
-    targeting.reticule.updatepositionfn = nil
+    targeting.reticule.updatepositionfn = skill == 'purple_gather'
+        and UpdateReticulePosition or nil
     if TheWorld.ismastersim then
         targeting:SetTargetFX("reticuleaoesummontarget_1")
         book.components.aoespell:SetSpellFn(function(inst, doer, pos)
@@ -157,6 +177,7 @@ local function fn()
 end
 
 return Prefab("nyx_skillbook", fn, nil, {
+    "reticuleaoe_1_6",
     "reticuleaoesummontarget_1",
     "reticuleaoeping",
 })

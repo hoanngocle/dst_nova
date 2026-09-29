@@ -1,8 +1,5 @@
 local M = {}
-
--- Increase this value to move the Lạc Thần Hoa backpack farther left.
-local RIGHT_EDGE_PADDING = 25
-local SLOT_HALF_WIDTH = 38
+local HORIZONTAL_OFFSET = -70 -- Move Nyx's Hoa Ha panel left from its own default position.
 
 function M.Install(add_class_post_construct)
     add_class_post_construct('widgets/containerwidget', function(widget)
@@ -21,23 +18,8 @@ function M.Install(add_class_post_construct)
                 return result
             end
 
-            local right_edge = 0
-            local slotpos = config.slotposfn ~= nil
-                and config.slotposfn(container, doer) or config.slotpos
-            for _, slot in ipairs(slotpos or {}) do
-                right_edge = math.max(right_edge, slot.x + SLOT_HALF_WIDTH)
-            end
-
-            if self.bgimage ~= nil and self.bgimage.texture ~= nil then
-                local width = self.bgimage:GetSize()
-                right_edge = math.max(right_edge, width / 2)
-            end
-
             local pos = self:GetPosition()
-            local x = math.min(pos.x, -right_edge - RIGHT_EDGE_PADDING)
-            if x < pos.x then
-                self:SetPosition(x, pos.y, pos.z)
-            end
+            self:SetPosition(pos.x + HORIZONTAL_OFFSET, pos.y, pos.z)
 
             return result
         end

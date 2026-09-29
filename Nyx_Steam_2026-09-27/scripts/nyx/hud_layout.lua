@@ -8,23 +8,24 @@ local Layout = {}
 local TOGGLE_SIZE = 96
 local SKILL_ICON_SIZE = 58.08 * 1.2
 local ICON_GAP = 64 * 1.2
-local SKILL_ROW_Y = 8
-local UTILITY_ROW_Y = SKILL_ROW_Y - 94
+local SKILL_ROW_Y = 0
 local BADGE_X = -110
 local BADGE_Y = -150
-local PANEL_X = 75
-local ROW_Y = 190
+local PANEL_X = 0
+local ROW_Y = 175
+local SKIN_X = 85
+local SKIN_Y = 85
 
 local function Pack(...)
     return {n = select("#", ...), ...}
 end
 
 local function UpdateHUDScale(controls)
-    local root = controls.nyx_bottomleft_hud_root
-    if root == nil then return end
+    local root = controls.nyx_skill_hud_root
     local scale = TheFrontEnd ~= nil and TheFrontEnd.GetHUDScale ~= nil
         and TheFrontEnd:GetHUDScale() or 1
-    root:SetScale(scale)
+    if root ~= nil then root:SetScale(scale) end
+    if controls.nyx_skin_root ~= nil then controls.nyx_skin_root:SetScale(scale) end
 end
 
 local function TrackHUDScale(controls)
@@ -51,41 +52,55 @@ function Layout.ConfigurePanel(panel)
     if panel == nil then return end
 
     ConfigureButton(panel.collapse, TOGGLE_SIZE)
-    if panel.collapse ~= nil then panel.collapse:SetPosition(0, -2, 0) end
+    if panel.collapse ~= nil then panel.collapse:Hide() end
 
     for index, skill in ipairs(require('nyx/skilldefs').Order()) do
         local button = panel.icons ~= nil and panel.icons[skill] or nil
         ConfigureButton(button, SKILL_ICON_SIZE)
         if button ~= nil then
-            local d=require('nyx/skilldefs').Get(skill)
-            button:SetPosition(d.slot * ICON_GAP, d.row==1 and SKILL_ROW_Y or UTILITY_ROW_Y, 0)
+            button:SetPosition((index - 4.5) * ICON_GAP, SKILL_ROW_Y, 0)
             if button.label then button.label:SetPosition(0, -46, 0) end
         end
     end
 
     ConfigureButton(panel.appearance_button, SKILL_ICON_SIZE)
-    if panel.appearance_button then panel.appearance_button:SetPosition(0, UTILITY_ROW_Y, 0) end
 
     local tooltip = panel.skill_tooltip_text or panel.tooltip
-    if tooltip ~= nil then tooltip:SetPosition(190, 66, 0) end
+    if tooltip ~= nil then tooltip:SetPosition(0, 105, 0) end
+end
+
+local function PlaceAppearanceButton(controls, button)
+    if button == nil then return end
+    if controls.nyx_skin_root == nil then
+        local root = controls:AddChild(Widget("NyxSkinRoot"))
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+        root:SetMaxPropUpscale(MAX_HUD_SCALE)
+        root:SetHAnchor(ANCHOR_LEFT)
+        root:SetVAnchor(ANCHOR_BOTTOM)
+        root:SetPosition(SKIN_X, SKIN_Y, 0)
+        controls.nyx_skin_root = root
+    end
+    controls.nyx_skin_root:AddChild(button)
+    button:SetPosition(0, 0, 0)
+    UpdateHUDScale(controls)
 end
 
 local function GetOrCreateRoot(controls)
-    if controls.nyx_bottomleft_root == nil then
-        controls.nyx_bottomleft_root = controls:AddChild(Widget("NyxBottomLeftRoot"))
-        controls.nyx_bottomleft_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-        controls.nyx_bottomleft_root:SetMaxPropUpscale(MAX_HUD_SCALE)
-        controls.nyx_bottomleft_root:SetHAnchor(ANCHOR_LEFT)
-        controls.nyx_bottomleft_root:SetVAnchor(ANCHOR_BOTTOM)
-        controls.nyx_bottomleft_root:SetPosition(0, 0, 0)
+    if controls.nyx_skill_root == nil then
+        controls.nyx_skill_root = controls:AddChild(Widget("NyxSkillRoot"))
+        controls.nyx_skill_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+        controls.nyx_skill_root:SetMaxPropUpscale(MAX_HUD_SCALE)
+        controls.nyx_skill_root:SetHAnchor(ANCHOR_MIDDLE)
+        controls.nyx_skill_root:SetVAnchor(ANCHOR_BOTTOM)
+        controls.nyx_skill_root:SetPosition(0, 0, 0)
     end
-    if controls.nyx_bottomleft_hud_root == nil then
-        controls.nyx_bottomleft_hud_root = controls.nyx_bottomleft_root:AddChild(
-            Widget("NyxBottomLeftHUDRoot"))
+    if controls.nyx_skill_hud_root == nil then
+        controls.nyx_skill_hud_root = controls.nyx_skill_root:AddChild(
+            Widget("NyxSkillHUDRoot"))
     end
     TrackHUDScale(controls)
     UpdateHUDScale(controls)
-    return controls.nyx_bottomleft_hud_root
+    return controls.nyx_skill_hud_root
 end
 
 function Layout.Apply(controls)
@@ -103,6 +118,7 @@ function Layout.Apply(controls)
     root:AddChild(panel)
     panel:SetPosition(PANEL_X, ROW_Y, 0)
     Layout.ConfigurePanel(panel)
+    PlaceAppearanceButton(controls, panel.appearance_button)
     return true
 end
 

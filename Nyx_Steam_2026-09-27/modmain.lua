@@ -66,6 +66,7 @@ if #recipes_missing > 0 then
     print('[Nyx] Tu Tiên source recipes unavailable: '..table.concat(recipes_missing, ', '))
 end
 if not TheNet:IsDedicated() then
+    require('nyx/hotkeys').Install(TheInput,function() return TheFrontEnd end,function() return ThePlayer end)
     AddClassPostConstruct('widgets/hoverer',function(hoverer)
         local OnUpdate=hoverer.OnUpdate
         hoverer.OnUpdate=function(self,...)
@@ -87,10 +88,9 @@ if not TheNet:IsDedicated() then
         controls.nyx_skillpanel=controls:AddChild(Panel(controls.owner))
         local status=controls.status or controls.statusdisplays or controls
         controls.owner.nyx_resourcehud=status:AddChild(Resource(controls.owner))
-        require('nyx/hud_layout').Apply(controls)
         local button=controls.nyx_skillpanel:AddChild(ImageButton('images/nyx_skin_dress_icon.xml','nyx_skin_dress_icon.tex'))
         controls.nyx_skillpanel.appearance_button=button
-        require('nyx/hud_layout').ConfigurePanel(controls.nyx_skillpanel)
+        require('nyx/hud_layout').Apply(controls)
         button:SetHoverText('Trang phục')
         button:SetOnClick(function()
             TheFrontEnd:PushScreen(require('screens/nyx_skin_screen')(function(build) SendModRPCToServer(MOD_RPC.NYX.APPEARANCE,build) end))
