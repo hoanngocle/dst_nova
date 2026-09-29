@@ -1,5 +1,5 @@
 local M = {}
-local HORIZONTAL_OFFSET = 60 -- Move Nyx's Hoa Ha panel left from its own default position.
+local HORIZONTAL_OFFSET = 60 -- Shift Nyx's Hoa Ha panel from its own default position.
 
 function M.Install(add_class_post_construct)
     add_class_post_construct('widgets/containerwidget', function(widget)

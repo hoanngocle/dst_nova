@@ -2,10 +2,10 @@ local Router = require('nyx/input')
 
 local M = {}
 local bindings = {
-    {key = KEY_G, id = 'absolute_domain'},
+    {key = KEY_R, id = 'absolute_domain'},
     {key = KEY_T, id = 'triflame_fan'},
     {key = KEY_H, id = 'yellow_river'},
-    {key = KEY_R, id = 'purple_gather'},
+    {key = KEY_G, id = 'purple_gather'},
     {key = KEY_F1, id = 'purple_eye'},
     {key = KEY_F2, id = 'moon_wings'},
 }

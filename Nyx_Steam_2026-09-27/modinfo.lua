@@ -8,7 +8,7 @@ Máu: 125 | Đói: 125 | Tinh thần: 200 | Linh Lực: 60
 Tăng 7% sát thương và giảm 7% sát thương nhận từ hệ Bóng Tối, Mặt Trăng.
 
 NĂNG LỰC
-Phím kỹ năng: G (Lĩnh Vực), T (Tam Diễm), H (Hoàng Hà), R (Tụ Linh), F1 (Thần Nhãn), F2 (Nguyệt Dực).
+Phím kỹ năng: R (Lĩnh Vực), T (Tam Diễm), H (Hoàng Hà), G (Tụ Linh), F1 (Thần Nhãn), F2 (Nguyệt Dực).
 ★ Tuyệt Đối Lĩnh Vực:  Tốn 30 Linh Lực, hồi chiêu 20 giây.
 ★ Tam Diễm Phiến: 5 luồng lửa hình quạt và hỏa diễm tỏa quanh người; mở ở Trúc Cơ Tiền Kỳ. Tốn 40 Linh Lực, hồi 30 giây.
 ★ Cửu Khúc Hoàng Hà Trận: dựng trận quanh người, gây sát thương, làm chậm và hồi máu theo bản gốc Vân Tiêu; mở ở Trúc Cơ Hậu Kỳ. Tốn 40 Linh Lực, hồi 40 giây.
@@ -25,7 +25,7 @@ Khô Vinh Song Sinh và Vạn Linh Phiên, nhận khi tạo nhân vật mới.
 YÊU CẦU: [Tu Tiên], Việt Hóa Tu Tiên
 ]]
 author='Nyx'
-version='1.4.2'
+version='1.4.3'
 api_version=10
 dst_compatible=true
 all_clients_require_mod=true

@@ -1,7 +1,7 @@
 -- Use the same cooldown list as Tu Tien characters (widgets/xd_skilltimer).
 -- Read the replicated server cooldown so reconnects also restore the display.
 local M = {}
-local NAME = 'Hồi chiêu Thuấn Ảnh'
+local NAME = 'Thuấn Ảnh'
 function M.Update(owner, snapshot)
     local controls = owner and owner.HUD and owner.HUD.controls
     local timer = controls and controls.xd_skilltimer

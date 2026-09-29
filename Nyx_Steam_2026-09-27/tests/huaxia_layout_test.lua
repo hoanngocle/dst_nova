@@ -26,11 +26,11 @@ local container = {
 }
 
 assert(widget:Open(container, {prefab = 'nyx'}) == 'opened')
-assert(widget.x == -120 and widget.y == 12 and widget.z == 3,
-    'Nyx Huaxia panel should move left from its own position and preserve Y/Z')
+assert(widget.x == 10 and widget.y == 12 and widget.z == 3,
+    'Nyx Huaxia panel should use its current offset and preserve Y/Z')
 assert(config.pos.x == -50, 'shared container config must not change')
 
 assert(widget:Open(container, {prefab = 'wilson'}) == 'opened')
 assert(widget.x == -50, 'other characters should retain the container position')
 
-print('Huaxia panel shifts left only for Nyx')
+print('Huaxia panel offset applies only to Nyx')

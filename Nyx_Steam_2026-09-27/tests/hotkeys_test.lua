@@ -46,8 +46,8 @@ assert(count_handlers == 6, 'only G, T, H, R, F1 and F2 should be registered')
 for _, key in ipairs({KEY_1, KEY_2, KEY_3, KEY_4, KEY_5}) do
     assert(handlers[key] == nil, 'combat skills must not register number keys')
 end
-for _, binding in ipairs({{KEY_G, 'absolute_domain'}, {KEY_T, 'triflame_fan'},
-    {KEY_H, 'yellow_river'}, {KEY_R, 'purple_gather'}, {KEY_F1, 'purple_eye'},
+for _, binding in ipairs({{KEY_R, 'absolute_domain'}, {KEY_T, 'triflame_fan'},
+    {KEY_H, 'yellow_river'}, {KEY_G, 'purple_gather'}, {KEY_F1, 'purple_eye'},
     {KEY_F2, 'moon_wings'}}) do
     handlers[binding[1]]()
     assert(activated[#activated] == binding[2], 'utility shortcut must activate the matching skill')
