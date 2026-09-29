@@ -50,6 +50,7 @@ local function new_fixture()
         CONTROL_FORCE_STACK = 1,
         rawget = rawget,
         KEY_H = 104,
+        KEY_BACKSLASH = 92,
     }
     local callback
     local configs = {
@@ -90,7 +91,8 @@ end
 local function test_restores_picked_origin_after_placer_removal()
     local f = new_fixture()
     f.controller:OnUpdate(0)
-    f.key_up[104]() -- Control+H picks the grid origin.
+    assert(f.key_up[104] == nil, 'legacy H must not remain bound')
+    f.key_up[92]() -- Control+backslash picks the grid origin.
     local old_origin = f.spawned[10]
     assert(old_origin.position.x == 8.5)
     old_origin.valid = false
@@ -110,13 +112,14 @@ local function test_replaces_removed_placer_before_positioning()
     assert(f.spawned[#f.spawned].position ~= nil, "the replacement must receive a position")
 end
 
-local function test_hides_cursor_icon_only_while_dropping()
+local function test_keeps_cursor_icon_visible_while_dropping()
     local f = new_fixture()
     f.controller:OnUpdate(0)
-    assert(f.icon.visible == false, "active drop item should not cover the drop point")
+    assert(f.icon.visible == true, "active drop item should remain visible on the cursor")
+    assert(f.invbar.hidden == nil, "Geometric Drop should not change cursor visibility")
     f.set_active_item(nil)
     f.controller:OnUpdate(0)
-    assert(f.icon.visible == true, "cursor icon should be restored after dropping")
+    assert(f.icon.visible == true, "cursor icon should stay visible after dropping")
 end
 
 local function test_does_not_override_placement_cursor_visibility()
@@ -129,6 +132,6 @@ end
 
 test_replaces_removed_placer_before_positioning()
 test_restores_picked_origin_after_placer_removal()
-test_hides_cursor_icon_only_while_dropping()
+test_keeps_cursor_icon_visible_while_dropping()
 test_does_not_override_placement_cursor_visibility()
 print("geometric_drop_test: passed")

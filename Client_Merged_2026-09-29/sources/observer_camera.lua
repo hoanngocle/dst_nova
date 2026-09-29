@@ -309,6 +309,7 @@ local OBC_FUNCTION_KEY_3 = GetModConfigData("OBC_FUNCTION_KEY_3")
 local OBC_SWITCH_KEY_1 = GetModConfigData("OBC_SWITCH_KEY_1")
 local OBC_SWITCH_KEY_2 = GetModConfigData("OBC_SWITCH_KEY_2")
 local OBC_RESET_KEY = GetModConfigData("OBC_RESET_KEY")
+if OBC_RESET_KEY == 114 then OBC_RESET_KEY = 108 end -- Move saved R default to L.
 local OBC_FOV_PLUS_KEY = GetModConfigData("OBC_FOV_PLUS_KEY")
 local OBC_FOV_MINUS_KEY = GetModConfigData("OBC_FOV_MINUS_KEY")
 local OBC_FOV_PLUS_MORE_KEY = GetModConfigData("OBC_FOV_PLUS_MORE_KEY")

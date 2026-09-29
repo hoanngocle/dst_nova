@@ -12,8 +12,10 @@ One client-only mod combining these locally installed Steam Workshop versions:
 
 The five upstream `modmain.lua` files live in `sources/`; their required
 `scripts/`, `images/` and `anim/` files share the mod root. `modinfo.lua`
-keeps their configuration keys, values and defaults, with Vietnamese labels
-for the main controls and sections.
+keeps the other mods' configuration controls, with Vietnamese labels for the
+main sections. Extended Map Icons has no menu options; its icons use the
+upstream defaults (icons enabled, structure and item persistence enabled,
+creature and boss persistence disabled).
 
 The mod icon uses the supplied scroll artwork. `modicon_source.png` preserves
 the original image; `modicon.png` is its square preview, and `modicon.tex` with
@@ -21,9 +23,9 @@ the original image; `modicon.png` is its square preview, and `modicon.tex` with
 
 ## Changes to Geometric Drop
 
-- Hides the held item's cursor image while grid or circle dropping is active.
-  The quantity remains visible. Building or placing an item uses Geometric
-  Placement's own cursor setting.
+- Keeps the held item's cursor image visible while grid or circle dropping is
+  active. Building or placing an item still uses Geometric Placement's own
+  cursor setting.
 - Checks each circle placer before moving it and recreates a removed placer.
   This covers the invalid-entity `SetPosition` path reported at line 271 of
   Geometric Drop 1.4.8.
@@ -40,6 +42,6 @@ screen as needed.
 
 From this directory, run `lua tests/geometric_drop_test.lua` and
 `lua tests/merge_test.lua`. These cover the removed-placer path, cursor
-visibility, and preservation of the five source registrations and settings.
+visibility, the five source registrations, and the hidden map icon settings.
 An actual game session is still needed to verify visual behavior and native
 engine stability.

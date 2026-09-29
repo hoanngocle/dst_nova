@@ -30,7 +30,7 @@ assert(xml:find('Texture filename="modicon.tex"', 1, true))
 local texture = assert(io.open(info.icon, "rb"))
 assert(texture:read(4) == "KTEX", "icon must be a DST texture")
 texture:close()
-assert(#info.configuration_options == 260, "five feature headings plus all upstream options are required")
+assert(#info.configuration_options == 63, "map icon settings should be hidden from the menu")
 local names = {}
 local headings = {}
 for _, option in ipairs(info.configuration_options) do
@@ -41,12 +41,16 @@ for _, option in ipairs(info.configuration_options) do
         names[option.name] = option
     end
 end
-for _, key in ipairs({ "UI_DISPLAY", "OBC_INITIAL_VIEW_MODE", "chester_eyebone", "DEFAULT_MODE", "HIDECURSOR" }) do
+for _, key in ipairs({ "UI_DISPLAY", "OBC_INITIAL_VIEW_MODE", "DEFAULT_MODE", "HIDECURSOR" }) do
     assert(names[key], "missing configuration option: " .. key)
 end
-for _, title in ipairs({ "Tự động đi bộ", "Camera quan sát", "Biểu tượng bản đồ", "Thả vật phẩm theo lưới", "Đặt công trình theo lưới" }) do
+for _, key in ipairs({ "chester_eyebone", "creature_persistent_icons", "persistent_icons", "flower" }) do
+    assert(not names[key], "map icon setting should be hidden: " .. key)
+end
+for _, title in ipairs({ "Tự động đi bộ", "Camera quan sát", "Thả vật phẩm theo lưới", "Đặt công trình theo lưới" }) do
     assert(headings[title], "missing Vietnamese section: " .. title)
 end
+assert(not headings["Biểu tượng bản đồ"], "map icon section should be hidden")
 assert(names.DEFAULT_MODE.label == "Chế độ thả vật phẩm")
 assert(names.HIDECURSOR.label == "Ẩn hình vật phẩm trên chuột")
 print("merge_test: passed")

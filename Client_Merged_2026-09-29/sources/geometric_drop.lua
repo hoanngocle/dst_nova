@@ -83,8 +83,16 @@ local function round(num)
     return math.floor(num + 0.5)
 end
 
+local legacy_keys = {
+    CYCLE_OFFSET_KEY = {KEY_T = "KEY_LEFTBRACKET"},
+    CYCLE_RESOLUTION_KEY = {KEY_G = "KEY_RIGHTBRACKET"},
+    TOGGLE_ENABLED_KEY = {KEY_H = "KEY_BACKSLASH"},
+}
+
 local function GetKeyConfig(config)
     local key = GetModConfigData(config, true)
+    local replacements = legacy_keys[config]
+    key = replacements and replacements[key] or key
     if type(key) == "string" and GLOBAL:rawget(key) then
         key = GLOBAL[key]
     end
@@ -95,7 +103,7 @@ local CYCLE_OFFSET_KEY = GetKeyConfig("CYCLE_OFFSET_KEY", "KEY_LEFTBRACKET")
 local CYCLE_RESOLUTION_KEY = GetKeyConfig("CYCLE_RESOLUTION_KEY", "KEY_RIGHTBRACKET")
 local RESTORE_DEFAULTS_KEY = GetKeyConfig("RESTORE_DEFAULTS_KEY", "KEY_EQUALS")
 local TOGGLE_PLACERS_KEY = GetKeyConfig("TOGGLE_PLACERS_KEY", "KEY_MINUS")
-local TOGGLE_ENABLED_KEY = GetKeyConfig("TOGGLE_ENABLED_KEY", "KEY_H")
+local TOGGLE_ENABLED_KEY = GetKeyConfig("TOGGLE_ENABLED_KEY", "KEY_BACKSLASH")
 local CYCLE_PLACEMENT_MODE_KEY = GetKeyConfig("CYCLE_PLACEMENT_MODE_KEY", "KEY_V")
 local PICK_POINT_KEY = GetKeyConfig("PICK_POINT_KEY", "KEY_C")
 
@@ -576,8 +584,6 @@ AddComponentPostInit("playercontroller", function(self)
     end
 
     local PlayerControllerOnUpdate = self.OnUpdate
-    local cursor_invbar
-    local cursor_hidden = false
     local function InGame()
         return ThePlayer and ThePlayer.HUD and not ThePlayer.HUD:HasInputFocus()
     end
@@ -589,20 +595,6 @@ AddComponentPostInit("playercontroller", function(self)
             local next_active_item = ThePlayer.replica.inventory:GetActiveItem()
             force_inspecting = TheInput:IsControlPressed(CONTROL_FORCE_INSPECT)
             mouse_target = TheInput:GetWorldEntityUnderMouse()
-            local invbar = ThePlayer.HUD and ThePlayer.HUD.controls and ThePlayer.HUD.controls.inv
-            if invbar ~= nil and invbar.SetHoverTileHideModifier ~= nil then
-                if invbar ~= cursor_invbar then
-                    cursor_invbar = invbar
-                    cursor_hidden = false
-                end
-                local should_hide =
-                    next_active_item ~= nil and InGame() and dropper ~= DefaultDropper
-                    and self.placer == nil and self.placer_recipe == nil
-                if should_hide ~= cursor_hidden then
-                    invbar:SetHoverTileHideModifier("geometric_drop", should_hide)
-                    cursor_hidden = should_hide
-                end
-            end
             if next_active_item and placersEnabled and not placersVisible then
                 dropper:ShowPlacers()
             elseif active_item and not next_active_item and placersVisible then
