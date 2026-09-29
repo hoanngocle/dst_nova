@@ -24,12 +24,12 @@ InstallPurpleFlameBuild("warg_mutated_breath_fx")
 InstallPurpleFlameBuild("warg_mutated_ember_fx")
 
 local descriptions = {
-    hh_daogam = "Ba vệt chém phụ, Tam Ảnh Trảm; nhấn R gọi Thiên Phạt Quỷ Vương.",
-    hh_daogam2 = "Kiếm kiêm khiên, gọi xúc tu; nhấn R đỡ đòn Hắc Ảnh.",
-    hh_daogam3 = "Đánh đôi phép thuật; nhấn R để bắn loạt phép.",
-    hh_daogam4 = "Thiêu đốt kẻ địch; nhấn R tạo Hỏa Ngục Tinh Vũ.",
-    hh_daogam5 = "Nhấn R để lướt tối đa ba lần liên tiếp.",
-    hh_daogam6 = "Nhấn R để đổi giữa kiếm, rìu, cúp, xẻng và cuốc.",
+    hh_daogam = "Ba vệt chém phụ, Tam Ảnh Trảm; nhấn K gọi Thiên Phạt Quỷ Vương.",
+    hh_daogam2 = "Kiếm kiêm khiên, gọi xúc tu; nhấn K đỡ đòn Hắc Ảnh.",
+    hh_daogam3 = "Đánh đôi phép thuật; nhấn K để bắn loạt phép.",
+    hh_daogam4 = "Thiêu đốt kẻ địch; nhấn K tạo Hỏa Ngục Tinh Vũ.",
+    hh_daogam5 = "Nhấn K để lướt tối đa ba lần liên tiếp.",
+    hh_daogam6 = "Nhấn K để đổi giữa kiếm, rìu, cúp, xẻng và cuốc.",
 }
 
 local recipes = {
@@ -63,7 +63,7 @@ for _, id in ipairs({"hh_daogam", "hh_daogam2", "hh_daogam3", "hh_daogam4", "hh_
     }, {"WEAPONS", "MAGIC"})
 end
 
--- Dispatch R through the same native parry state used by Solo Leveling.
+-- Dispatch K through the same native parry state used by Solo Leveling.
 local parry = G.Action({priority = 10, mount_valid = false})
 parry.id = "TBC_SOLO_PARRY_R"
 parry.str = "Đỡ đòn Hắc Ảnh"
@@ -127,7 +127,7 @@ AddModRPCHandler(modname, "tbc_solo_skill", function(player, x, z, target)
 end)
 
 if not G.TheNet:IsDedicated() then
-    G.TheInput:AddKeyDownHandler(G.KEY_R, function()
+    G.TheInput:AddKeyDownHandler(G.KEY_K, function()
         local player = G.ThePlayer
         local screen = G.TheFrontEnd:GetActiveScreen()
         if player == nil or player.replica == nil or player.replica.inventory == nil

@@ -7,7 +7,7 @@ Phiên Bản 1.1 - Thần Khí Tu Tiên
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.1.1"
+version = "1.1.2"
 api_version = 10
 dst_compatible = true
 all_clients_require_mod = true
