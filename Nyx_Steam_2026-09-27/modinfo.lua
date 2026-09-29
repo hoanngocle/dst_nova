@@ -25,7 +25,7 @@ Khô Vinh Song Sinh và Vạn Linh Phiên, nhận khi tạo nhân vật mới.
 YÊU CẦU: [Tu Tiên], Việt Hóa Tu Tiên
 ]]
 author='Nyx'
-version='1.4.1'
+version='1.4.2'
 api_version=10
 dst_compatible=true
 all_clients_require_mod=true

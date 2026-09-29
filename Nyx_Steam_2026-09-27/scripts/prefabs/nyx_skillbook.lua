@@ -38,8 +38,8 @@ end
 local function UpdateReticulePosition(book, pos, fx)
     fx.Transform:SetPosition(pos.x, 0, pos.z)
     if fx.prefab == "reticuleaoe_1_6" then
-        -- The native idle_1_6 reticule has a 1.6-unit radius.
-        local scale = (book._nyx_preview_radius or 1.6) / 1.6
+        -- idle_1_6 has a six-unit outer ring; the "1" is its inner marker.
+        local scale = (book._nyx_preview_radius or 6) / 6
         fx.Transform:SetScale(scale, scale, scale)
     end
 end

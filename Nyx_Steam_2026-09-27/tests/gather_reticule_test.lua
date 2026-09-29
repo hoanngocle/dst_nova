@@ -45,8 +45,14 @@ local fx = {prefab = 'reticuleaoe_1_6', Transform = {
     SetScale = function(_, x) fx_scale = x end,
 }}
 targeting.reticule.updatepositionfn(book, {x = 1, z = 2}, fx)
-assert(math.abs(fx_scale - require('nyx/progression').Radius(level) / 1.6) < 0.001,
+assert(math.abs(fx_scale - require('nyx/progression').Radius(level) / 6) < 0.001,
     'preview should match the gather effect radius at this level')
+
+level = 100
+spells[6].onselect(book)
+targeting.reticule.updatepositionfn(book, {x = 1, z = 2}, fx)
+assert(math.abs(fx_scale - 2) < 0.001,
+    'maximum gather radius should only double the native six-unit ring')
 
 spells[4].onselect(book) -- Tàn Dạ
 assert(targeting.reticule.reticuleprefab == 'reticuleaoesummontarget_1'
