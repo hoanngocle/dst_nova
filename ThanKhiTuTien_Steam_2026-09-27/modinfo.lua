@@ -1,13 +1,13 @@
 name = "Thần Khí Tu Tiên"
 description = [[
-󰀘󰀘 Phiên Bản 1.0 - Thần Khí Tu Tiên 󰀘󰀘
+Phiên Bản 1.1 - Thần Khí Tu Tiên
 
-󰀄 Trang bị, Kiếm và Ngọc thuộc tính
+★ Trang bị, Kiếm và Ngọc thuộc tính
 
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.0.1"
+version = "1.1.1"
 api_version = 10
 dst_compatible = true
 all_clients_require_mod = true

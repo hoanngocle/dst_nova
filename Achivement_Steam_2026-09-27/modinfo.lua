@@ -1,20 +1,19 @@
 name = "Thành Tựu Tu Tiên"
 author = "Nyx"
 description = [[
-󰀘󰀘 THÀNH TỰU TU TIÊN 󰀘󰀘
+Phiên bản 1.2 - Thành Tựu Tu Tiên
 
-󰀄 Thành tựu: hoàn thành thử thách sinh tồn, chiến đấu, chế tạo và lao động để nhận Sao.
-󰀄 Nhiệm vụ mùa: mỗi lượt có 6 nhiệm vụ và 4 rương thưởng; quà gồm Sao, EXP hoặc vật phẩm.
-󰀄 Cấp độ: tích lũy EXP từ các hoạt động, lên cấp để nhận điểm thuộc tính và 1 Sao.
-󰀄 Đặc quyền: dùng Sao mở các nâng cấp và tiện ích hỗ trợ hành trình tu tiên.
+★ Thành tựu: hoàn thành thử thách sinh tồn, chiến đấu, chế tạo và lao động để nhận Sao.
+★ Nhiệm vụ mùa: mỗi lượt có 6 nhiệm vụ và 4 rương thưởng; quà gồm Sao, EXP hoặc vật phẩm.
+★ Cấp độ: tích lũy EXP từ các hoạt động, lên cấp để nhận điểm thuộc tính và 1 Sao.
+★ Đặc quyền: dùng Sao mở các nâng cấp và tiện ích hỗ trợ hành trình tu tiên.
 
-Mở giao diện bằng nút Thành Tựu. Rê chuột lên nhiệm vụ món ăn để xem công thức gợi ý.
-Khởi đầu với 10 Sao.
+★ Khởi đầu với 10 Sao.
 Yêu cầu mod: [Tu Tiên]
 ]]
 
 server_filter_tags = {"chasni", "achievement"}
-version = "1.1.0"
+version = "1.2.0"
 priority = -1000
 mod_dependencies = { { workshop = "workshop-3721846643" } }
 forumthread = ""

@@ -61,6 +61,7 @@ require('nyx/unique_inventory').Install(env)
 require('nyx/unique_cloud').Install(env)
 if not TheNet:IsDedicated() then require('nyx/unique_map').Install(env) end
 local _, recipes_missing = require('nyx/recipes').Register(env)
+require('nyx/rare_recipes').Register(env)
 if #recipes_missing > 0 then
     print('[Nyx] Tu Tiên source recipes unavailable: '..table.concat(recipes_missing, ', '))
 end

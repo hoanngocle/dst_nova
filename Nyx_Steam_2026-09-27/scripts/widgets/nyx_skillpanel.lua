@@ -45,7 +45,7 @@ function Panel:OnUpdate()
         local info=d.cost..' Linh Lực · Hồi '..d.cooldown..' giây'
         if d.id=='purple_gather' then
             local nextlevel=P.NextRadiusLevel(s.level or 0)
-            info=info..'\nKỹ năng cấp '..((s.level or 0)<10 and 0 or P.Radius(s.level or 0)-7)..' · Bán kính '..P.Radius(s.level or 0)..(nextlevel and (' · tăng ở cấp '..nextlevel) or ' · tối đa')
+            info=info..'\nKỹ năng cấp '..math.floor(math.max(0,math.min(s.level or 0,100))/10)..' · Bán kính '..P.Radius(s.level or 0)..(nextlevel and (' · tăng ở cấp '..nextlevel) or ' · tối đa')
         elseif d.id=='moon_wings' then info=P.WingDrain(s.level or 0)..' Linh Lực/giây · Bấm để bật/tắt'
         elseif d.id=='purple_eye' then info=P.EyeDrain(s.level or 0)..' Linh Lực/giây · Bấm để bật/tắt' end
         self.skill_tooltip_text:SetString(d.name..' · '..gate..'\n'..(s.ready and info or s.reason or 'Đang nạp dữ liệu...'))
