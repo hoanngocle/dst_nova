@@ -1,10 +1,10 @@
 name = "Tiện Ích Tu Tiên"
 description = [[
-Phiên bản 1.4 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
+Phiên bản 1.4.1 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
 
 ★ Mở rộng túi đồ lên 45 ô
 ★ Xếp chồng vật phẩm tối đa 120
-★ Sắp xếp kho đồ bằng phím G
+★ Sắp xếp kho đồ bằng phím J
 ★ Cải tiến Máy Phóng Băng thông minh hơn
 ★ Cho phép mở quà ở bất cứ đâu
 ★ Ngăn Grass Gekko xuất hiện
@@ -15,7 +15,7 @@ Phiên bản 1.4 - Một cuốn bí lục tập hợp những kỹ năng hỗ tr
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.4.0"
+version = "1.4.1"
 
 api_version = 10
 dst_compatible = true
@@ -31,8 +31,20 @@ local yes_no = {
     {description = "Tắt", data = false},
 }
 local header_options = {{description = "", data = 0}}
+local backpack_categories = {
+    {description = "Nguyên liệu", data = "resources"},
+    {description = "Nguồn sáng", data = "light"},
+    {description = "Công cụ", data = "tools"},
+    {description = "Vũ khí", data = "weapons"},
+    {description = "Thức ăn", data = "food"},
+    {description = "Giáp", data = "armour"},
+    {description = "Đồ khác", data = "misc"},
+    {description = "Không ưu tiên", data = "none"},
+}
 
 configuration_options = {
+    {name = "ttk_backpack_category", label = "Auto Sort: ưu tiên vào túi",
+        options = backpack_categories, default = "resources"},
     {name = "happyflowers", label = "Hoa tăng tinh thần", options = yes_no, default = true},
     {name = "happybutterflys", label = "Bướm tăng tinh thần", options = yes_no, default = true},
     {name = "digreeds", label = "Đào cây sậy", options = yes_no, default = true},

@@ -6,7 +6,9 @@ modimport("main/ttk_qualityoflife.lua")
 modimport("main/ttk_smarter_flingomatic.lua")
 
 GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/ttk_inventorysort.lua")
-require("ttk_inventorysort").Install(env)
+require("ttk_inventorysort").Install(env, {
+    backpackCategory = GetModConfigData("ttk_backpack_category"),
+})
 
 modimport("main/ttk_inventory45.lua")
 modimport("main/ttk_inventory45_compat.lua")

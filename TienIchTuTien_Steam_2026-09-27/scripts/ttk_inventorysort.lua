@@ -1,8 +1,10 @@
 -- Adapted from DJPaul's Sort Inventory 1.9d, Paul Gibbs (DJPaul).
 -- CC BY-NC-SA 4.0; see licenses/DJPaul-Sort-Inventory-license.txt.
--- Each storage is sorted independently: never transfer items to another owner.
+-- Sort carried storage with the inventory, while nearby chests stay separate.
 local M = {}
 local resources = {}
+local categories = {light = 2, tools = 3, weapons = 4, food = 5,
+    armour = 6, resources = 7, misc = 8}
 for _, name in ipairs({"twigs", "nightmarefuel", "rope", "goldnugget", "boards",
     "silk", "papyrus", "cutgrass", "thulecite", "cutstone", "flint", "log",
     "livinglog", "pigskin", "thulecite_pieces", "rocks", "nitre"}) do
@@ -45,9 +47,19 @@ end
 
 local function eligible(c)
     return c.inst:IsValid() and not c.readonlycontainer and not c.usespecificslotsforitems
-        and c:GetNumSlots() > 1
+        and c:GetNumSlots() > (c.inst.prefab == "xd_luoshen_huaxia" and 0 or 1)
         and ((c.itemslots ~= nil and c.inst:HasTag("player"))
-            or (c.itemslots == nil and (c.type == "chest" or c.type == "pack")))
+            or (c.itemslots == nil and (c.type == "chest" or c.type == "pack"
+                or c.inst.prefab == "xd_luoshen_huaxia")))
+end
+
+local function before(a, b)
+    if a.group ~= b.group then return a.group < b.group end
+    local byname = a.group == 3 or a.group == 7 or a.group == 8
+    if byname and a.name ~= b.name then return a.name < b.name end
+    if a.value ~= b.value then return a.value > b.value end
+    if a.name ~= b.name then return a.name < b.name end
+    return a.slot < b.slot
 end
 
 local function sort(c, maxlights)
@@ -60,7 +72,8 @@ local function sort(c, maxlights)
     for slot = 1, c:GetNumSlots() do
         local item = slots[slot]
         local ii = item and item.components.inventoryitem
-        if item == nil or (ii ~= nil and not ii.islockedinslot) then
+        if item == nil or (ii ~= nil and not ii.islockedinslot
+            and not (item.prefab == "xd_luoshen_huaxia" and item.components.container)) then
             movable[#movable + 1] = slot
             if item then
                 local group, value, light = rank(item, hurt, lights, maxlights)
@@ -77,14 +90,7 @@ local function sort(c, maxlights)
             if not c:CanTakeItemInSlot(entry.item, slot) then return false end
         end
     end
-    table.sort(entries, function(a, b)
-        if a.group ~= b.group then return a.group < b.group end
-        local byname = a.group == 3 or a.group == 7 or a.group == 8
-        if byname and a.name ~= b.name then return a.name < b.name end
-        if a.value ~= b.value then return a.value > b.value end
-        if a.name ~= b.name then return a.name < b.name end
-        return a.slot < b.slot
-    end)
+    table.sort(entries, before)
 
     -- Stack in place using Klei's API (preserves skins, freshness and moisture).
     -- Consumed items remove themselves from the owner through OnRemoveEntity.
@@ -140,40 +146,173 @@ function M.Sort(c, maxlights)
     return result
 end
 
+local function findhuaxia(inv, player)
+    for inst in pairs(inv.opencontainers or {}) do
+        local container = inst.components.container
+        if inst.prefab == "xd_luoshen_huaxia" and container
+            and container:IsOpenedBy(player) then
+            return container
+        end
+    end
+    for slot = 1, inv:GetNumSlots() do
+        local item = inv.itemslots[slot]
+        if item and item.prefab == "xd_luoshen_huaxia" and item.components.container then
+            return item.components.container
+        end
+    end
+    for _, item in pairs(inv.equipslots or {}) do
+        if item and item.prefab == "xd_luoshen_huaxia" and item.components.container then
+            return item.components.container
+        end
+    end
+end
+
+-- Assign every movable item before touching either storage. The Hua Xia item
+-- itself and locked slots remain fixed; rejected placements abort the plan.
+local function sortplayerandpack(inv, pack, maxlights, preference)
+    if not eligible(inv) or not eligible(pack) or busy(inv) or busy(pack) then
+        return false
+    end
+    local storages = {inv, pack}
+    local movable = {{}, {}}
+    local entries = {}
+    local lights = 0
+    local health = inv.inst.components.health
+    local hurt = health ~= nil and health:GetPercent() <= 0.3
+    for index, c in ipairs(storages) do
+        local slots = c.itemslots or c.slots
+        for slot = 1, c:GetNumSlots() do
+            local item = slots[slot]
+            local ii = item and item.components.inventoryitem
+            if item == nil or (item ~= pack.inst and ii and not ii.islockedinslot) then
+                movable[index][#movable[index] + 1] = slot
+                if item then
+                    local group, value, light = rank(item, hurt, lights, maxlights)
+                    lights = lights + (light and 1 or 0)
+                    entries[#entries + 1] = {item = item, slot = slot, source = index,
+                        group = group, value = value,
+                        name = type(item.name) == "string" and item.name or item.prefab or ""}
+                end
+            end
+        end
+    end
+    table.sort(entries, before)
+
+    local planned = {{}, {}}
+    local function place(entry, index)
+        local stack = entry.item.components.stackable
+        if index == 2 and pack.acceptsstacks == false and stack
+            and stack:StackSize() > 1 then
+            return false
+        end
+        if index == 1 and entry.source == 2 and pack.infinitestacksize
+            and stack and stack:IsOverStacked() then
+            return false
+        end
+        for _, slot in ipairs(movable[index]) do
+            if planned[index][slot] == nil
+                and storages[index]:CanTakeItemInSlot(entry.item, slot) then
+                planned[index][slot] = entry.item
+                entry.destination = index
+                return true
+            end
+        end
+        return false
+    end
+    for _, entry in ipairs(entries) do
+        local preferred = entry.group == categories[preference] and 2 or 1
+        if not place(entry, preferred) and not place(entry, 3 - preferred) then
+            return nil -- No safe layout exists; leave both storages as they are.
+        end
+    end
+
+    local changed = {{}, {}}
+    for index, c in ipairs(storages) do
+        local slots = c.itemslots or c.slots
+        for _, slot in ipairs(movable[index]) do
+            if slots[slot] ~= planned[index][slot] then
+                changed[index][#changed[index] + 1] = {slot = slot, previous = slots[slot]}
+            end
+        end
+    end
+    for index, c in ipairs(storages) do
+        local slots = c.itemslots or c.slots
+        for _, change in ipairs(changed[index]) do
+            slots[change.slot] = planned[index][change.slot]
+        end
+    end
+    for index, c in ipairs(storages) do
+        for _, change in ipairs(changed[index]) do
+            if change.previous then
+                c.inst:PushEvent("itemlose", {slot = change.slot, prev_item = change.previous})
+            end
+        end
+    end
+    for _, entry in ipairs(entries) do
+        if entry.source ~= entry.destination then
+            local ii = entry.item.components.inventoryitem
+            local stack = entry.item.components.stackable
+            if stack and pack.infinitestacksize and entry.source == 2 then
+                stack:SetIgnoreMaxSize(false)
+            elseif stack and pack.infinitestacksize and entry.destination == 2 then
+                stack:SetIgnoreMaxSize(true)
+            end
+            ii:OnRemoved()
+            ii:OnPutInInventory(storages[entry.destination].inst)
+            if entry.destination == 1 and entry.item.components.equippable then
+                entry.item.components.equippable:ToPocket()
+            end
+        end
+    end
+    for index, c in ipairs(storages) do
+        for _, change in ipairs(changed[index]) do
+            local item = planned[index][change.slot]
+            if item then c.inst:PushEvent("itemget", {slot = change.slot, item = item}) end
+        end
+    end
+    return true
+end
+
 function M.Install(env, options)
     local G = env.GLOBAL
     if rawget(G, "TTK_INVENTORYSORT_INSTALLED") then return end
     rawset(G, "TTK_INVENTORYSORT_INSTALLED", true)
     options = options or {}
     local maxlights = tonumber(options.maxLights) or 2
-    local function sortplayer(player)
+    local preference = (options.backpackCategory == "none" or categories[options.backpackCategory])
+        and options.backpackCategory or "resources"
+    local function sortplayer(player, requested)
         if player == nil or not player:IsValid() or player:HasTag("playerghost") then return end
         local inv = player.components.inventory
         if inv == nil or inv.activeitem ~= nil then return end
         local now = G.GetTime()
         if player._ttk_lastsort and now - player._ttk_lastsort < 0.25 then return end
         player._ttk_lastsort = now
-        local backpack = inv:GetOverflowContainer()
-        if backpack == nil then
-            local equipped = inv:GetEquippedItem(G.EQUIPSLOTS.BACK)
-            backpack = equipped and equipped.components.container
-        end
-        local sorted = false
+        local overflow = inv:GetOverflowContainer()
+        local equipped = inv:GetEquippedItem(G.EQUIPSLOTS.BACK)
+        local backcontainer = equipped and equipped.components.container
+        local backpack = findhuaxia(inv, player) or backcontainer or overflow
+        local selected = (requested == "none" or categories[requested]) and requested or preference
         for inst in pairs(inv.opencontainers or {}) do
             local c = inst.components.container
-            if c and c ~= backpack and c.type ~= "pack" and c:IsOpenedBy(player) then
-                sorted = M.Sort(c, maxlights) or sorted
+            if c and c ~= backpack and c ~= overflow and c.type ~= "pack"
+                and c:IsOpenedBy(player) then
+                M.Sort(c, maxlights)
             end
         end
-        sorted = M.Sort(inv, maxlights) or sorted
-        sorted = M.Sort(backpack, maxlights) or sorted
-        if sorted and player.SoundEmitter then
-            player.SoundEmitter:PlaySound("dontstarve/creatures/perd/gobble")
+        local combined = backpack and sortplayerandpack(inv, backpack, maxlights, selected)
+        if backpack == nil or combined ~= nil then
+            M.Sort(inv, maxlights)
+            M.Sort(backpack, maxlights)
+        end
+        if overflow ~= backpack then M.Sort(overflow, maxlights) end
+        if backcontainer ~= backpack and backcontainer ~= overflow then
+            M.Sort(backcontainer, maxlights)
         end
     end
     env.AddModRPCHandler(env.modname, "ttk_sort_inventory", sortplayer)
     if not G.TheNet:IsDedicated() and G.TheInput then
-        G.TheInput:AddKeyDownHandler(tonumber(options.keybind) or G.KEY_G, function()
+        G.TheInput:AddKeyDownHandler(tonumber(options.keybind) or G.KEY_J, function()
             local screen = G.TheFrontEnd:GetActiveScreen()
             local player = G.ThePlayer
             if screen == nil or screen.name ~= "HUD" or player == nil
@@ -181,7 +320,7 @@ function M.Install(env, options)
             if G.TheWorld.ismastersim then
                 sortplayer(player)
             else
-                env.SendModRPCToServer(env.MOD_RPC[env.modname].ttk_sort_inventory)
+                env.SendModRPCToServer(env.MOD_RPC[env.modname].ttk_sort_inventory, preference)
             end
         end)
     end
