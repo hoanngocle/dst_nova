@@ -1,0 +1,468 @@
+{
+  "source": "Solo Leveling",
+  "version": "2.2.7",
+  "author": "Saikuno",
+  "files": [
+    {
+      "source": "modworldgenmain.lua",
+      "target": "scripts/hn_dungeon/worldgen.lua",
+      "sha256": "6c1ce292769cbedad4a07b360c2beeb9def21e77b6684f843e98160ac50dc147"
+    },
+    {
+      "source": "scripts/dungeon_blueprints.lua",
+      "target": "scripts/hn_dungeon/blueprints.lua",
+      "sha256": "88415bd795613367b2b810a64900508edcaae36fe10b7aef01d25f395bc8946f"
+    },
+    {
+      "source": "scripts/lib/base64.lua",
+      "target": "scripts/hn_dungeon/base64.lua",
+      "sha256": "f73cd985fb5b7cf26b4c43a84285193a1335fd28c0577cd05fe5acb8bbbf7211"
+    },
+    {
+      "source": "scripts/utils/hh_dungeon_authority.lua",
+      "target": "scripts/hn_dungeon/authority.lua",
+      "sha256": "fee4618e7a25a692ea3c124bafd127d96ed08cb7af19982e1257c90ae678f358"
+    },
+    {
+      "source": "scripts/prefabs/dungeon_wall_ruins.lua",
+      "target": "scripts/prefabs/hn_dungeon_wall.lua",
+      "sha256": "7cad603ff618656ce422e71801f2b9b86f0751e5ffe073066a6ec993707effa5"
+    },
+    {
+      "source": "anim/wall.zip",
+      "target": "anim/wall.zip",
+      "sha256": "7349d4478668b4ebc24b24b4c9fdaeb00af238de1630b327c71aa3ae9b15373b"
+    },
+    {
+      "source": "anim/wall_ruins_2.zip",
+      "target": "anim/wall_ruins_2.zip",
+      "sha256": "6915fc93a628550b2277a08f65b5496382551e0d6b96eb586a4db6b461bce809"
+    },
+    {
+      "source": "scripts/prefabs/dungeon_exit.lua",
+      "target": "scripts/prefabs/hn_dungeon_exit.lua",
+      "sha256": "bd9dca785c8d4957b6ca8a9375835fc734bb235fcb13d8f9f5dfaed74d065220"
+    },
+    {
+      "source": "anim/monkey_island_portal1.zip",
+      "target": "anim/monkey_island_portal1.zip",
+      "sha256": "aef7b520b494df86f2ab16f17834256aa87f65eb124ab3827fd289081778ebf1"
+    },
+    {
+      "source": "anim/monkey_island_portal2.zip",
+      "target": "anim/monkey_island_portal2.zip",
+      "sha256": "1534ef8d2c6c21a316a613f0fa4798aa3031d7a1e6d2a8ccb011eb8da13746c1"
+    },
+    {
+      "source": "anim/monkey_island_portal3.zip",
+      "target": "anim/monkey_island_portal3.zip",
+      "sha256": "8d3ffd2daf52edbf2f01acd3e6857b44a9e7b22ccb954b696833a841406f0538"
+    },
+    {
+      "source": "anim/monkey_island_portal_fx.zip",
+      "target": "anim/monkey_island_portal_fx.zip",
+      "sha256": "5f5417b95330dd59da37f82fee84a9abd25a918c4876e21d15dbd2256e7d774a"
+    },
+    {
+      "source": "scripts/prefabs/hh_arena_lava_pond.lua",
+      "target": "scripts/prefabs/hn_arena_lava_pond.lua",
+      "sha256": "a27b1a3f6aec68fac43f572dc3933ada661da36b3434808189c7da55a6a12c81"
+    },
+    {
+      "source": "scripts/prefabs/hh_decor_skeletons.lua",
+      "target": "scripts/prefabs/hn_arena_decor.lua",
+      "sha256": "c5d2daa0c3ce00865c719c5b2d6866555a69abe77c55ba73782fc36e0280d83a"
+    },
+    {
+      "source": "main/hh_sg.lua",
+      "target": "main/hn_player_states.lua",
+      "sha256": "a16291c9718eb3e76b7b06e506230f4e5ea31a5142b88544c99399b0c1fb7327"
+    },
+    {
+      "source": "scripts/prefabs/dungeon_gate.lua",
+      "target": "scripts/prefabs/hn_dungeon_gate.lua",
+      "sha256": "a473ff3ed30f841ae1560ecf291bcb9810a625909011c802e8593852ac8be37c"
+    },
+    {
+      "source": "anim/monkey_island_portal1.zip",
+      "target": "anim/monkey_island_portal1.zip",
+      "sha256": "aef7b520b494df86f2ab16f17834256aa87f65eb124ab3827fd289081778ebf1"
+    },
+    {
+      "source": "anim/monkey_island_portal2.zip",
+      "target": "anim/monkey_island_portal2.zip",
+      "sha256": "1534ef8d2c6c21a316a613f0fa4798aa3031d7a1e6d2a8ccb011eb8da13746c1"
+    },
+    {
+      "source": "anim/monkey_island_portal3.zip",
+      "target": "anim/monkey_island_portal3.zip",
+      "sha256": "8d3ffd2daf52edbf2f01acd3e6857b44a9e7b22ccb954b696833a841406f0538"
+    },
+    {
+      "source": "anim/monkey_island_portal_fx.zip",
+      "target": "anim/monkey_island_portal_fx.zip",
+      "sha256": "5f5417b95330dd59da37f82fee84a9abd25a918c4876e21d15dbd2256e7d774a"
+    },
+    {
+      "source": "images/minimap/gate_reset.xml",
+      "target": "images/minimap/gate_reset.xml",
+      "sha256": "51edc3b02a3284801f3c0ef5052131e4d066710813d365f44704e8e89c5aa01e"
+    },
+    {
+      "source": "images/minimap/gate_reset.tex",
+      "target": "images/minimap/gate_reset.tex",
+      "sha256": "82ab8d9fa318e71d7f400780e3bdcca3ebdf833c3f99c7a38617fc48977f49dd"
+    },
+    {
+      "source": "images/minimap/gate_low.xml",
+      "target": "images/minimap/gate_low.xml",
+      "sha256": "b9f5f749eaebb95e0e6db463a6a94c5500fa2caa44eafeb359321d8db1dce0da"
+    },
+    {
+      "source": "images/minimap/gate_low.tex",
+      "target": "images/minimap/gate_low.tex",
+      "sha256": "d0cff489cf2e8886c4a497ee5244e08ac1a5c9898c95679043951f832973dec1"
+    },
+    {
+      "source": "images/minimap/gate_high.xml",
+      "target": "images/minimap/gate_high.xml",
+      "sha256": "ac9d6dc86653a7729c7b71d114ce3d86157f4d2b68526b3d4652b7de4393e7a3"
+    },
+    {
+      "source": "images/minimap/gate_high.tex",
+      "target": "images/minimap/gate_high.tex",
+      "sha256": "aff8df874e1065fc5f50ea0c8cc28482958cf9dee5833a3348b4c91d0b58ccf3"
+    },
+    {
+      "source": "images/minimap/gate_reset_max.xml",
+      "target": "images/minimap/gate_reset_max.xml",
+      "sha256": "317aa1fd9b9d85e4cdc00c2c30341fee6c47b3e5f5d2634c699bc4a7e8639a6c"
+    },
+    {
+      "source": "images/minimap/gate_reset_max.tex",
+      "target": "images/minimap/gate_reset_max.tex",
+      "sha256": "3674da33e8cdb56579f6228ae4dd0507efc8cf45ebbc84faab7544ed1dbe5d45"
+    },
+    {
+      "source": "images/minimap/gate_low_max.xml",
+      "target": "images/minimap/gate_low_max.xml",
+      "sha256": "0499c141ebe660dde8ef8deac271a1be06309e61bb48212857ba11b5ddf8a7a6"
+    },
+    {
+      "source": "images/minimap/gate_low_max.tex",
+      "target": "images/minimap/gate_low_max.tex",
+      "sha256": "bfa18d25f21c8c0283f18aa3d4ccb7b1489fef6a842eb9c2d559cd8c2b4b8156"
+    },
+    {
+      "source": "images/minimap/gate_high_max.xml",
+      "target": "images/minimap/gate_high_max.xml",
+      "sha256": "21d63981deab8e8559d7a3d2e6d24a62dece8e95a9201a2a8086717d63a3e408"
+    },
+    {
+      "source": "images/minimap/gate_high_max.tex",
+      "target": "images/minimap/gate_high_max.tex",
+      "sha256": "9d4ea1c794ae310e740e94551fe350d37bf14ce6ca6f0fc631ff60dd18751577"
+    },
+    {
+      "source": "scripts/stategraphs/SGhh_igris_dungeon.lua",
+      "target": "scripts/stategraphs/SGhn_igris.lua",
+      "sha256": "c113f1f2a08801f174ef9af23d295a1b742d85063088cddaa8cfe1d07eeb5b0c"
+    },
+    {
+      "source": "scripts/stategraphs/SGhh_beru_dungeon.lua",
+      "target": "scripts/stategraphs/SGhn_beru.lua",
+      "sha256": "fc9cf8e77b5910e7f50d6691f1528410c9698e8f5fdfae0c4d7b0598ae706c78"
+    },
+    {
+      "source": "scripts/stategraphs/SGhh_sharkboi.lua",
+      "target": "scripts/stategraphs/SGhn_sharkboi.lua",
+      "sha256": "a92a80d9176b437136437ab0c44fa5aade794b2ef0082526d86884aeb7fbd790"
+    },
+    {
+      "source": "scripts/brains/hh_com_monster.lua",
+      "target": "scripts/brains/hn_com_monster.lua",
+      "sha256": "198356f3f8fbf53aec6296ad015a66b1bd0f92c6461000b475ed685887a5c1e2"
+    },
+    {
+      "source": "scripts/brains/hh_sharkboi.lua",
+      "target": "scripts/brains/hn_sharkboi.lua",
+      "sha256": "4f499249d8a7045ecec0f3821417144c6f05d1937ae70590a5599c54e8623f7f"
+    },
+    {
+      "source": "scripts/prefabs/hh_beru_dungeon.lua",
+      "target": "scripts/prefabs/hn_beru.lua",
+      "sha256": "e7643a91a2c55d5b603fa6123fcb4da2f14d217a93abac6aff08a1583d94c1d9"
+    },
+    {
+      "source": "anim/hh_beru_dungeon.zip",
+      "target": "anim/hh_beru_dungeon.zip",
+      "sha256": "b1ec6693c561e49919b7b9527fe06b8c57765695695b7286243dfc93eed20f21"
+    },
+    {
+      "source": "anim/lavaarena_beetletaur.zip",
+      "target": "anim/lavaarena_beetletaur.zip",
+      "sha256": "becb58bd5050b08f67fb69da4f73b9bf3b0b6f0a665798e9aef5a9663883a396"
+    },
+    {
+      "source": "anim/lavaarena_beetletaur_basic.zip",
+      "target": "anim/lavaarena_beetletaur_basic.zip",
+      "sha256": "ae5cc206f1153fea624c96f1eb8fad323f86cab9a6839e0ff92a9ff7a18b7ab4"
+    },
+    {
+      "source": "anim/lavaarena_beetletaur_actions.zip",
+      "target": "anim/lavaarena_beetletaur_actions.zip",
+      "sha256": "8a243d0def83d2d9b8391c9eb0f70edcb92a5473884c7b7e133ee4a7ccb53aab"
+    },
+    {
+      "source": "anim/lavaarena_beetletaur_block.zip",
+      "target": "anim/lavaarena_beetletaur_block.zip",
+      "sha256": "5c3fc139ee0f1b10eeddc55ef6b23fedca4bfe139cd4d45028789417dbd074fb"
+    },
+    {
+      "source": "anim/lavaarena_beetletaur_fx.zip",
+      "target": "anim/lavaarena_beetletaur_fx.zip",
+      "sha256": "7918b2fe50da5ac649bde947a5320789cf0aa2d303341d8c080883691016526c"
+    },
+    {
+      "source": "anim/lavaarena_beetletaur_break.zip",
+      "target": "anim/lavaarena_beetletaur_break.zip",
+      "sha256": "da492ae0d2fb244235097d24e296faeba996d398610b84fc20403acb0bc66aa6"
+    },
+    {
+      "source": "scripts/prefabs/hh_dungeon_spider.lua",
+      "target": "scripts/prefabs/hn_dungeon_spider.lua",
+      "sha256": "afd528c22e283a2626af49d70fdbe79a1818df3396333921d2ad8adb5144152d"
+    },
+    {
+      "source": "anim/hh_dungeon_spider_build.zip",
+      "target": "anim/hh_dungeon_spider_build.zip",
+      "sha256": "853c901d148b51b660f555b7aa99106c22be2d03755cb642643a92ec73ba5567"
+    },
+    {
+      "source": "images/inventoryimages/hh_dungeon_spider.xml",
+      "target": "images/inventoryimages/hh_dungeon_spider.xml",
+      "sha256": "724ac96deeafcf1a96b48ba09a0c3516510c43c8e6c64bbbe52267320daf71f6"
+    },
+    {
+      "source": "images/inventoryimages/hh_dungeon_spider.tex",
+      "target": "images/inventoryimages/hh_dungeon_spider.tex",
+      "sha256": "5fa144cc9b7dd8184c334eb5aa26742b95dae10d5567428b14c1bbf447ad9c3f"
+    },
+    {
+      "source": "scripts/prefabs/hh_dungeon_pig.lua",
+      "target": "scripts/prefabs/hn_dungeon_pig.lua",
+      "sha256": "698d3f8acd464c70e0b9e349057c827621f3695d48f6a364263bd4e7a3d57258"
+    },
+    {
+      "source": "anim/hh_dungeon_pig_build.zip",
+      "target": "anim/hh_dungeon_pig_build.zip",
+      "sha256": "36ad5c3abf4272610b6ffc7dbf864d1e2553a003f7af882c92e9aa09147532b5"
+    },
+    {
+      "source": "anim/ds_pig_charge.zip",
+      "target": "anim/ds_pig_charge.zip",
+      "sha256": "58e32d30a57710d5d5df9d661bd542b2f86ab19d6a1a387eea4343745023a368"
+    },
+    {
+      "source": "anim/ds_pig_uppercut.zip",
+      "target": "anim/ds_pig_uppercut.zip",
+      "sha256": "f5eb43123d8270737257f9a91f4ec9f25e938148e3dbead85bf534366f71bcc8"
+    },
+    {
+      "source": "scripts/prefabs/hh_dungeon_hounds.lua",
+      "target": "scripts/prefabs/hn_dungeon_hounds.lua",
+      "sha256": "c716a915749113167815413124eaa1bbf4fc8977c9f230b10809013c70900893"
+    },
+    {
+      "source": "anim/hh_hound_fire.zip",
+      "target": "anim/hh_hound_fire.zip",
+      "sha256": "1c7b10c2c27bcb624986ca0e7ddc9cfc395df11ba0f8994276cd0069e874bbed"
+    },
+    {
+      "source": "anim/hh_hound_snow.zip",
+      "target": "anim/hh_hound_snow.zip",
+      "sha256": "e898568ae0fc7119b02541fdf6d822e9c49a5bca3fc59d3024bd849030a09cf4"
+    },
+    {
+      "source": "anim/hh_hound_lightning.zip",
+      "target": "anim/hh_hound_lightning.zip",
+      "sha256": "74ca1600ac72e1667f758f1c05e55d841a3084c99c0820208ce99bd9b4540686"
+    },
+    {
+      "source": "anim/hh_hound_horror.zip",
+      "target": "anim/hh_hound_horror.zip",
+      "sha256": "34b6c7d6edcfe45eb01de6b19d0f3ab31e3c1dc5b1a0f810b2c01061fc4a51d0"
+    },
+    {
+      "source": "scripts/prefabs/hh_hound_projectiles.lua",
+      "target": "scripts/prefabs/hn_hound_projectiles.lua",
+      "sha256": "61688c54d385c93f1d8b04c7210b9e7cea709aa160936e1365bf8cc55b0f1304"
+    },
+    {
+      "source": "anim/glacial_hound_projectile.zip",
+      "target": "anim/glacial_hound_projectile.zip",
+      "sha256": "f92b8a9a1fbc1d448baf0707487c701064b8aa0dfb7cb3e88204ce8d08ba0244"
+    },
+    {
+      "source": "main/hh_dungeon_mobs_sg.lua",
+      "target": "main/hn_mob_states.lua",
+      "sha256": "bc890a8c849d41db5fe510e3aec825affcfa761704be6301b47d1fb088bd36f9"
+    },
+    {
+      "source": "scripts/enums/hh_boss.lua",
+      "target": "scripts/hn_dungeon/boss_defs.lua",
+      "sha256": "7c5895c44583d771729c57d047ee12c829eeea445f45d3d1985207d4210b2867"
+    },
+    {
+      "source": "anim/sharkboi_build.zip",
+      "target": "anim/sharkboi_build.zip",
+      "sha256": "1c3f76e41bd8230686ad18484a9449eb17c0adddf25dd1a6584e065d48a23d99"
+    },
+    {
+      "source": "anim/sharkboi_basic.zip",
+      "target": "anim/sharkboi_basic.zip",
+      "sha256": "98fd2e5207d92f40e3a84070a524a922f6f86536b5e5caebdb26d907c605555d"
+    },
+    {
+      "source": "anim/sharkboi_action.zip",
+      "target": "anim/sharkboi_action.zip",
+      "sha256": "151c6d9a060aec0b27cbc5d1bec78fcd75edc2832fe31d58af681c270fc88ee8"
+    },
+    {
+      "source": "anim/sharkboi_actions1.zip",
+      "target": "anim/sharkboi_actions1.zip",
+      "sha256": "80a0f52dc5a151794517f1766f8c353adbd3b0b802facba45d6106a8b1d7f97c"
+    },
+    {
+      "source": "anim/igris_dungeon.zip",
+      "target": "anim/igris_dungeon.zip",
+      "sha256": "d11cac7fec71e85e92adaf0ab9262e80a3367ff0da9f98e8fd2d9857dbc51171"
+    },
+    {
+      "source": "scripts/prefabs/hh_boss.lua",
+      "target": "scripts/prefabs/hn_bosses.lua",
+      "sha256": "4d77dc666714e692c754e8e2785d9e406884008847584342bc673105c8908da6"
+    },
+    {
+      "source": "scripts/enums/hh_prefabs.lua",
+      "target": "scripts/hn_dungeon/ice_defs.lua",
+      "sha256": "63dc2a1f578133447c7d67d23774826656e57a92f96276492441e7ba76f5038f"
+    },
+    {
+      "source": "main/hh_sg.lua",
+      "target": "main/hn_motion_guards.lua",
+      "sha256": "a16291c9718eb3e76b7b06e506230f4e5ea31a5142b88544c99399b0c1fb7327"
+    },
+    {
+      "source": "scripts/stategraphs/SGhh_snowhound.lua",
+      "target": "scripts/stategraphs/SGhn_snowhound.lua",
+      "sha256": "0cd9510178b9b8904d4147b4e91fa7285e33db329cec4e8ea0e1b933a1acff28"
+    },
+    {
+      "source": "scripts/stategraphs/SGhh_lightninghound.lua",
+      "target": "scripts/stategraphs/SGhn_lightninghound.lua",
+      "sha256": "eadcd1af8ee4505c97ef9f5a208ac7682422f06ec73b80376b2bf43b0e626e10"
+    },
+    {
+      "source": "scripts/components/dungeon_manager.lua",
+      "target": "scripts/hn_dungeon/waves.lua",
+      "sha256": "eefac549055647d159cfdff46927e9deec081b03b0ac5d1722155c1b4dcc7468"
+    },
+    {
+      "source": "scripts/components/dungeon_manager.lua",
+      "target": "scripts/hn_dungeon/gates.lua",
+      "sha256": "eefac549055647d159cfdff46927e9deec081b03b0ac5d1722155c1b4dcc7468"
+    },
+    {
+      "source": "scripts/enums/hh_prefabs.lua",
+      "target": "scripts/prefabs/hn_ice_fx.lua",
+      "sha256": "63dc2a1f578133447c7d67d23774826656e57a92f96276492441e7ba76f5038f"
+    },
+    {
+      "source": "anim/rock_treasure.zip",
+      "target": "anim/rock_treasure.zip",
+      "sha256": "37912d0f5faa9e0099d25a8d660a014d4f63b40af05495e769959c1e1080e88f"
+    }
+  ],
+  "boss_states": {
+    "igris": [
+      "idle",
+      "death",
+      "attack1",
+      "attack1_pst",
+      "attack2",
+      "attack2_pst",
+      "attack3",
+      "relentless_dash_1",
+      "relentless_attack_1",
+      "relentless_dash_2",
+      "relentless_attack1",
+      "relentless_attack1_pst",
+      "relentless_attack2",
+      "relentless_attack2_pst",
+      "relentless_attack3",
+      "relentless_pst",
+      "attack_rotate_pre",
+      "attack_rotate",
+      "attack_around",
+      "hit",
+      "shadow_blink_pre",
+      "shadow_blink_strike",
+      "shadow_blink_pst"
+    ],
+    "beru": [
+      "idle",
+      "death",
+      "attack1",
+      "attack1_pst",
+      "attack2",
+      "attack2_pst",
+      "attack3",
+      "3_times_idle",
+      "attack_jump_pre",
+      "attack_jump",
+      "strong",
+      "pig_control",
+      "hit"
+    ],
+    "sharkboi": [
+      "spawn",
+      "idle",
+      "death",
+      "hit",
+      "attack1",
+      "attack1_pst",
+      "attack2",
+      "attack2_pst",
+      "attack2_delay",
+      "attack3",
+      "ice_summon",
+      "torpedo_pre",
+      "torpedo_jump",
+      "torpedo",
+      "torpedo_climb",
+      "torpedo_dizzy",
+      "torpedo_pst",
+      "standing_dive_jump_pre",
+      "dive_jump_delay",
+      "dive_jump_pre",
+      "dive_jump",
+      "dive_dig_pre",
+      "dive_dig_loop",
+      "dive_dig_hit",
+      "dive_dig_pst",
+      "dive_dig_stun",
+      "fin_idle",
+      "fin_start",
+      "fin",
+      "fin_stop"
+    ]
+  },
+  "extraction_notes": {
+    "scripts/hn_dungeon/boss_defs.lua": "Only Sharkboi/Igris entries and shared physics/FX helpers; replaces hh_monster/hh_buff dependencies with dungeon combat.",
+    "scripts/hn_dungeon/ice_defs.lua": "Only shark ice FX entries and required helpers.",
+    "scripts/hn_dungeon/waves.lua": "Original pools and difficulty boundary; all reward behavior implemented separately.",
+    "scripts/prefabs/hn_ice_fx.lua": "Factory adapted from source factory shape; restricted to ice_defs.",
+    "animations": "Keep original bank/build names, no whole-mod source runtime dependency."
+  }
+}
