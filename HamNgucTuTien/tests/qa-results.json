@@ -1,0 +1,191 @@
+{
+  "date": "2026-09-30",
+  "dst_build": 747465,
+  "tutien_version": "18.1.0",
+  "lua_tests": 32,
+  "worldgen": [
+    {
+      "log": "map-LargeForest-Master.log",
+      "seed": 439065675,
+      "passed": true,
+      "sha256": "f315e489f4b420a2064b75dc998083f0961bfc06c305320f7ddf630f3a474400"
+    },
+    {
+      "log": "map-LargeForest2-Master.log",
+      "seed": 1903836707,
+      "passed": true,
+      "sha256": "1a7c6f8373c8228341a9fc97c350f082633839732ac984d495b016228e5a363d"
+    },
+    {
+      "log": "map-LargeForest3-Master.log",
+      "seed": 833283674,
+      "passed": true,
+      "sha256": "bc5164997559abb933bcafa7d43e8450773568a851969e33271dffd0443ef5ce"
+    },
+    {
+      "log": "map-PairLarge1-Caves.log",
+      "seed": 682540417,
+      "passed": true,
+      "sha256": "fbc37dc982a45184e14681f3ebc9cb2d5d76fc411526dad53bae8fd99b10e4ef"
+    },
+    {
+      "log": "map-PairLarge1-Master.log",
+      "seed": 1518236546,
+      "passed": true,
+      "sha256": "163a31b6a76accb0a1ece83440e82f5363968e3970faad0bd57ae2ff135f3ccd"
+    },
+    {
+      "log": "map-PairLarge2-Caves.log",
+      "seed": 972609925,
+      "passed": true,
+      "sha256": "8e74069801a17e798263f93a3d4dd1807f2f1ae7817868b1cd18a12d3fcc7bd3"
+    },
+    {
+      "log": "map-PairLarge2-Master.log",
+      "seed": 902812169,
+      "passed": true,
+      "sha256": "9e13b2988c33fe06649ac5d2df8c66c4033bb4beb38888fb7ea46e28e9893ac4"
+    },
+    {
+      "log": "map-PairLarge3-Caves.log",
+      "seed": 1673127278,
+      "passed": true,
+      "sha256": "86cdb29dcc76658f11c24a83be925e2aa45e8a72b53ce7ee8c9e3e1167a43506"
+    },
+    {
+      "log": "map-PairLarge3-Master.log",
+      "seed": 202730461,
+      "passed": true,
+      "sha256": "5bbaf73a744cb88fbcbca2077564450aadeaeaf80781e8b778fea7f088dcdde3"
+    },
+    {
+      "log": "map-PairSmall-Caves.log",
+      "seed": 906313813,
+      "passed": true,
+      "sha256": "50aed8cb5dab8ef87eecc04b153ede16765d419b9acaa5afc1577ac7b4d04a77"
+    },
+    {
+      "log": "map-PairSmall-Master.log",
+      "seed": 1968844749,
+      "passed": true,
+      "sha256": "6105eaef2f9355d232e540b6a2074da256656ff8715c8a96ad8010ccdf0ccd10"
+    },
+    {
+      "log": "map-PairSmall2-Caves.log",
+      "seed": 1613941730,
+      "passed": true,
+      "sha256": "5fe376bbb8a620006bc2ce49285ffb8c935194e41452cd9f969dba2449f7dded"
+    },
+    {
+      "log": "map-PairSmall2-Master.log",
+      "seed": 1940007167,
+      "passed": true,
+      "sha256": "05bd794b68cf534fae706a3d473048da91dfc8b693f45ef7496a7c2575333858"
+    },
+    {
+      "log": "map-PairSmall3-Caves.log",
+      "seed": 796299260,
+      "passed": true,
+      "sha256": "aef2ffff255e5a372802b65831b3dfb301fe8e632f9f9ad75ebca8f39a00d9cc"
+    },
+    {
+      "log": "map-PairSmall3-Master.log",
+      "seed": 305915181,
+      "passed": true,
+      "sha256": "8c4ca08476c351a1d01922140857f1eca3055caa64913c28bc5cf22acf023a7b"
+    },
+    {
+      "log": "map-SmallForest1-Master.log",
+      "seed": 806359092,
+      "passed": true,
+      "sha256": "526d7ca69d9a7b0d334bf48cc5d128101fb5cb9c1a7482eba56dad86de287599"
+    },
+    {
+      "log": "map-SmallForest2-Master.log",
+      "seed": 1465701526,
+      "passed": true,
+      "sha256": "b0584ebf09f99989552eeede53d31b9acf00ad35fbe258bb2ab2d4aa6eb1474f"
+    },
+    {
+      "log": "map-SmallForest3-Master.log",
+      "seed": 1368743506,
+      "passed": true,
+      "sha256": "1f321a42a360776dcca8c4b4e841aef7f3b30a5d83b4b536e94679fc8e751799"
+    }
+  ],
+  "engine": [
+    {
+      "log": "server-stage6.log",
+      "checks": [
+        "spawn hn_dungeon_gate",
+        "spawn hn_recovery_bag",
+        "spawn hn_treasure_rock",
+        "spawn hn_dungeon_spider",
+        "spawn hn_dungeon_pig",
+        "spawn hn_dungeon_firehound",
+        "spawn hn_dungeon_icehound",
+        "spawn hn_dungeon_snowhound",
+        "spawn hn_dungeon_lightninghound",
+        "spawn hn_dungeon_horrorhound",
+        "spawn hn_hound_glacial_proj",
+        "spawn hn_hound_lightning",
+        "spawn hn_sharkboi",
+        "spawn hn_igris",
+        "spawn hn_beru",
+        "spawn hn_shark_ice_fx",
+        "spawn hn_shark_ice_start_fx",
+        "spawn hn_corpse_igris",
+        "spawn hn_corpse_beru",
+        "gate mainland",
+        "skill hn_igris/attack1",
+        "skill hn_igris/relentless_dash_1",
+        "skill hn_igris/attack_rotate_pre",
+        "skill hn_igris/attack_around",
+        "skill hn_igris/shadow_blink_pre",
+        "skill hn_beru/attack1",
+        "skill hn_beru/attack_jump_pre",
+        "skill hn_beru/strong",
+        "skill hn_beru/pig_control",
+        "skill hn_sharkboi/attack1",
+        "skill hn_sharkboi/attack2",
+        "skill hn_sharkboi/attack3",
+        "skill hn_sharkboi/ice_summon"
+      ],
+      "sha256": "80ecd357924c0d09c1370807aef7757bbb70337446ad549c81c1df1c354d5ee9"
+    },
+    {
+      "log": "server-stage11.log",
+      "checks": [
+        "real Tu Tien OnUse invokes onusefn(inst,doer)",
+        "real player entry",
+        "death recovery original inventory and nested container",
+        "single reward chest cleanup preserves personal items"
+      ],
+      "sha256": "3c6fa784272f1bdb403650bd3127703f1b45dde79bcf369d70e5135c3ade9821"
+    },
+    {
+      "log": "server-stage12.log",
+      "checks": [
+        "real Tu Tien OnUse invokes onusefn(inst,doer)",
+        "real player entry",
+        "death recovery original inventory and nested container",
+        "single reward chest cleanup preserves personal items"
+      ],
+      "sha256": "51ff5254140f758a79e8bba3f73e909a0343237e481ea256b2bcafb9b67a8b5b"
+    },
+    {
+      "log": "server-stage14-green.log",
+      "checks": [
+        "mixed stack preserves 12 units after split and cleanup"
+      ],
+      "sha256": "531a088427f78d4b89fa05e6b9dedf55bfcd3849d03028ff3321fb34717559cb"
+    },
+    {
+      "log": "server-stage15-restart.log",
+      "checks": [
+        "restart aborts run and preserves recovery contents exactly once"
+      ],
+      "sha256": "92fe7d919eb7971f2edca5a6ebca9872aefe5bddfa259fb1f126e92acf2d3c25"
+    }
+  ]
+}

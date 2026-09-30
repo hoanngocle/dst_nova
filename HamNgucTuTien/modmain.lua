@@ -39,3 +39,6 @@ for name,text in pairs(names) do STRINGS.NAMES[name]=text;STRINGS.CHARACTERS.GEN
 AddStategraphPostInit('minotaur',function(sg)
     require('hn_dungeon/vanilla').PatchMinotaurDeath(sg.states.death)
 end)
+AddComponentPostInit('stackable',function(stack)
+    if TheWorld.ismastersim then require('hn_dungeon/stack_ownership').Wrap(stack) end
+end)

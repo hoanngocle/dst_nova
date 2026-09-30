@@ -69,3 +69,11 @@ test('companion tokens in nested inventory refuse entry without changing ownersh
     backpack.components.container={slots={token}};p.components.inventory={itemslots={},equipslots={body=backpack}}
     assert(not a.m:CanEnter(p));assert(token:IsValid() and backpack.components.container.slots[1]==token)
 end)
+test('gate-placement retry cannot bypass cooldown after reset',function()
+ local a=setup();local p=a.player();a.m:Enter(p)
+ local gate=a.m.active_gate;gate.valid=false;a.m:OnGateRemoved(gate)
+ a.m.FindMainlandGatePoint=function()return nil end;a.m.IsValidGatePoint=function()return false end;a.advance(5)
+ assert(a.m.gate_retry,'expected failed placement to schedule retry')
+ a.m:Reset('test');a.m.FindMainlandGatePoint=function()return 10,20 end;a.m.IsValidGatePoint=function()return true end;a.advance(5)
+ assert(a.m.state=='COOLDOWN' and a.m.active_gate==nil and a.m.cooldown_end-GetTime()==475)
+end)

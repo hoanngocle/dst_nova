@@ -374,9 +374,9 @@
       "sha256": "eefac549055647d159cfdff46927e9deec081b03b0ac5d1722155c1b4dcc7468"
     },
     {
-      "source": "scripts/enums/hh_prefabs.lua",
+      "source": "scripts/prefabs/hh_boss.lua",
       "target": "scripts/prefabs/hn_ice_fx.lua",
-      "sha256": "63dc2a1f578133447c7d67d23774826656e57a92f96276492441e7ba76f5038f"
+      "sha256": "4d77dc666714e692c754e8e2785d9e406884008847584342bc673105c8908da6"
     },
     {
       "source": "anim/rock_treasure.zip",

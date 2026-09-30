@@ -72,7 +72,13 @@ function Manager:TrySpawnGate(prefer_saved)
         x,z=self.run_gate_x,self.run_gate_z
     else x,z=self:FindMainlandGatePoint(false);if not x then x,z=self:FindMainlandGatePoint(true) end end
     if not x then
-        if not self.gate_retry then self.gate_retry=self.inst:DoTaskInTime(5,function() self.gate_retry=nil;self:TrySpawnGate(prefer_saved) end) end
+        if not self.gate_retry then
+            local epoch=self.run_epoch
+            self.gate_retry=self.inst:DoTaskInTime(5,function()
+                if self.run_epoch~=epoch then return end
+                self.gate_retry=nil;self:TrySpawnGate(prefer_saved)
+            end)
+        end
         return false
     end
     local gate=SpawnPrefab('hn_dungeon_gate')
@@ -190,6 +196,7 @@ function Manager:CheckWaveComplete(last)
     end
 end
 function Manager:Reset(reason)
+    if self.gate_retry then self.gate_retry:Cancel();self.gate_retry=nil end
     self.state='COOLDOWN';self.run_epoch=self.run_epoch+1;self:CancelRunTasks();self:RemoveGate()
     for p in pairs(self.players_in_dungeon) do
         if valid(p) then
@@ -232,7 +239,7 @@ function Manager:OnSave()
 end
 function Manager:OnLoad(data)
     if not self:IsSurfaceAuthority() or not data then return end
-    self.loaded=true;self:CancelRunTasks();if self.initialization_task then self.initialization_task:Cancel() end
+    self.loaded=true;if self.gate_retry then self.gate_retry:Cancel();self.gate_retry=nil end;self:CancelRunTasks();if self.initialization_task then self.initialization_task:Cancel() end
     self.run_epoch=(data.run_epoch or 0)+1;self.max_waves=data.max_waves or 3
     self.run_gate_x=data.run_gate_x;self.run_gate_z=data.run_gate_z;self.previous_gate_x=data.previous_gate_x;self.previous_gate_z=data.previous_gate_z
     self.state='COOLDOWN';self.is_cleared=false

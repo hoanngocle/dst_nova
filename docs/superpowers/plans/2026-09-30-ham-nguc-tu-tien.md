@@ -10,7 +10,7 @@
 
 **Spec:** [Thiết kế và phân tích](../specs/2026-09-30-ham-nguc-tu-tien-design.md).
 
-**Status:** Đã được người dùng duyệt và yêu cầu triển khai. Code Tasks 1–6 hiện có trong `HamNgucTuTien/`; đang kiểm chứng Task 7. Các checkbox gộp cả kiểm thử người chơi chỉ đánh dấu khi hoàn thành toàn bộ điều kiện; xem `HamNgucTuTien/tests/manual-checklist.md` để biết bằng chứng và ca còn thiếu.
+**Status:** Đã được người dùng duyệt và yêu cầu triển khai. Code Tasks 1–6 hiện có trong `HamNgucTuTien/`; đã đóng bản thử Task 7 với 32 test Lua, 18 shard mới, full-stack và restart headless. Nghiệm thu client/playtest còn mở. Các checkbox gộp cả kiểm thử người chơi chỉ đánh dấu khi hoàn thành toàn bộ điều kiện; xem `HamNgucTuTien/tests/manual-checklist.md` để biết bằng chứng và ca còn thiếu.
 
 **Điều chỉnh triển khai:** dùng class `BufferedAction` toàn cục theo API DST; tách quái theo prefab nguồn thay vì tên file dự kiến; test dependency Python + dedicated engine thay nhóm Lua `boss_contract`. Thu hồi di chuyển entity gốc, dùng persistence container của DST thay vì dựng lại item từ save record; vật phẩm không thể đặt vào container nằm trên đất tại cổng. Checkpoint code gom sau lượt kiểm thử tích hợp; không sửa mod Nyx/Công Trình đang có.
 
@@ -60,10 +60,10 @@ Các prefab projectile/FX phụ sẽ được chốt trong manifest Task 1; khô
 
 **Interfaces:** `authority.IsAuthority(world) -> boolean`; `worldgen.Install(api) -> nil`; `blueprints` trả bảng layout; `map_codec.EncodeU16(values)` / `DecodeU16(text)`.
 
-- [ ] Lập mapping nguồn→đích, liệt kê asset/âm thanh/projectile/summon/helper và chiêu của từng boss. Kiểm tra lời gọi qua table/dynamic factory bằng đọc code, không chỉ tìm tên chứa dungeon. Ghi nguồn/tác giả/version và hash file dùng lại.
-- [ ] Viết test worldgen: encode/decode roundtrip; hàng blueprint bằng độ dài; đúng một exit; topology/entity/road dịch cùng offset; không tạo arena trên Caves; hook được khôi phục kể cả generation lỗi.
-- [ ] Chạy test trước implementation, xác nhận fail do module chưa có. Tạo bootstrap/registration và port worldgen có namespace; không dùng thư mục nguồn làm runtime dependency.
-- [ ] Run `lua HamNgucTuTien/tests/run.lua worldgen`: PASS tất cả ca trên. Runner nhận tên nhóm hoặc `all`, trả exit code khác 0 nếu có fail.
+- [x] Lập mapping nguồn→đích, liệt kê asset/âm thanh/projectile/summon/helper và chiêu của từng boss. Kiểm tra lời gọi qua table/dynamic factory bằng đọc code, không chỉ tìm tên chứa dungeon. Ghi nguồn/tác giả/version và hash file dùng lại.
+- [x] Viết test worldgen: encode/decode roundtrip; hàng blueprint bằng độ dài; đúng một exit; topology/entity/road dịch cùng offset; không tạo arena trên Caves; hook được khôi phục kể cả generation lỗi.
+- [x] Chạy test trước implementation, xác nhận fail do module chưa có. Tạo bootstrap/registration và port worldgen có namespace; không dùng thư mục nguồn làm runtime dependency.
+- [x] Run `lua HamNgucTuTien/tests/run.lua worldgen`: PASS tất cả ca trên. Runner nhận tên nhóm hoặc `all`, trả exit code khác 0 nếu có fail.
 - [ ] Tạo world DST thử với Solo tắt: Forest-only và Forest+Caves, map nhỏ/lớn, ít nhất 3 seed mỗi tổ hợp. Kiểm tra nav/minimap/arena/exit; ghi kết quả vào checklist. Chưa qua bước này thì không mở rộng sang boss.
 - [ ] Checkpoint commit chỉ file mod mới và tài liệu liên quan khi bước được nghiệm thu.
 
@@ -134,11 +134,11 @@ Các prefab projectile/FX phụ sẽ được chốt trong manifest Task 1; khô
 
 **Files:** `tests/manual-checklist.md`, `README.md`, `modinfo.lua`, manifest/assets nếu có lỗi thiếu.
 
-- [ ] Run `lua HamNgucTuTien/tests/run.lua all`: toàn bộ test PASS. Kiểm tra syntax từng file; test Lua 5.4 không thay thế nạp mod trong DST.
-- [ ] Kiểm tra artifact không còn require/SpawnPrefab/component bắt buộc từ Solo; xác minh từng asset được tham chiếu có trong mod hoặc base game. Không cấm chuỗi `hh_` trong tên bank/build nếu animation gốc yêu cầu.
+- [x] Run `lua HamNgucTuTien/tests/run.lua all`: toàn bộ test PASS. Kiểm tra syntax từng file; test Lua 5.4 không thay thế nạp mod trong DST.
+- [x] Kiểm tra artifact không còn require/SpawnPrefab/component bắt buộc từ Solo; xác minh từng asset được tham chiếu có trong mod hoặc base game. Không cấm chuỗi `hh_` trong tên bank/build nếu animation gốc yêu cầu.
 - [ ] Chạy hết checklist: Solo tắt; Tu Tiên bật; hai độ khó; cả ba boss; Forest+Caves; host/client/dedicated; chết, quit, reconnect, restart, gate mất, cleanup và thưởng.
 - [ ] Chơi thử một người và tổ đội, ghi thời gian clear, số lần chết, loot/giờ và tương tác damage của Tu Tiên; chỉnh bảng config, rerun test liên quan.
-- [ ] README nêu world mới, dependency, luật chết/đồ/restart và attribution nguồn; đóng gói bản thử. Upload Workshop là công việc riêng khi được yêu cầu.
+- [x] README nêu world mới, dependency, luật chết/đồ/restart và attribution nguồn; đóng gói bản thử. Upload Workshop là công việc riêng khi được yêu cầu.
 
 ## Thứ tự và điểm dừng đánh giá
 

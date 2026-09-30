@@ -47,3 +47,24 @@ test('breakout monster persists its tier and combat setup across reload',functio
     assert(other.hn_detached and other.components.health.maxhealth==300 and other.components.health.percent==.4)
     require('hn_dungeon/cleanup').Run({});assert(other:IsValid())
 end)
+test('mixed personal and unclaimed reward stacks retain ownership through merge and split',function()
+ local a=require('support/dst_mock').Install();local stack=require('hn_dungeon/stack_ownership')
+ local function item(size)
+  local e=a.entity('xd_lingshi1');e:AddComponent('hn_owned')
+  local c={inst=e,stacksize=size};e.components.stackable=c
+  c.Put=function(self,other) self.stacksize=self.stacksize+other.components.stackable.stacksize;other:Remove() end
+  c.Get=function(self,n) self.stacksize=self.stacksize-n;return item(n) end
+  c.StackSize=function(self)return self.stacksize end
+  stack.Wrap(c);return e
+ end
+ local reward=item(5);reward.components.hn_owned.run_id=4
+ local personal=item(7);reward.components.stackable:Put(personal)
+ assert(reward.components.hn_owned.claimed and reward.components.stackable:StackSize()==12)
+ local split=reward.components.stackable:Get(3)
+ assert(split.components.hn_owned.claimed and split.components.hn_owned.run_id==4)
+ local unclaimed=item(6);unclaimed.components.hn_owned.run_id=4
+ local piece=unclaimed.components.stackable:Get(2)
+ assert(piece.components.hn_owned.run_id==4 and not piece.components.hn_owned.claimed)
+ require('hn_dungeon/cleanup').Run({})
+ assert(reward:IsValid() and split:IsValid() and not unclaimed:IsValid() and not piece:IsValid())
+end)
