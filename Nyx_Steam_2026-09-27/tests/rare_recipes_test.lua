@@ -4,9 +4,10 @@ local expected = {
     'xd_chenpingan_ygl', 'xd_chenpingan_ygp',
     'xd_htz_fjfb', 'xd_htz_qzj',
     'xd_luoshen_krss', 'xd_luoshen_yin',
-    'xd_wmz_kjb', 'xd_wmz_tnz', 'xd_wmz_xsj', 'xd_wmz_zhf',
+    'xd_wmz_kjb', 'xd_wmz_xsj', 'xd_wmz_zhf',
 }
 local excluded = {
+    'xd_wmz_tnz', -- owned by Cong Trinh Tu Tien
     'xd_chenpingan_bd', 'xd_chenpingan_cm', 'xd_chenpingan_kcd', 'xd_chenpingan_xb',
     'xd_htz_qzxy', 'xd_luoshen_dinghunxianglu',
     'xd_jingwei_fan', 'xd_jingwei_zzql', 'xd_sly', 'xd_sj_tej',
@@ -41,7 +42,7 @@ local api = {
     end,
 }
 local register = require('nyx/rare_recipes').Register
-assert(register(api) == 10)
+assert(register(api) == 9)
 local expected_names = {}
 for _, product in ipairs(expected) do
     local name = 'nyx_' .. product
@@ -63,4 +64,4 @@ for _, product in ipairs(excluded) do
     assert(calls['nyx_' .. product] == nil, 'excluded recipe: '..product)
 end
 assert(register(api) == 0, 'registration must not duplicate existing recipes')
-print('rare recipes: 10 unique recipes with four valid ingredients')
+print('rare recipes: 9 unique recipes; Thien Nghich Chau belongs to Cong Trinh')

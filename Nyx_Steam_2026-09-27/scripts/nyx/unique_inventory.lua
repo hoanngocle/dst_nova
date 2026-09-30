@@ -1,8 +1,9 @@
 -- Item-use gates shared only by Nyx and the item's original character.
 local M={}
-local uses={xd_htz_sjcx='xd_hantianzun',xd_htz_qzxy='xd_hantianzun',xd_htz_fjfb='xd_hantianzun',xd_wmz_tnz='xd_wangmazi',xd_luoshen_yin='xd_luoshen'}
+-- Thien Nghich Chau integration is owned by Cong Trinh Tu Tien.
+local uses={xd_htz_sjcx='xd_hantianzun',xd_htz_qzxy='xd_hantianzun',xd_htz_fjfb='xd_hantianzun',xd_luoshen_yin='xd_luoshen'}
 function M.Install(api)
-    for _,family in ipairs({'xd_hantianzun','xd_wangmazi','xd_luoshen'}) do
+    for _,family in ipairs({'xd_hantianzun','xd_luoshen'}) do
         local tag='nyx_use_'..family
         api.AddPrefabPostInit(family,function(inst) inst:AddTag(tag) end)
         api.AddPrefabPostInit('nyx',function(inst) inst:AddTag(tag) end)

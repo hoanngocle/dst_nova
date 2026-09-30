@@ -9,7 +9,6 @@ local RECIPES = {
     {'xd_luoshen_krss', 'shadowheart', 9, 5, 'purplegem', 6},
     {'xd_luoshen_yin', 'shroom_skin', 3, 2, 'purplegem', 3},
     {'xd_wmz_kjb', 'shadowheart', 4, 3, 'purplegem', 4},
-    {'xd_wmz_tnz', 'shadowheart', 3, 2, 'purplegem', 3},
     {'xd_wmz_xsj', 'shadowheart', 9, 5, 'purplegem', 6},
     {'xd_wmz_zhf', 'shadowheart', 7, 4, 'purplegem', 5},
 }

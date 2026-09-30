@@ -14,6 +14,7 @@ for _, filename in GLOBAL.ipairs({
     "images/ttk_spirit_workshop/icon.xml",
     "images/ttk_spirit_workshop/icon.tex",
     "main/ttk_treasure.lua",
+    "main/ttk_thien_nghich_chau.lua",
     "scripts/nova_treasure_logic.lua",
     "scripts/nova_treasure_rewards.lua",
     "scripts/prefabs/nova_treasure_scroll.lua",
@@ -50,6 +51,7 @@ GLOBAL.require("ttt_portal_skin").Install(env)
 modimport("main/ttk_portal.lua")
 modimport("main/ttk_lingshi_recycler.lua")
 modimport("main/ttk_treasure.lua")
+modimport("main/ttk_thien_nghich_chau.lua")
 modimport("main/ttk_eternal_fire.lua")
 
 -- Super Wall DST keeps its prefab and world-save IDs. Its source modmain
