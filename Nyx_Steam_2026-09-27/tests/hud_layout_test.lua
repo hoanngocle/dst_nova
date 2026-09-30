@@ -32,6 +32,7 @@ local function button()
 end
 panel.collapse = button()
 panel.appearance_button = button()
+panel.gem_storage_button = button()
 for _, id in ipairs(require('nyx/skilldefs').Order()) do
     panel.icons[id] = button()
     panel.icons[id].label = Widget('label')
@@ -65,5 +66,11 @@ assert(panel.appearance_button.parent.pos.x == 85
     and panel.appearance_button.parent.pos.y == 85,
     'Skin icon must sit just inside the lower-left corner')
 assert(badge.parent == controls.status, 'resource badge must remain on the status HUD')
+assert(panel.gem_storage_button.parent == panel.appearance_button.parent,
+    'gem storage icon must share the Skin HUD anchor')
+assert(panel.gem_storage_button.pos.x > panel.appearance_button.pos.x + 69,
+    'gem storage icon must sit next to Skin without overlap')
+assert(panel.gem_storage_button.size[1] == panel.appearance_button.size[1],
+    'storage and Skin icons must have the same size')
 
 print('hud_layout_test: ok')

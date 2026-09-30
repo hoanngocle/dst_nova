@@ -1,9 +1,9 @@
 local G=GLOBAL
 G.setmetatable(env,{__index=function(_,key) return G.rawget(G,key) end})
-PrefabFiles={'nyx','nyx_none','nyx_skillbook','nyx_gather_fx','nyx_wings_fx','nyx_htz_xtzlj','nyx_wmz_spell','nyx_ice_fx'}
+PrefabFiles={'nyx','nyx_none','nyx_skillbook','nyx_gather_fx','nyx_wings_fx','nyx_htz_xtzlj','nyx_wmz_spell','nyx_ice_fx','nyx_gem_storage'}
 Assets={Asset('ANIM','anim/nyx_purple.zip'),Asset('ANIM','anim/nyx_ghost.zip'),
-    Asset('ANIM','anim/status_xd_htz_lq.zip')}
-for _,path in ipairs({'images/nyx_eye_icon','images/nyx_night_icon','images/nyx_triflame_icon','images/nyx_yellow_river_icon','images/nyx_skill_icons','images/nyx_skill_toggle','images/nyx_skin_dress_icon',
+    Asset('ANIM','anim/status_xd_htz_lq.zip'),Asset('ANIM','anim/xd_ui_6x6.zip')}
+for _,path in ipairs({'images/nyx_eye_icon','images/nyx_night_icon','images/nyx_triflame_icon','images/nyx_yellow_river_icon','images/nyx_skill_icons','images/nyx_skill_toggle','images/nyx_skin_dress_icon','images/nyx_gem_storage_icon',
     'images/nyx_skin_ui/frame','images/nyx_skin_ui/controls','images/nyx_skin_ui/close_icon','images/saveslot_portraits/nyx',
     'images/selectscreen_portraits/nyx','images/selectscreen_portraits/nyx_silho','images/map_icons/nyx',
     'images/avatars/avatar_nyx','images/avatars/avatar_ghost_nyx','images/avatars/self_inspect_nyx','bigportraits/nyx','bigportraits/nyx_none'}) do
@@ -53,6 +53,7 @@ AddComponentPostInit('playeractionpicker',function(picker)
     end
 end)
 require('nyx/items').Install(env)
+require('nyx/gem_storage').Install(env)
 require('nyx/soul_banner').Install(env)
 require('nyx/cauldron').Install(env)
 require('nyx/unique_weapons').Install(env)
@@ -90,6 +91,10 @@ if not TheNet:IsDedicated() then
         controls.owner.nyx_resourcehud=status:AddChild(Resource(controls.owner))
         local button=controls.nyx_skillpanel:AddChild(ImageButton('images/nyx_skin_dress_icon.xml','nyx_skin_dress_icon.tex'))
         controls.nyx_skillpanel.appearance_button=button
+        local gem_button=controls.nyx_skillpanel:AddChild(ImageButton('images/nyx_gem_storage_icon.xml','nyx_gem_storage_icon.tex'))
+        controls.nyx_skillpanel.gem_storage_button=gem_button
+        gem_button:SetHoverText('Kho đá quý (36 ô)')
+        gem_button:SetOnClick(function() SendModRPCToServer(MOD_RPC.NYX.GEM_STORAGE) end)
         require('nyx/hud_layout').Apply(controls)
         button:SetHoverText('Trang phục')
         button:SetOnClick(function()

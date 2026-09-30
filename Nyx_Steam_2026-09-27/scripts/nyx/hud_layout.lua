@@ -64,6 +64,7 @@ function Layout.ConfigurePanel(panel)
     end
 
     ConfigureButton(panel.appearance_button, SKILL_ICON_SIZE)
+    ConfigureButton(panel.gem_storage_button, SKILL_ICON_SIZE)
 
     local tooltip = panel.skill_tooltip_text or panel.tooltip
     if tooltip ~= nil then tooltip:SetPosition(0, 105, 0) end
@@ -119,6 +120,10 @@ function Layout.Apply(controls)
     panel:SetPosition(PANEL_X, ROW_Y, 0)
     Layout.ConfigurePanel(panel)
     PlaceAppearanceButton(controls, panel.appearance_button)
+    if panel.gem_storage_button ~= nil and controls.nyx_skin_root ~= nil then
+        controls.nyx_skin_root:AddChild(panel.gem_storage_button)
+        panel.gem_storage_button:SetPosition(ICON_GAP, 0, 0)
+    end
     return true
 end
 
