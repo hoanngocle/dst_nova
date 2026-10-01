@@ -81,8 +81,13 @@ function M.Install(env,G)
         G.STRINGS.RECIPE_DESC[row.prefab:upper()]=row.description
         local ingredients={}
         for _,entry in ipairs(row.ingredients) do
-            local image=entry[1]..'.tex'
-            ingredients[#ingredients+1]=G.Ingredient(entry[1],entry[2],G.GetInventoryItemAtlas(image),nil,image)
+            local id=entry[1]
+            if id:sub(1,3)=='xd_' then
+                ingredients[#ingredients+1]=G.Ingredient(id,entry[2],
+                    'images/inventoryimages/'..id..'.xml',nil,id..'.tex')
+            else
+                ingredients[#ingredients+1]=G.Ingredient(id,entry[2])
+            end
         end
         env.AddRecipe2(row.prefab,ingredients,G.TECH.MAGIC_THREE,
             {numtogive=1,atlas=row.atlas,image=row.icon..'.tex'},{'MAGIC','RESTORATION'})

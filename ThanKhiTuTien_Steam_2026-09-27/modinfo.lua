@@ -1,6 +1,6 @@
 name = "Thần Khí Tu Tiên"
 description = [[
-Phiên Bản 1.2.0 - Thần Khí Tu Tiên
+Phiên Bản 1.2.1 - Thần Khí Tu Tiên
 
 ★ Trang bị, Kiếm và Ngọc thuộc tính
 ★ 6 linh dược chế từ nguyên liệu boss: tăng chỉ số vĩnh viễn và mở hiệu ứng ở 10 lần.
@@ -8,7 +8,7 @@ Phiên Bản 1.2.0 - Thần Khí Tu Tiên
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.2.0"
+version = "1.2.1"
 api_version = 10
 dst_compatible = true
 all_clients_require_mod = true

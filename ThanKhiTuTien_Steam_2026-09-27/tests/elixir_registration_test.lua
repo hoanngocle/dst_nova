@@ -25,6 +25,20 @@ for _,key in ipairs(Defs.ORDER) do
     assert(io.open('ThanKhiTuTien_Steam_2026-09-27/images/potions/'..row.icon..'.tex','rb'))
     count=count+1
 end
+for _,key in ipairs(Defs.ORDER) do
+    local recipe=recipes[Defs.BY_KEY[key].prefab]
+    for _,ingredient in ipairs(recipe.ingredients) do
+        local id=ingredient.id
+        if id:sub(1,3)=='xd_' then
+            assert(ingredient.atlas=='images/inventoryimages/'..id..'.xml',
+                key..': custom ingredient must use its inventory atlas: '..id)
+            assert(ingredient.image==id..'.tex',key..': custom ingredient image mismatch: '..id)
+        else
+            assert(ingredient.atlas==nil and ingredient.image==nil,
+                key..': native ingredient should use its game icon: '..id)
+        end
+    end
+end
 assert(count==6 and callbacks.eater and callbacks.playeractionpicker and callbacks.health and callbacks.xd_htz_lq)
 assert(io.open('ThanKhiTuTien_Steam_2026-09-27/anim/hh_dungeon_potions.zip','rb'))
 -- Execute the real prefab factory against a minimal engine surface.

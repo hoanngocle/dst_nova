@@ -20,7 +20,7 @@ end
 local function Button(parent,text,x,y,fn)
     local button=parent:AddChild(TextButton())
     button:SetFont(BODYTEXTFONT)
-    button:SetTextSize(22)
+    button:SetTextSize(24)
     button:SetText(text)
     button:SetTextColour(unpack(WHITE))
     button:SetTextFocusColour(.55,.26,.67,1)
@@ -29,7 +29,7 @@ local function Button(parent,text,x,y,fn)
     return button
 end
 local function CompactHover(widget,text,parent)
-    widget:SetHoverText(text,{attach_to_parent=parent,font=BODYTEXTFONT,font_size=17,
+    widget:SetHoverText(text,{attach_to_parent=parent,font=BODYTEXTFONT,font_size=20,
         bg_atlas="images/global.xml",bg_texture="square.tex",colour=WHITE,offset_y=65})
     -- Native SetHoverText inflates its backdrop by 1.5x/2x on every refresh.
     -- Measure bounded multiline text and size the backdrop to its actual contents.
@@ -68,7 +68,7 @@ local CharacterInfo=Class(Screen,function(self,owner,info,onclose)
     panel.scale_on_focus=false
     panel.move_on_click=false
     panel:SetOnClick(function() end)
-    Label(self.root,26,"THÔNG TIN NHÂN VẬT",0,210,GOLD)
+    Label(self.root,29,"THÔNG TIN NHÂN VẬT",0,210,GOLD)
     self.close_button=Button(self.root,"×",310,210,function() self:Close() end)
     self.tabs={}
     self.tab_backgrounds={}
@@ -80,25 +80,25 @@ local CharacterInfo=Class(Screen,function(self,owner,info,onclose)
         self.tab_backgrounds[i]=background
         self.tabs[i]=Button(self.root,name,(i-2.5)*165,168,function() self:SelectTab(i) end)
     end
-    self.subtitle=Label(self.root,17,"Đang lấy chỉ số từ server…",0,135,MUTED)
+    self.subtitle=Label(self.root,20,"Đang lấy chỉ số từ server…",0,135,MUTED)
     self.rows={}
     for i=1,PAGE_SIZE do
         local root=self.root:AddChild(Widget("InfoRow"..i))
-        root:SetPosition(0,108-(i-1)*26,0)
+        root:SetPosition(0,108-(i-1)*27,0)
         local background=root:AddChild(Image("images/global.xml","square.tex"))
-        background:SetSize(630,25)
+        background:SetSize(630,27)
         background:SetTint(.67,.61,.71,i%2==0 and .32 or .08)
-        local label=Label(root,19,"",-115,0)
-        label:SetRegionSize(390,24);label:SetHAlign(ANCHOR_LEFT)
-        local value=Label(root,19,"",210,0,GOLD)
-        value:SetRegionSize(200,24);value:SetHAlign(ANCHOR_RIGHT)
+        local label=Label(root,22,"",-115,0)
+        label:SetRegionSize(390,27);label:SetHAlign(ANCHOR_LEFT)
+        local value=Label(root,22,"",210,0,GOLD)
+        value:SetRegionSize(200,27);value:SetHAlign(ANCHOR_RIGHT)
         self.rows[i]={root=root,label=label,value=value,background=background}
     end
-    Label(self.root,15,"Rê chuột trên dòng bị rút gọn để xem chi tiết",0,-172,MUTED)
-    self.status=Label(self.root,15,"",0,-194,MUTED)
+    Label(self.root,18,"Rê chuột trên dòng bị rút gọn để xem chi tiết",0,-172,MUTED)
+    self.status=Label(self.root,18,"",0,-194,MUTED)
     self.previous=Button(self.root,"‹ Trước",-235,-222,function() self:ChangePage(-1) end)
     self.next=Button(self.root,"Sau ›",235,-222,function() self:ChangePage(1) end)
-    self.page_label=Label(self.root,19,"",0,-222)
+    self.page_label=Label(self.root,22,"",0,-222)
     self.default_focus=self.tabs[1]
     for i,tab in ipairs(self.tabs) do
         tab:SetFocusChangeDir(MOVE_LEFT,self.tabs[i-1] or self.close_button)

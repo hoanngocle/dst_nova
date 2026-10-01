@@ -7,6 +7,7 @@ local Layout = {}
 -- so the circular face matches the visible diameter of the skill icons.
 local TOGGLE_SIZE = 96
 local SKILL_ICON_SIZE = 58.08 * 1.2
+local CORNER_ICON_SIZE = 64
 local ICON_GAP = 64 * 1.2
 local SKILL_ROW_Y = 0
 local BADGE_X = -110
@@ -63,8 +64,8 @@ function Layout.ConfigurePanel(panel)
         end
     end
 
-    ConfigureButton(panel.appearance_button, SKILL_ICON_SIZE)
-    ConfigureButton(panel.gem_storage_button, SKILL_ICON_SIZE)
+    ConfigureButton(panel.appearance_button, CORNER_ICON_SIZE)
+    ConfigureButton(panel.gem_storage_button, CORNER_ICON_SIZE)
 
     local tooltip = panel.skill_tooltip_text or panel.tooltip
     if tooltip ~= nil then tooltip:SetPosition(0, 105, 0) end

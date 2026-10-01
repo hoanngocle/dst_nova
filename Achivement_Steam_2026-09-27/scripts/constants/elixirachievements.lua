@@ -3,7 +3,7 @@
 local potions = {
     {key="power", name="Sức Mạnh", benefit="Mỗi bình tăng vĩnh viễn 50 sát thương chuẩn; đủ 10 bình tăng thêm 50 điểm phần trăm sát thương bạo kích."},
     {key="health", name="Sinh Mệnh", benefit="Mỗi bình tăng vĩnh viễn 50 máu tối đa; đủ 10 bình miễn nhiễm nóng. Sau giới hạn, chỉ hồi 100 máu."},
-    {key="mana", name="Ma Lực", benefit="Mỗi bình tăng vĩnh viễn 50 linh lực tối đa; đủ 10 bình miễn nhiễm lạnh. Sau giới hạn, chỉ hồi 100 linh lực."},
+    {key="mana", name="Ma Lực", benefit="Mỗi bình tăng vĩnh viễn 10 linh lực tối đa, tối đa +100; đủ 10 bình miễn nhiễm lạnh. Sau giới hạn, chỉ hồi 100 linh lực."},
     {key="guard", name="Hộ Thể", benefit="Mỗi bình tăng vĩnh viễn 50 giảm sát thương cố định; đủ 10 bình miễn nhiễm ngủ."},
     {key="speed", name="Phong Tốc", benefit="Mỗi bình tăng vĩnh viễn 2% tốc độ di chuyển; đủ 10 bình miễn nhiễm độc."},
     {key="crit", name="Bạo Kích", benefit="Mỗi bình tăng vĩnh viễn 10 điểm phần trăm sát thương bạo kích; đủ 10 bình miễn nhiễm đóng băng."},

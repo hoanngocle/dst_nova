@@ -1,4 +1,4 @@
-# Tiện Ích Tu Tiên 1.5.1 — Thông tin nhân vật
+# Tiện Ích Tu Tiên 1.5.2 — Thông tin nhân vật
 
 Nhấn **icon hồ sơ bạc–tím** nhỏ ở góc dưới bên trái HUD, cạnh icon skin và hòm đồ của Nyx. Rê chuột lên icon sẽ hiện tên “Thông tin nhân vật”. Bảng sáng màu, kích thước 680×500, có bốn mục:
 

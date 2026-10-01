@@ -51,9 +51,10 @@ for n=1,10 do
     eq(progress:GetCount('health'),n,'health counter')
     eq(health.maxhealth,125+50*n,'health maximum')
     eq(health.currenthealth,80,'increase does not refill health')
-    eq(mana.max,60+50*n,'mana maximum'); eq(mana.current,30,'increase does not refill mana')
+    eq(mana.max,60+10*n,'mana maximum'); eq(mana.current,30,'increase does not refill mana')
 end
-eq(health.maxhealth,625,'health cap'); eq(mana.max,560,'mana cap')
+eq(health.maxhealth,625,'health cap'); eq(mana.max,160,'mana cap')
+eq(progress:GetBonus('mana'),100,'ten elixirs grant at most 100 mana')
 assert(progress:Consume('health')); assert(progress:Consume('mana'))
 eq(health.currenthealth,180,'health recovery after cap'); eq(mana.current,130,'mana recovery after cap')
 eq(progress:GetCount('health'),10,'recovery does not increment count')
@@ -68,12 +69,12 @@ eq(Combat.SoloDefense(p,700),200,'flat defense')
 eq(p.components.locomotor.tbc_elixir,1.2,'move speed')
 for _,status in ipairs({'hot','cold','sleep','poison','freeze'}) do assert(Immunity.Has(p,status),status) end
 progress:Refresh(); progress:Refresh()
-eq(health.maxhealth,625,'refresh idempotent'); eq(mana.max,560,'mana refresh idempotent')
+eq(health.maxhealth,625,'refresh idempotent'); eq(mana.max,160,'mana refresh idempotent')
 health:SetMaxHealth(200); eq(health.maxhealth,700,'new native base')
-mana.native_max=90; mana:CheckLevel(); eq(mana.max,590,'native mana level change')
+mana.native_max=90; mana:CheckLevel(); eq(mana.max,190,'native mana level change')
 eq(mana.current,130,'level change preserves augmented current')
 p._tbc_affix_mana={component=mana,max_bonus=100}; mana.max=mana.max+100
-mana:CheckLevel(); eq(mana.max,690,'level change preserves equipment mana')
+mana:CheckLevel(); eq(mana.max,290,'level change preserves equipment mana')
 local saved={progress=progress:OnSave(),health=health:OnSave(),mana=mana:OnSave()}
 eq(saved.health.maxhealth,200,'save excludes permanent health from base')
 eq(saved.mana.max,90,'save excludes potion/equipment mana')
@@ -85,7 +86,7 @@ for _=1,3 do
     copy:Flush()
     eq(copy.components.health.maxhealth,700,'load health maximum')
     eq(copy.components.health.currenthealth,saved.health.health,'load current health')
-    eq(copy.components.xd_htz_lq.max,590,'load mana maximum')
+    eq(copy.components.xd_htz_lq.max,190,'load mana maximum')
     eq(copy.components.xd_htz_lq.current,saved.mana.current,'load mana current')
     saved={progress=copy.components.tbc_elixir_progress:OnSave(),health=copy.components.health:OnSave(),mana=copy.components.xd_htz_lq:OnSave()}
 end
