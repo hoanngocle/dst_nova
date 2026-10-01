@@ -71,18 +71,34 @@ function M.Install(env)
     end)
     if G.TheNet:IsDedicated() then return end
     local Widget=require("widgets/widget")
-    local TextButton=require("widgets/textbutton")
+    local ImageButton=require("widgets/imagebutton")
     env.AddClassPostConstruct("widgets/controls",function(controls)
         local root=controls:AddChild(Widget("CharacterInfoButtonRoot"))
         root:SetScaleMode(G.SCALEMODE_PROPORTIONAL)
-        root:SetHAnchor(G.ANCHOR_RIGHT)
-        root:SetVAnchor(G.ANCHOR_TOP)
-        root:SetPosition(-125,-265,0)
-        local button=root:AddChild(TextButton())
-        button:SetFont(G.BODYTEXTFONT)
-        button:SetTextSize(22)
-        button:SetText("Thông tin nhân vật")
-        button:SetHoverText("Chỉ số hiện tại và nguồn buff")
+        root:SetMaxPropUpscale(G.MAX_HUD_SCALE)
+        root:SetHAnchor(G.ANCHOR_LEFT)
+        root:SetVAnchor(G.ANCHOR_BOTTOM)
+        -- Third small medallion beside Nyx's skin and gem-storage buttons.
+        root:SetPosition(238.6,85,0)
+        local function Resize()
+            local frontend=G.TheFrontEnd
+            root:SetScale(frontend and frontend.GetHUDScale and frontend:GetHUDScale() or 1)
+        end
+        local original=controls.SetHUDSize
+        if original then
+            local function Pack(...) return {n=select('#',...),...} end
+            controls.SetHUDSize=function(self,...)
+                local result=Pack(original(self,...))
+                Resize()
+                return G.unpack(result,1,result.n)
+            end
+        end
+        Resize()
+        local button=root:AddChild(ImageButton("images/ttk_character_info_icon.xml","ttk_character_info_icon.tex"))
+        button.scale_on_focus=false
+        button.move_on_click=false
+        button:ForceImageSize(56,56)
+        button:SetHoverText("Thông tin nhân vật",{font=G.BODYTEXTFONT,font_size=17,offset_y=42})
         button:SetOnClick(function()
             if controls.owner~=G.ThePlayer or controls._ttk_info_screen then return end
             M.Reset(controls.owner)
@@ -92,6 +108,7 @@ function M.Install(env)
             G.TheFrontEnd:PushScreen(screen)
         end)
         controls.ttk_character_info_button=button
+        controls.ttk_character_info_root=root
     end)
 end
 

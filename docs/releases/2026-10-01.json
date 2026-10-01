@@ -16,12 +16,12 @@
     {
       "name": "Tiện Ích Tu Tiên",
       "directory": "TienIchTuTien_Steam_2026-09-27",
-      "version": "1.5.0",
-      "changes": "Bảng Information 4 mục, chỉ số từ server, nguồn buff và 6 bộ đếm linh dược.",
-      "package": "dist/releases-2026-10-01/TienIchTuTien_Steam_2026-09-27-1.5.0.zip",
-      "files": 46,
-      "bytes": 909070,
-      "sha256": "a59ceb7689fe7199ee59f82d4a4d448b7a697a7c4f2082731cc476b2495ca86b"
+      "version": "1.5.1",
+      "changes": "Information sáng và gọn 680x500, 10 dòng/trang; tooltip giới hạn theo nội dung; icon hồ sơ 56px cạnh skin/hòm đồ và theo HUD scale.",
+      "package": "dist/releases-2026-10-01/TienIchTuTien_Steam_2026-09-27-1.5.1.zip",
+      "files": 50,
+      "bytes": 2693889,
+      "sha256": "ed4604e0840086e156bf806d85448cbc257038e7c1226bc9895e53eecb7f9c48"
     },
     {
       "name": "Thần Khí Tu Tiên",
@@ -63,7 +63,8 @@
     "changed_lua_syntax_files": 44,
     "gameplay_session": "not run for this release",
     "story_cases": 21,
-    "full_package_integrity": "All ZIP members compared byte for byte against full runtime mod directories; ZIP CRC checks passed."
+    "full_package_integrity": "All ZIP members compared byte for byte against full runtime mod directories; ZIP CRC checks passed.",
+    "info_ui_patch": "Six Tiện Ích suites passed; native DST hover implementation verifies compact bounds; HUD owner/session and scale integration passed."
   },
   "upload": "Extract each ZIP and select its full mod directory in the DST Workshop uploader. Update server and every client with the same versions.",
   "notes": [

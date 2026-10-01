@@ -1,6 +1,6 @@
-# Tiện Ích Tu Tiên 1.5.0 — Thông tin nhân vật
+# Tiện Ích Tu Tiên 1.5.1 — Thông tin nhân vật
 
-Nhấn **Thông tin nhân vật** ở phía phải HUD, bên dưới cụm chỉ số. Bảng có bốn mục:
+Nhấn **icon hồ sơ bạc–tím** nhỏ ở góc dưới bên trái HUD, cạnh icon skin và hòm đồ của Nyx. Rê chuột lên icon sẽ hiện tên “Thông tin nhân vật”. Bảng sáng màu, kích thước 680×500, có bốn mục:
 
 - **Tổng quan:** máu hiện tại/tối đa sau phạt hồi sinh, đói, tinh thần, linh lực,
   cấp độ, cảnh giới và tài nguyên riêng được nhân vật cung cấp.
@@ -11,7 +11,7 @@ Nhấn **Thông tin nhân vật** ở phía phải HUD, bên dưới cụm chỉ
 - **Nguồn buff:** từng hệ số đang áp dụng, trang bị/cường hóa/đá thuộc tính,
   kỹ năng đang bật và buff tạm thời. Có thời gian còn lại nếu buff cung cấp bộ đếm.
 
-Rê chuột lên một dòng để đọc đầy đủ. Dùng **Trước / Sau** hoặc cuộn chuột để đổi
+Mỗi trang có 10 dòng. Rê chuột lên dòng bị rút gọn để xem tooltip gọn, tối đa 5 dòng. Dùng **Trước / Sau** hoặc cuộn chuột để đổi
 trang; nhấn **Esc**, nút **×** hoặc bấm ngoài bảng để đóng.
 
 ## Dữ liệu và cách đọc

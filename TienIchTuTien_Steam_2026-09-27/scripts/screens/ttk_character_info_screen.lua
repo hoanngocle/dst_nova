@@ -4,11 +4,11 @@ local Image=require("widgets/image")
 local ImageButton=require("widgets/imagebutton")
 local Text=require("widgets/text")
 local TextButton=require("widgets/textbutton")
-local PAGE_SIZE=12
+local PAGE_SIZE=10
 local TAB_NAMES={"Tổng quan","Tấn công","Phòng thủ","Nguồn buff"}
-local GOLD={.94,.79,.49,1}
-local WHITE={.90,.94,.94,1}
-local MUTED={.60,.69,.72,1}
+local GOLD={.36,.21,.48,1}
+local WHITE={.18,.16,.20,1}
+local MUTED={.40,.35,.39,1}
 
 local function Label(parent,size,text,x,y,colour)
     local label=parent:AddChild(Text(BODYTEXTFONT,size,text))
@@ -22,9 +22,22 @@ local function Button(parent,text,x,y,fn)
     button:SetFont(BODYTEXTFONT)
     button:SetTextSize(22)
     button:SetText(text)
+    button:SetTextColour(unpack(WHITE))
+    button:SetTextFocusColour(.55,.26,.67,1)
     button:SetPosition(x,y,0)
     button:SetOnClick(fn)
     return button
+end
+local function CompactHover(widget,text,parent)
+    widget:SetHoverText(text,{attach_to_parent=parent,font=BODYTEXTFONT,font_size=17,
+        bg_atlas="images/global.xml",bg_texture="square.tex",colour=WHITE,offset_y=65})
+    -- Native SetHoverText inflates its backdrop by 1.5x/2x on every refresh.
+    -- Measure bounded multiline text and size the backdrop to its actual contents.
+    widget.hovertext:SetScale(1)
+    widget.hovertext:SetMultilineTruncatedString(text,5,300,nil,true)
+    local w,h=widget.hovertext:GetRegionSize()
+    widget.hovertext_bg:SetSize(w+24,h+18)
+    widget.hovertext_bg:SetTint(.98,.96,.90,1)
 end
 
 local CharacterInfo=Class(Screen,function(self,owner,info,onclose)
@@ -37,44 +50,55 @@ local CharacterInfo=Class(Screen,function(self,owner,info,onclose)
     self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
     self.black.image:SetHAnchor(ANCHOR_MIDDLE)
     self.black.image:SetVAnchor(ANCHOR_MIDDLE)
-    self.black.image:SetTint(0,0,0,.65)
+    self.black.image:SetTint(0,0,0,.35)
     self.black:SetOnClick(function() self:Close() end)
     self.root=self:AddChild(Widget("CharacterInfoPanel"))
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.root:SetMaxPropUpscale(1)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     -- Consume clicks throughout the panel, including the space between rows.
+    local border=self.root:AddChild(Image("images/global.xml","square.tex"))
+    border:SetSize(688,508)
+    border:SetTint(.39,.29,.43,1)
+    border:SetClickable(false)
     local panel=self.root:AddChild(ImageButton("images/global.xml","square.tex"))
-    panel:ForceImageSize(900,600)
-    panel.image:SetTint(.045,.075,.085,.98)
+    panel:ForceImageSize(680,500)
+    panel.image:SetTint(.91,.88,.81,1)
     panel.scale_on_focus=false
     panel.move_on_click=false
     panel:SetOnClick(function() end)
-    Label(self.root,29,"THÔNG TIN NHÂN VẬT",0,254,GOLD)
-    self.close_button=Button(self.root,"×",410,254,function() self:Close() end)
+    Label(self.root,26,"THÔNG TIN NHÂN VẬT",0,210,GOLD)
+    self.close_button=Button(self.root,"×",310,210,function() self:Close() end)
     self.tabs={}
+    self.tab_backgrounds={}
     for i,name in ipairs(TAB_NAMES) do
-        self.tabs[i]=Button(self.root,name,(i-2.5)*205,204,function() self:SelectTab(i) end)
+        local background=self.root:AddChild(Image("images/global.xml","square.tex"))
+        background:SetPosition((i-2.5)*165,168,0)
+        background:SetSize(155,32)
+        background:SetClickable(false)
+        self.tab_backgrounds[i]=background
+        self.tabs[i]=Button(self.root,name,(i-2.5)*165,168,function() self:SelectTab(i) end)
     end
-    self.subtitle=Label(self.root,18,"Đang lấy chỉ số từ server…",0,162,MUTED)
+    self.subtitle=Label(self.root,17,"Đang lấy chỉ số từ server…",0,135,MUTED)
     self.rows={}
     for i=1,PAGE_SIZE do
         local root=self.root:AddChild(Widget("InfoRow"..i))
-        root:SetPosition(0,126-(i-1)*29,0)
+        root:SetPosition(0,108-(i-1)*26,0)
         local background=root:AddChild(Image("images/global.xml","square.tex"))
-        background:SetSize(850,28)
-        background:SetTint(.12,.19,.20,i%2==0 and .55 or .15)
-        local label=Label(root,19,"",-125,0)
-        label:SetRegionSize(560,26);label:SetHAlign(ANCHOR_LEFT)
-        local value=Label(root,19,"",290,0,GOLD)
-        value:SetRegionSize(235,26);value:SetHAlign(ANCHOR_RIGHT)
+        background:SetSize(630,25)
+        background:SetTint(.67,.61,.71,i%2==0 and .32 or .08)
+        local label=Label(root,19,"",-115,0)
+        label:SetRegionSize(390,24);label:SetHAlign(ANCHOR_LEFT)
+        local value=Label(root,19,"",210,0,GOLD)
+        value:SetRegionSize(200,24);value:SetHAlign(ANCHOR_RIGHT)
         self.rows[i]={root=root,label=label,value=value,background=background}
     end
-    Label(self.root,16,"Rê chuột lên dòng để xem đầy đủ • Thay đồ hoặc buff đổi sẽ tự cập nhật",0,-226,MUTED)
-    self.status=Label(self.root,16,"",0,-249,MUTED)
-    self.previous=Button(self.root,"‹ Trước",-300,-276,function() self:ChangePage(-1) end)
-    self.next=Button(self.root,"Sau ›",300,-276,function() self:ChangePage(1) end)
-    self.page_label=Label(self.root,19,"",0,-276)
+    Label(self.root,15,"Rê chuột trên dòng bị rút gọn để xem chi tiết",0,-172,MUTED)
+    self.status=Label(self.root,15,"",0,-194,MUTED)
+    self.previous=Button(self.root,"‹ Trước",-235,-222,function() self:ChangePage(-1) end)
+    self.next=Button(self.root,"Sau ›",235,-222,function() self:ChangePage(1) end)
+    self.page_label=Label(self.root,19,"",0,-222)
     self.default_focus=self.tabs[1]
     for i,tab in ipairs(self.tabs) do
         tab:SetFocusChangeDir(MOVE_LEFT,self.tabs[i-1] or self.close_button)
@@ -104,23 +128,30 @@ function CharacterInfo:Refresh()
     local entries=snapshot and snapshot.tabs[self.tab] or {}
     local count=math.max(1,math.ceil(#entries/PAGE_SIZE))
     self.page=math.max(1,math.min(count,self.page))
-    self.subtitle:SetTruncatedString(snapshot and snapshot.name or "Đang lấy chỉ số từ server…",810,nil,true)
+    self.subtitle:SetTruncatedString(snapshot and snapshot.name or "Đang lấy chỉ số từ server…",620,nil,true)
     self.status:SetString(snapshot and (snapshot.ghost and "Hồn ma • Chỉ số chiến đấu không áp dụng"
         or "Số liệu từ server • Làm mới mỗi 0,5 giây") or "Chưa có dữ liệu mới — đang kết nối lại")
     for i,widgets in ipairs(self.rows) do
         local row=entries[(self.page-1)*PAGE_SIZE+i]
         if row then
             widgets.root:Show()
-            widgets.label:SetTruncatedString(row[1],560,nil,true)
-            widgets.value:SetTruncatedString(row[2],235,nil,true)
-            widgets.background:SetHoverText(row[1].."\n"..row[2],
-                {font=BODYTEXTFONT,font_size=20,region_w=760,region_h=80,wordwrap=true})
-        else widgets.root:Hide() end
+            local label_fits=widgets.label:SetTruncatedString(row[1],390,nil,true)
+            local value_fits=widgets.value:SetTruncatedString(row[2],200,nil,true)
+            if not label_fits or not value_fits then
+                CompactHover(widgets.background,row[1].."\n"..row[2],self.root)
+            else widgets.background:ClearHoverText() end
+        else
+            widgets.background:ClearHoverText()
+            widgets.root:Hide()
+        end
     end
     self.page_label:SetString(string.format("%d / %d",self.page,count))
     if self.page>1 then self.previous:Enable() else self.previous:Disable() end
     if self.page<count then self.next:Enable() else self.next:Disable() end
-    for i,tab in ipairs(self.tabs) do tab:SetTextColour(unpack(i==self.tab and GOLD or MUTED)) end
+    for i,tab in ipairs(self.tabs) do
+        tab:SetTextColour(unpack(i==self.tab and GOLD or MUTED))
+        self.tab_backgrounds[i]:SetTint(.72,.64,.79,i==self.tab and .8 or .2)
+    end
 end
 function CharacterInfo:OnUpdate(dt)
     if self.closed then return end

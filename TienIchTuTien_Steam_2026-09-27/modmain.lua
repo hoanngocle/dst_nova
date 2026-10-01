@@ -1,5 +1,8 @@
 -- Sáu tiện ích cố định được tách từ Phàm Nhân Tu Tiên.
-Assets = {}
+Assets = {
+    Asset("ATLAS", "images/ttk_character_info_icon.xml"),
+    Asset("IMAGE", "images/ttk_character_info_icon.tex"),
+}
 
 modimport("main/ttk_stacksize.lua")
 modimport("main/ttk_qualityoflife.lua")
