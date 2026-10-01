@@ -1,6 +1,6 @@
 name = "Tiện Ích Tu Tiên"
 description = [[
-Phiên bản 1.4.1 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
+Phiên bản 1.5.0 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
 
 ★ Mở rộng túi đồ lên 45 ô
 ★ Xếp chồng vật phẩm tối đa 120
@@ -11,11 +11,12 @@ Phiên bản 1.4.1 - Một cuốn bí lục tập hợp những kỹ năng hỗ 
 ★ Mở rộng các cách trồng cây và nấm
 ★ Biển nhỏ tự hiện biểu tượng món đồ trong rương
 ★ Tooltip khi bật Thần Khí Tu Tiên: trang bị cường hóa và từng viên Đá Thuộc Tính
+★ Bảng Thông tin nhân vật: chỉ số hiện tại, trang bị và nguồn buff trực tiếp từ server
 
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.4.1"
+version = "1.5.0"
 
 api_version = 10
 dst_compatible = true

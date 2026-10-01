@@ -1,11 +1,21 @@
 name = 'Hầm Ngục Tu Tiên'
-description = 'Đấu trường Hầm Ngục, quái và boss từ Solo Leveling; phần thưởng Tu Tiên. Cần tạo thế giới mới khi cài lần đầu.'
-author = 'Nyx; nội dung Hầm Ngục gốc: Saikuno'
-version = '1.1.0'
+description = [[
+★ Phiên Bản 1.1.1 - Hầm Ngục Tu Tiên.
+
+★ Mỗi lượt có 2–10 đợt; đợt cuối gặp boss DST hoặc một trong sáu boss Solo Leveling.
+★ Thưởng Linh Thạch, mạch khoáng, Huyền Tinh và rương phần thưởng.
+★ Có 3 phút nhặt thưởng; cổng hồi sau 8 phút.
+
+Cần bật Tu Tiên và cài Hầm Ngục cho mọi người chơi.
+]]
+author = 'Nyx;'
+version = '1.1.1'
 api_version = 10
 dst_compatible = true
 all_clients_require_mod = true
 client_only_mod = false
 server_only_mod = false
+icon_atlas = 'modicon.xml'
+icon = 'modicon.tex'
 mod_dependencies = {{workshop='workshop-3721846643'}}
 server_filter_tags = {'tu tien','ham nguc'}

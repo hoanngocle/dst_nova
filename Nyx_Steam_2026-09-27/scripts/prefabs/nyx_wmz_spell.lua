@@ -90,8 +90,7 @@ local function settarget(inst,target,life,source)
                     blast.Transform:SetPosition(pos.x,pos.y,pos.z)
 
                     local weapon = inst
-					local damage = Xd_CalcDamage(source,220,target)
-					damage = require('util/nyx_skill_damage').Scale(source,'eternal_night',damage)
+					local damage = require('util/nyx_skill_damage').Calculate(source,'eternal_night',220,target)
 					if target.components.combat then
 						target.components.combat:GetAttacked(source,damage)
 					end
@@ -326,8 +325,7 @@ local function doaoe(inst,damage,range,aoepos,fn)
         for i,v in pairs(ents) do
             if v and v:IsValid() and v ~= inst and XD_CanAttackTrget(inst,v)
                 and (not fn or fn(inst,v,inst)) then
-                local damage = Xd_CalcDamage(inst,damage or 10,v)
-                damage = require('util/nyx_skill_damage').Scale(inst,'eternal_night',damage)
+                local damage = require('util/nyx_skill_damage').Calculate(inst,'eternal_night',damage or 10,v)
                 v.components.combat:GetAttacked(inst,damage)
             end
         end

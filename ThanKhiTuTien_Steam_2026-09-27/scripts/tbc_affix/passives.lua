@@ -70,10 +70,18 @@ function M.Reconcile(player, entries, strengthen)
     if health ~= nil and type(health.maxhealth) == "number"
         and health.SetMaxHealth ~= nil
         and (state.health_percent ~= stats.health_percent or state.body_health ~= body_health) then
-        local base = math.max(1, health.maxhealth - state.health_bonus)
+        local managed = health._tbc_elixir_resource == 'health'
+        local base = math.max(1, managed and health._tbc_elixir_base
+            or health.maxhealth - state.health_bonus)
         local bonus = base * stats.health_percent / 100 + body_health
         local percent = health.GetPercent ~= nil and health:GetPercent() or nil
-        health:SetMaxHealth(math.max(1, base + bonus))
+        if managed then
+            state.health_percent = stats.health_percent
+            state.body_health = body_health
+            health:SetMaxHealth(base)
+        else
+            health:SetMaxHealth(math.max(1, base + bonus))
+        end
         if percent ~= nil and health.SetPercent ~= nil then health:SetPercent(percent) end
         state.health_bonus = bonus
     end

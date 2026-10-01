@@ -32,13 +32,14 @@ G.TTK_EQUIPMENT_DETAIL_SOURCE = {
     stone_colour = Stone.Colour,
     weapon_preview = require("tbc_strengthen_effects").Preview,
     combat_stats = Combat.StatsForOwner,
+    preview_attack = Combat.PreviewAttack,
     flat_pierce = function(player, _, level)
         return Combat.SoloArmorPierce(player)
             + require("tbc_strengthen_effects").TrueDamage(level or 0)
     end,
 }
 
-PrefabFiles = { "tbc_items", "tbc_forge", "tbc_equipment_container", "tbc_suit_build",
+PrefabFiles = { "tbc_items", "tbc_elixirs", "tbc_forge", "tbc_equipment_container", "tbc_suit_build",
     "tbc_strengthen_shadow", "tbc_strengthen_light" }
 
 Assets = {
@@ -74,6 +75,8 @@ AddMinimapAtlas("images/hh_icon/hh_suit_build.xml")
 if modimport ~= nil then
     for _, path in ipairs({
         "scripts/tbc_combat.lua", "scripts/tbc_combat_math.lua",
+        "scripts/tbc_elixir/defs.lua", "scripts/tbc_elixir/resources.lua",
+        "scripts/tbc_elixir/install.lua", "scripts/components/tbc_elixir_progress.lua",
         "scripts/tbc_strengthen_effects.lua",
         "scripts/components/chasnicritchancer.lua",
         "scripts/ttk_lucnguyen_combat.lua", "scripts/ttk_lucnguyen_rules.lua",
@@ -269,6 +272,8 @@ AddPlayerPostInit(function(inst)
         end
     end
 end)
+
+require('tbc_elixir/install').Install(env, G)
 
 local function Say(player, message)
     local talker = player ~= nil and player.components ~= nil and player.components.talker or nil

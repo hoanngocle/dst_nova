@@ -21,3 +21,7 @@ GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/ttk_player_detail.
 local PlayerDetail = require("ttk_player_detail")
 AddPlayerPostInit(function(inst) PlayerDetail.Attach(inst, GLOBAL) end)
 modimport("main/ttk_item_detail.lua")
+for _, file in ipairs({"ttk_character_stats", "ttk_character_info", "screens/ttk_character_info_screen"}) do
+    GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/" .. file .. ".lua")
+end
+require("ttk_character_info").Install(env)

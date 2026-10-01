@@ -26,8 +26,10 @@ function M.Flags(entries)
 end
 
 function M.Has(player, status)
-    return player ~= nil and player._tbc_affix_immunity ~= nil
-        and player._tbc_affix_immunity[status] == true or false
+    if player == nil then return false end
+    local progress = player.components and player.components.tbc_elixir_progress
+    return player._tbc_affix_immunity ~= nil and player._tbc_affix_immunity[status] == true
+        or progress ~= nil and progress:HasImmunity(status) or false
 end
 
 local function Wrap(player, component_name, method, decorator)
@@ -45,7 +47,7 @@ local function Wrap(player, component_name, method, decorator)
     wrapped[component][method] = true
 end
 
-local function Install(player)
+function M.Install(player)
     Wrap(player, "temperature", "SetTemperature", function(original)
         return function(self, value, ...)
             if type(value) == "number" then
@@ -107,7 +109,7 @@ function M.Reconcile(player, entries)
     if player == nil then return {} end
     local flags = M.Flags(entries)
     player._tbc_affix_immunity = flags
-    Install(player)
+    M.Install(player)
     return flags
 end
 

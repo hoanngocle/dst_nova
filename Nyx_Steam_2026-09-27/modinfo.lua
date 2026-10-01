@@ -1,6 +1,7 @@
 name='Nyx'
 description=[[
 NYX — TỬ TIÊU TIÊN ẢNH
+Phiên bản 1.4.6
 Nữ tu điều khiển linh hoa và sức mạnh tu tiên. Tu luyện theo cảnh giới, mở năng lực theo cấp và tùy chọn 36 ngoại hình.
 
 CHỈ SỐ NỀN
@@ -13,7 +14,8 @@ Phím kỹ năng: R (Lĩnh Vực), T (Tam Diễm), H (Hoàng Hà), G (Tụ Linh)
 ★ Tam Diễm Phiến: 5 luồng lửa hình quạt và hỏa diễm tỏa quanh người; mở ở Trúc Cơ Tiền Kỳ. Tốn 40 Linh Lực, hồi 30 giây.
 ★ Cửu Khúc Hoàng Hà Trận: dựng trận quanh người, gây sát thương, làm chậm và hồi máu theo bản gốc Vân Tiêu; mở ở Trúc Cơ Hậu Kỳ. Tốn 40 Linh Lực, hồi 40 giây.
 ★ Tàn Dạ: hỏa diễm truy đuổi; mở ở Kết Đan Tiền Kỳ. Sát thương gốc ×2. Tốn 50 Linh Lực, hồi 50 giây.
-★ Huyền Thiên Trảm Linh Kiếm: kiếm trận; mở ở Nguyên Anh Tiền Kỳ. Sát  Tốn 80 Linh Lực, hồi chiêu 60 giây.
+★ Huyền Thiên Trảm Linh Kiếm: kiếm trận; mở ở Nguyên Anh Tiền Kỳ. Tốn 80 Linh Lực, hồi chiêu 60 giây.
+★ 5 chiêu chiến đấu tính theo vũ khí hiện tại và buff sát thương từ Tu Tiên/Thành Tựu.
 ★ Tử Phong Tụ Linh: thu gom từ cấp 10; bán kính 6, tăng 0,5 mỗi 10 cấp (tăng 1 ở cấp 50, 70 và 100), tối đa 12 ở cấp 100.
 ★ Tử Tiêu Thần Nhãn: nhìn đêm từ cấp 30; tiêu hao 4/3/2/1 Linh Lực mỗi giây ở cấp 30/50/70/100.
 ★ Tinh Vũ Nguyệt Dực: tăng tốc, đi trên nước ngoài hang từ cấp 50; tiêu hao 4/3/2/1 Linh Lực mỗi giây ở cấp 50/70/90/100.
@@ -25,7 +27,7 @@ Khô Vinh Song Sinh và Vạn Linh Phiên, nhận khi tạo nhân vật mới.
 YÊU CẦU: [Tu Tiên], Việt Hóa Tu Tiên
 ]]
 author='Nyx'
-version='1.4.5'
+version='1.4.6'
 api_version=10
 dst_compatible=true
 all_clients_require_mod=true

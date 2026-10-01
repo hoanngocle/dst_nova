@@ -50,6 +50,7 @@ function A.Prepare(owner,id,p)
                 if not fx then return false end
                 fx.Transform:SetPosition(x,0,z); fx.targets=targets
                 if k==-45 or k==45 then fx.build='xd_htz_firefx' end
+                SkillDamage.MarkNative(fx,owner,'triflame_fan')
                 fx:SetFlamethrowerAttacker(owner); fx.baseangle=angle; fx.addangle=k
                 self:Later(8.1,function() if fx:IsValid() then fx:KillFX() end end)
             end

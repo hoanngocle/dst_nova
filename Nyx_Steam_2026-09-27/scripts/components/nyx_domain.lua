@@ -34,6 +34,7 @@ function NyxDomain:Activate()
     local old=owner._xd_luoshen_shentong_buff
     if old and old:IsValid() then old:Remove() end
     SkillDamage.Begin(owner,'absolute_domain')
+    SkillDamage.MarkNative(buff,owner,'absolute_domain')
     buff:SetOwner(owner)
     circle:SetOwner(owner)
     self.active=true

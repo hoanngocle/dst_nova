@@ -120,6 +120,16 @@ function M.SoloArmorPierce(attacker)
     return effects ~= nil and math.max(0, effects:Get("trueDamageNum")) or 0
 end
 
+-- Read-only, target-independent preview. Never roll procs or invoke GetAttacked.
+function M.PreviewAttack(attacker, weapon, damage)
+    local preview = M.SoloDamage(attacker, nil, damage, function() return 1 end)
+    preview = AffixCombat.AdjustDamage(attacker, weapon, preview)
+    local packet = AffixCombat.AugmentHit(attacker, nil, weapon, preview)
+    local stats = M.StatsForOwner(attacker, weapon)
+    return {damage = preview, pierce_percent = stats.pierce,
+        affix_pierce = packet.tbc_armor_pierce or 0}
+end
+
 function M.SoloOnHit(attacker, damage)
     local effects = OwnerEffects(attacker)
     if effects == nil or type(damage) ~= "number" or damage <= 0 then return end
@@ -175,6 +185,9 @@ function M.Install(combat, achievement_enabled, rng)
     if combat._tbc_damage_wrapper ~= nil then return end
     local original = combat.GetAttacked
     local wrapper = function(self, attacker, damage, weapon, stimuli, spdamage, ...)
+        if self.inst ~= nil and self.inst.HasTag ~= nil and self.inst:HasTag('player') then
+            damage = M.SoloDefense(self.inst, damage)
+        end
         if attacker == nil or attacker.HasTag == nil or not attacker:HasTag("player")
             or type(damage) ~= "number" or damage <= 0
             or stimuli == "ttk_lucnguyen_auxiliary"
@@ -185,7 +198,7 @@ function M.Install(combat, achievement_enabled, rng)
             return original(self, attacker, damage, weapon, stimuli, spdamage, ...)
         end
         if self.inst ~= nil and self.inst.HasTag ~= nil and self.inst:HasTag("player") then
-            return original(self, attacker, M.SoloDefense(self.inst, damage),
+            return original(self, attacker, damage,
                 weapon, stimuli, spdamage, ...)
         end
         damage = M.SoloDamage(attacker, self.inst, damage, rng)

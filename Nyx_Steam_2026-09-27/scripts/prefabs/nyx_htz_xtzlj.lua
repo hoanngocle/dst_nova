@@ -8,8 +8,7 @@ local function doaoe(inst,damage,range,aoepos,fn)
         for i,v in pairs(ents) do
             if v and v:IsValid() and v ~= inst and XD_CanAttackTrget(inst,v)
                 and (not fn or fn(inst,v,inst)) then
-                local damage = Xd_CalcDamage(inst,damage or 10,v)
-                damage = require('util/nyx_skill_damage').Scale(inst,'spirit_sword',damage)
+                local damage = require('util/nyx_skill_damage').Calculate(inst,'spirit_sword',damage or 10,v)
                 v.components.combat:GetAttacked(inst,damage)
             end
         end

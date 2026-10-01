@@ -32,6 +32,7 @@ for _, achievement in ipairs(require "constants/novaachievements") do
         current = achievement.current,
         coinget = achievement.coinget,
         type = achievement.type,
+        persistent = achievement.persistent,
     }
 end
 

@@ -1216,13 +1216,15 @@ function allachivevent:allget(inst)
 					end)
 					if self.completeamount < _G.PLAYS_CONFIG then
 						for achname, ach in pairs(ach_lists) do
-							self[achname] = false
+							if not ach.persistent then
+								self[achname] = false
 
-							if ach.current and achname ~= "complete" and string.sub(achname, 1, 4) ~= "task" then
-								self[achname.."amount"] = 0
-							end
-							if ach.list then
-								self[achname.."list"] = chasni_copylist(ach_list_lists[achname])
+								if ach.current and achname ~= "complete" and string.sub(achname, 1, 4) ~= "task" then
+									self[achname.."amount"] = 0
+								end
+								if ach.list then
+									self[achname.."list"] = chasni_copylist(ach_list_lists[achname])
+								end
 							end
 						end
 

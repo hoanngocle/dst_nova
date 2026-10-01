@@ -34,6 +34,7 @@ function M.Prepare(owner)
         local scale=math.sqrt(math.sqrt(2*width*width)/12)
         self.ring.Transform:SetScale(scale,scale,scale)
         self.zone.owner=owner
+        SkillDamage.MarkNative(self.zone,owner,'yellow_river')
         SkillDamage.Begin(owner,'yellow_river')
         for _,event in ipairs({'death','ms_becameghost','onremove'}) do
             self.zone:ListenForEvent(event,function() self:Cancel() end,owner)

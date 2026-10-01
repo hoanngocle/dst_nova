@@ -1,6 +1,6 @@
 # Hầm Ngục Tu Tiên
 
-Bản `1.1.0`: mod Hầm Ngục riêng cho Don't Starve Together, tách từ Solo Leveling 2.2.7 của Saikuno. Cần **tạo thế giới mới khi cài lần đầu**, bật Tu Tiên (`3721846643`) trên server và cài mod này cho tất cả client. Solo Leveling không cần bật. Nâng từ bản 0.1.x/1.0.0 trên world đã có arena chỉ cần cập nhật mod trên server và mọi client, rồi khởi động lại game.
+Bản `1.1.1`: mod Hầm Ngục riêng cho Don't Starve Together, tách từ Solo Leveling 2.2.7 của Saikuno. Bản này cập nhật icon, ảnh preview và mô tả phát hành. Cần **tạo thế giới mới khi cài lần đầu**, bật Tu Tiên (`3721846643`) trên server và cài mod này cho tất cả client. Solo Leveling không cần bật. Nâng từ bản 0.1.x/1.0.0/1.1.0 trên world đã có arena chỉ cần cập nhật mod trên server và mọi client, rồi khởi động lại game.
 
 ## Cài đặt
 

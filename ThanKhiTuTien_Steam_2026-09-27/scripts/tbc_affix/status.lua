@@ -13,6 +13,7 @@ local function Alive(target)
 end
 
 local function Immune(target, status)
+    if require('tbc_affix/immunity').Has(target, status) then return true end
     local flags = target._tbc_affix_immunity
     if flags ~= nil and flags[status] then return true end
     local components = target.components or {}

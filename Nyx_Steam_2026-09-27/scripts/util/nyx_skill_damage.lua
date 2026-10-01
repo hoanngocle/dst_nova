@@ -1,11 +1,5 @@
 local SkillDamage = {}
 
-local NATIVE_SOURCES = {
-    absolute_domain = {"luoshen", "shentong_fx"},
-    triflame_fan = {"htz_firefx"},
-    yellow_river = {"yunxiao", "jjj_aoeent"},
-}
-
 local LEVEL_RATES = {
     absolute_domain = 0.3,
     triflame_fan = 0.25,
@@ -20,26 +14,19 @@ local function IsFiniteNonnegative(value)
 end
 
 function SkillDamage.Begin(owner, skill)
-    local components = owner.components or {}
-    local inventory = components.inventory
-    local weapon = inventory ~= nil and inventory:GetEquippedItem(EQUIPSLOTS ~= nil and EQUIPSLOTS.HANDS or nil) or nil
-    local weapon_component = weapon ~= nil and weapon.components ~= nil
-        and weapon.components.weapon or nil
-    local damage = 0
-    local found = false
-    if weapon_component ~= nil and weapon_component.GetDamage ~= nil then
-        local ok, result = pcall(weapon_component.GetDamage, weapon_component, owner)
-        if ok and IsFiniteNonnegative(result) then
-            damage = result
-            found = true
-        end
-    end
-    if not found and weapon_component ~= nil
-        and IsFiniteNonnegative(weapon_component.damage) then
-        damage = weapon_component.damage
-    end
     owner._nyx_skill_damage_bonus = owner._nyx_skill_damage_bonus or {}
-    owner._nyx_skill_damage_bonus[skill] = damage
+    owner._nyx_skill_damage_bonus[skill] = true
+end
+
+local function WeaponDamage(owner, target)
+    local inventory = owner.components ~= nil and owner.components.inventory or nil
+    local weapon = inventory ~= nil and inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+    local component = weapon ~= nil and weapon.components ~= nil and weapon.components.weapon or nil
+    if component ~= nil and component.GetDamage ~= nil then
+        local ok, result = pcall(component.GetDamage, component, owner, target)
+        if ok and IsFiniteNonnegative(result) then return result end
+    end
+    return component ~= nil and IsFiniteNonnegative(component.damage) and component.damage or 0
 end
 
 function SkillDamage.End(owner, skill)
@@ -60,57 +47,56 @@ local function LevelMultiplier(owner, skill)
     return 1 + rate * steps
 end
 
-function SkillDamage.Scale(owner, skill, damage)
-    local bonuses = owner ~= nil and owner._nyx_skill_damage_bonus or nil
+local function SkillBase(owner, skill, damage, target)
+    local active = owner ~= nil and owner._nyx_skill_damage_bonus or nil
     return damage * LevelMultiplier(owner, skill)
-        + (bonuses ~= nil and bonuses[skill] or 0)
+        + (active ~= nil and active[skill] and WeaponDamage(owner, target) or 0)
 end
 
-function SkillDamage.ScaleNative(owner, damage, source)
-    if owner == nil or owner.prefab ~= "nyx" or type(source) ~= "string" then
-        return damage
-    end
-    local bonuses = owner._nyx_skill_damage_bonus
-    if bonuses == nil then return damage end
-    source = string.lower(source)
-    for skill, fragments in pairs(NATIVE_SOURCES) do
-        if bonuses[skill] ~= nil then
-            local correct_domain_buff = true
-            if skill == "absolute_domain" then
-                local domain = owner.components ~= nil and owner.components.nyx_domain or nil
-                local buff = domain ~= nil and domain.effects[1] or nil
-                correct_domain_buff = buff ~= nil and buff:IsValid()
-            end
-            local matches = true
-            for _, fragment in ipairs(fragments) do
-                if not string.find(source, fragment, 1, true) then
-                    matches = false
+function SkillDamage.Calculate(owner, skill, damage, target, ...)
+    -- Native Tu Tien applies potion, Achievement and target modifiers once,
+    -- including to the weapon contribution. Never add damage after that call:
+    -- doing so bypasses both attack buffs and native alwaysblock/PvP handling.
+    return Xd_CalcDamage(owner, SkillBase(owner, skill, damage, target), target, ...)
+end
+
+function SkillDamage.MarkNative(effect, owner, skill)
+    effect._nyx_damage_owner = owner
+    effect._nyx_damage_skill = skill
+end
+
+local installed_hook
+function SkillDamage.InstallNativeHook(global)
+    local original = global.Xd_CalcDamage
+    if type(original) ~= 'function' or original == installed_hook then return end
+    installed_hook = function(owner, damage, target, ...)
+        if owner ~= nil and owner.prefab == 'nyx'
+            and owner._nyx_skill_damage_bonus ~= nil and type(damage) == 'number'
+            and debug ~= nil and debug.getlocal ~= nil then
+            -- Tu Tien 18.1 domain/river/flame callbacks expose their effect as
+            -- local `inst`. Flame hitboxes have the marked emitter as owner.
+            -- Use instance identity, not filenames: the flame code is shared
+            -- by other attacks and all three skills may run simultaneously.
+            local index = 1
+            while true do
+                local name, effect = debug.getlocal(2, index)
+                if name == nil then break end
+                if name == 'inst' and type(effect) == 'table' then
+                    local marked = effect._nyx_damage_skill ~= nil and effect or effect.owner
+                    if type(marked) == 'table' and marked._nyx_damage_owner == owner then
+                        local skill = marked._nyx_damage_skill
+                        if LEVEL_RATES[skill] ~= nil and owner._nyx_skill_damage_bonus[skill] then
+                            damage = SkillBase(owner, skill, damage, target)
+                        end
+                    end
                     break
                 end
-            end
-            if matches and correct_domain_buff then
-                return damage * LevelMultiplier(owner, skill) + bonuses[skill]
+                index = index + 1
             end
         end
+        return original(owner, damage, target, ...)
     end
-    return damage
-end
-
-function SkillDamage.InstallNativeHook(add_component_post_init)
-    add_component_post_init("combat", function(combat)
-        local original = combat.GetAttacked
-        combat.GetAttacked = function(self, attacker, damage, weapon, stimuli, ...)
-            if attacker ~= nil and attacker.prefab == "nyx"
-                and attacker._nyx_skill_damage_bonus ~= nil
-                and type(damage) == "number" and weapon == nil
-                and debug ~= nil and debug.getinfo ~= nil then
-                local caller = debug.getinfo(2, "S")
-                damage = SkillDamage.ScaleNative(attacker, damage,
-                    caller ~= nil and caller.source or nil)
-            end
-            return original(self, attacker, damage, weapon, stimuli, ...)
-        end
-    end)
+    global.Xd_CalcDamage = installed_hook
 end
 
 local function Pack(...)

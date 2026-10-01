@@ -1,0 +1,77 @@
+{
+  "source_workshop_id": "3780347550",
+  "source_version": "2.2.7",
+  "source_directory": "3780347550",
+  "use": "Six tbc_elixir_* visuals; original timed potion scripts are not copied.",
+  "files": [
+    {
+      "path": "anim/hh_dungeon_potions.zip",
+      "sha256": "db256e8a9f707e12dddff4542cfccfa28daeeb58c5eed645f9b8fd868e5dd72c"
+    },
+    {
+      "path": "images/potions/hh_thuoc_suc_manh.xml",
+      "sha256": "9a50b073e54bf9abd4b286047a2fa0eab68c15858e428a88d4f95ea52ebc477b"
+    },
+    {
+      "path": "images/potions/hh_thuoc_suc_manh.tex",
+      "sha256": "3d94dac21cc1b595f3ff9eac8eb35db85b69e1ed28b171a3afacb9122050041f"
+    },
+    {
+      "path": "images/potions/hh_thuoc_sinh_menh.xml",
+      "sha256": "41c2ae9757d0b4d76228d199fe47f4b4df1ade8905255bf871ef3bc904ae9232"
+    },
+    {
+      "path": "images/potions/hh_thuoc_sinh_menh.tex",
+      "sha256": "10765c7c01b6e75d318e47009d548c6323f5e71313d54529e9de9574aa19e24c"
+    },
+    {
+      "path": "images/potions/hh_thuoc_ma_luc.xml",
+      "sha256": "12940ecb7de102a8aeb38d5c4857fe36598525ed599dcf3e59b5a2f1f90658b2"
+    },
+    {
+      "path": "images/potions/hh_thuoc_ma_luc.tex",
+      "sha256": "7598e23a2eec47a1a84b88202d3f146252b8b342f3179ae383939e5a3d5a1cba"
+    },
+    {
+      "path": "images/potions/hh_thuoc_ho_the.xml",
+      "sha256": "7bfdd4963784d6f9d1aa5c47c9f3992998dfe27ab4352461138ddce28befadd6"
+    },
+    {
+      "path": "images/potions/hh_thuoc_ho_the.tex",
+      "sha256": "5afe961031227786a6566e410ded977e5b17d50c65f413daf856284f09bcbf2c"
+    },
+    {
+      "path": "images/potions/hh_thuoc_phong_toc.xml",
+      "sha256": "fe5b5e11b5e9089cf400fce17caa1c72ffbfe6d3e35ba6f2e4de84207785b787"
+    },
+    {
+      "path": "images/potions/hh_thuoc_phong_toc.tex",
+      "sha256": "30e40d2a6a25ded06c74b3bff38d8f4fc5cb05b37032969e7a10d345b48b9551"
+    },
+    {
+      "path": "images/potions/hh_thuoc_bao_kich.xml",
+      "sha256": "e9f0644218b0510285cea9046a2a3ac356a58e881e6389215f0d03745fdab0d9"
+    },
+    {
+      "path": "images/potions/hh_thuoc_bao_kich.tex",
+      "sha256": "473ac57456c1561597cd1a5242e71d5071107c8d8c912618a029500d1ff0c6aa"
+    }
+  ],
+  "verified_boss_loot": {
+    "xd_baihu": "xd_baihu_skin",
+    "xd_jfsn": "xd_fs",
+    "xd_qlch": "xd_qlr",
+    "xd_spiderqueen": "xd_spider_leg",
+    "xd_qxdx": "xd_npxsz"
+  },
+  "loot_source_workshop_id": "3721846643",
+  "loot_source_version": "18.1",
+  "verified_dst_boss_loot": {
+    "dragonfly": "dragon_scales",
+    "beequeen": "royal_jelly",
+    "deerclops": "deerclops_eyeball",
+    "bearger": "bearger_fur",
+    "moose": "goose_feather"
+  },
+  "dst_loot_source": "Installed DST data/databundles/scripts.zip, scripts/prefabs/<boss>.lua SetSharedLootTable"
+}

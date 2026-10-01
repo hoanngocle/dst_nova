@@ -44,6 +44,34 @@ local function alive(inst)
 end
 
 local function attach(inst, component)
+    local latest_elixir_counts
+    local function update_elixirs(_, data)
+        if data and type(data.counts) == "table" then latest_elixir_counts = data.counts end
+        local progress = inst.components.tbc_elixir_progress
+        for _, achievement in ipairs(by_tracker.tbc_elixir_progress or {}) do
+            local amount = progress and progress:GetCount(achievement.params.key)
+                or latest_elixir_counts and latest_elixir_counts[achievement.params.key]
+            if component[achievement.id] then
+                component[achievement.id .. "amount"] = achievement.current
+            elseif type(amount) == "number" and amount == amount then
+                amount = math.max(0, math.min(achievement.current, math.floor(amount)))
+                component[achievement.id .. "amount"] = amount
+                if amount >= achievement.current then
+                    if component.isready then
+                        component:CheckAchievement(inst, achievement.id)
+                    else
+                        -- Re-read the current authority after save/reroll data has loaded.
+                        inst:DoTaskInTime(3.01, update_elixirs)
+                    end
+                end
+            end
+        end
+    end
+    inst:ListenForEvent("tbc_elixir_progress", update_elixirs)
+    inst:DoTaskInTime(0, update_elixirs)
+    -- The original achievement component imports reroll data three seconds after Init.
+    inst:DoTaskInTime(3.2, update_elixirs)
+
     inst:ListenForEvent("oneat", function(_, data)
         if data and data.food then record(inst, component, "eat_prefabs", data.food.prefab) end
     end)

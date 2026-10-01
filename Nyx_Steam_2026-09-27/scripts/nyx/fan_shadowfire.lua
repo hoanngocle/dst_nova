@@ -91,8 +91,7 @@ local function settarget(inst,target,life,source)
                     blast.Transform:SetPosition(pos.x,pos.y,pos.z)
 
                     local weapon = inst
-					local damage = Xd_CalcDamage(source,110,target)
-					damage = SkillDamage.Scale(source,'triflame_fan',damage)
+					local damage = SkillDamage.Calculate(source,'triflame_fan',110,target)
 					if target.components.combat then
 						target.components.combat:GetAttacked(source,damage)
 					end

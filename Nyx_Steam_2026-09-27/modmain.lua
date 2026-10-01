@@ -24,7 +24,9 @@ STRINGS.NAMES.NYX='Nyx'
 STRINGS.SKIN_NAMES.nyx_none='Nyx'
 AddModCharacter('nyx','FEMALE',{{type='ghost_skin',anim_bank='ghost',idle_anim='idle',scale=.75,offset={0,-25}}})
 require('nyx/register_effects')
-require('util/nyx_skill_damage').InstallNativeHook(AddComponentPostInit)
+AddSimPostInit(function()
+    if TheWorld.ismastersim then require('util/nyx_skill_damage').InstallNativeHook(G) end
+end)
 AddPrefabPostInit('wilson',require('nyx/dps_compat').Protect)
 local Router=require('nyx/input')
 AddModRPCHandler('NYX','IMMEDIATE',function(player,id)
