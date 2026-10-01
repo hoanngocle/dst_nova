@@ -1,10 +1,33 @@
 {
   "date": "2026-09-30",
+  "release": {
+    "version": "1.1.0",
+    "date": "2026-10-01",
+    "based_on": "1.0.0",
+    "change": "Three additional Solo bosses with Tu Tien balance, phase-safe Guardian and arena-owned effects. Includes prior Igris build fix."
+  },
   "engine_evidence_version": "0.1.0-dev",
+  "igris_build_update": {
+    "version": "0.1.2-dev",
+    "date": "2026-10-01",
+    "scope": "Igris build collision only; boss and corpse use hn_igris_build, bank boarrior unchanged.",
+    "asset_tests_red_before_fix": 2,
+    "asset_tests_passed": 2,
+    "lua_tests_passed": 32,
+    "lua_syntax_files_passed": 73,
+    "dependency_check_passed": true,
+    "preservation": "Original anim.bin, atlas-0.tex and BILD bytes except the length-prefixed build name are unchanged.",
+    "engine_rerun": false,
+    "client_visual_verified": false
+  },
   "balance_update": {
     "version": "0.1.1-dev",
     "date": "2026-09-30",
-    "base_hp": { "hn_sharkboi": 20000, "hn_igris": 30000, "hn_beru": 40000 },
+    "base_hp": {
+      "hn_sharkboi": 20000,
+      "hn_igris": 30000,
+      "hn_beru": 40000
+    },
     "lua_tests_passed": 32,
     "lua_syntax_files_passed": 73,
     "dependency_check_passed": true,
@@ -200,5 +223,36 @@
       ],
       "sha256": "92fe7d919eb7971f2edca5a6ebca9872aefe5bddfa259fb1f126e92acf2d3c25"
     }
-  ]
+  ],
+  "extra_bosses_update": {
+    "version": "1.1.0",
+    "date": "2026-10-01",
+    "lua_tests_passed": 44,
+    "asset_tests_passed": 2,
+    "lua_syntax_files_passed": 87,
+    "dependency_check_passed": true,
+    "runtime_lua_sha256": "6b4c408a91987c5ad402fe99a7850969e10dba8b418f661dabe247919a35ba3a",
+    "engine_build": 747465,
+    "full_stack": [
+      "Tu Tien 18.1.0",
+      "Than Khi Tu Tien",
+      "Nyx",
+      "Cong Trinh Tu Tien",
+      "Thanh Tuu"
+    ],
+    "engine_checks_passed": 37,
+    "engine_log": "release-full-green.log",
+    "engine_log_sha256": "c057e53d2bb13c92a9763a0b19dc352704afb7c56683c02460db3a694bbcd112",
+    "regression_red_log": "regression-red-2.log",
+    "regression_red_failures": 4,
+    "regression_green_log": "regression-green.log",
+    "regression_green_checks": 4,
+    "independent_review": "3 findings (2 P1, 1 P2), all fixed with regression checks; no deferred minors.",
+    "scope": "Skill-family execution, real phase health/death ordering and one clear reward, four-second wall lifetime, cleanup/reset, attack/FX owner scaling; source-module realm transition test.",
+    "client_visual_verified": false,
+    "two_client_verified": false,
+    "simultaneous_solo_enabled_verified": false,
+    "live_combat_balance_verified": false,
+    "known_unrelated_warnings": "Full stack still logs duplicate builds from Tu Tien/Nyx/Achievement/vanilla assets; no Igris collision or missing-animation warning in this run."
+  }
 }

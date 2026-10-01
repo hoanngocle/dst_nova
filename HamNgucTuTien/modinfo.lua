@@ -1,7 +1,7 @@
 name = 'Hầm Ngục Tu Tiên'
-description = 'Đấu trường Hầm Ngục, quái và boss từ Solo Leveling; phần thưởng Tu Tiên. Cần tạo thế giới mới. Bản phát triển.'
+description = 'Đấu trường Hầm Ngục, quái và boss từ Solo Leveling; phần thưởng Tu Tiên. Cần tạo thế giới mới khi cài lần đầu.'
 author = 'Nyx; nội dung Hầm Ngục gốc: Saikuno'
-version = '0.1.1-dev'
+version = '1.1.0'
 api_version = 10
 dst_compatible = true
 all_clients_require_mod = true

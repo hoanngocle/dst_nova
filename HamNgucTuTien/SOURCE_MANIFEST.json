@@ -382,6 +382,114 @@
       "source": "anim/rock_treasure.zip",
       "target": "anim/rock_treasure.zip",
       "sha256": "37912d0f5faa9e0099d25a8d660a014d4f63b40af05495e769959c1e1080e88f"
+    },
+    {
+      "source": "scripts/enums/hh_boss.lua",
+      "target": "scripts/hn_dungeon/extra_boss_defs.lua",
+      "sha256": "7c5895c44583d771729c57d047ee12c829eeea445f45d3d1985207d4210b2867",
+      "adaptation": "Only two pig definitions; 25k/30k HP, no Solo components/loot/sleep removal."
+    },
+    {
+      "source": "scripts/stategraphs/SGhh_beetle_pig.lua",
+      "target": "scripts/stategraphs/SGhn_beetle_pig.lua",
+      "sha256": "315b6704b0ff1428106bf72968feec11a4b6d21f2296afd62fd08ffb2ef8e09a",
+      "adaptation": "Keep original combo/jump/strong/control states; registered arena targets, speed-only buff, no destruction."
+    },
+    {
+      "source": "scripts/stategraphs/SGhh_dual_wield_pig.lua",
+      "target": "scripts/stategraphs/SGhn_dual_wield_pig.lua",
+      "sha256": "a48db6879c91d3d8763261b5ea3ffcc8c0292a3ae72382e5e16e2b471412237d",
+      "adaptation": "Keep combo/spin/wall states; arena targets, temporary owned walls, no destruction."
+    },
+    {
+      "source": "scripts/prefabs/minotau.lua",
+      "target": "scripts/prefabs/hn_minotau.lua",
+      "sha256": "6496432106498ab11310aa6d6245367fee5adecf41018d1de0e185787476acaa",
+      "adaptation": "Rewrite around local tuning and health-floor phase component; no ruins/regen/chest/global hooks."
+    },
+    {
+      "source": "scripts/brains/minotaubrain.lua",
+      "target": "scripts/brains/hn_minotaubrain.lua",
+      "sha256": "cab6f05132e428c1d59bd44cd84077ff94c068e1ac8a2a9befafcf6992c7f1e5",
+      "adaptation": "Readable health/phase attack selector scoped to registered arena targets."
+    },
+    {
+      "source": "scripts/stategraphs/SGminotau.lua",
+      "target": "scripts/stategraphs/SGhn_minotau.lua",
+      "sha256": "4d1e850575a4e8a7d32a6d89bb7c3ebff9d29b04ada392ab77437b5de11d5778",
+      "adaptation": "Readable arena attack sequence, two phases on one entity, safe motion, tracked effects; visual timing may differ."
+    },
+    {
+      "source": "scripts/prefabs/minotaurattachedfire_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "bdfea4786f8bc72e3c0f549fac7a01f423e6070ef57f8ae9a180192e066c64de",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaurfirecharge_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "f7a3daf8534cbcb17319144aed4f861ed1d7e1e84023f7008276b267fe7a3e37",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaurfirering_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "477fedc0e738b99cd1c6771ceadd93d3d9db6b67b214a2a451a257f55d4943bb",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaurfiresplash_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "2e1935afd1bc18d78c82a0bdfba81dc764977f27a474be6d247dcd2de1b62e9c",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaurtarget_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "6d0b08d0891018954a4284c9b40d3fd74f4dbec81cbafcdd443b875475042f9e",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaurteleportpost_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "628fbcf4fab5f83dd430facce906729472697e4aebb0b8a2c04ff24d418a99ff",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaurteleport_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "5989ad8851005049e49152801a44e53715921a3262d123a712f06ca517183982",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaurtransform_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "395bc229e3265e8975e77172e0660ca85b88fd607a58aef7f835b9c60e325302",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaur_deadlyshockwave.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "49b224cf625123f4480aac2201593f628470bcbf4b9d78c2dbb45c527bdebf0f",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaur_shadowblaze.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "8a339a0c716b42b351e245cf78c53bd5d9d5f93ace7750b335b8bf17710774b0",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/minotaur_weakeningfx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "a7c8b0d02d8942f41de02e77d3a38f392945ed989151d9face9170030814b2b6",
+      "adaptation": "Use source visual palette; damage delegated to living owner, bounded tasks, no percent-health/sanity/inventory damage."
+    },
+    {
+      "source": "scripts/prefabs/shadowpoundring_fx.lua",
+      "target": "scripts/prefabs/hn_minotau_fx.lua",
+      "sha256": "ccc255e909bad0ae48cb1d3a2a72217c413080e0bea011ea3812dc17367ba7db",
+      "adaptation": "Networked visual only, tracked and bounded lifetime."
     }
   ],
   "boss_states": {
@@ -463,6 +571,39 @@
     "scripts/hn_dungeon/ice_defs.lua": "Only shark ice FX entries and required helpers.",
     "scripts/hn_dungeon/waves.lua": "Original pools and difficulty boundary; all reward behavior implemented separately.",
     "scripts/prefabs/hn_ice_fx.lua": "Factory adapted from source factory shape; restricted to ice_defs.",
-    "animations": "Keep original bank/build names, no whole-mod source runtime dependency."
+    "animations": "Keep original bank/build names except Igris uses hn_igris_build from 0.1.2-dev to avoid the vanilla Boarrior build collision; no whole-mod source runtime dependency."
+  },
+  "asset_adaptations": {
+    "anim/igris_dungeon.zip": {
+      "version": "0.1.2-dev",
+      "date": "2026-10-01",
+      "change": "Rename BILD build name from lavaarena_boarrior_basic to hn_igris_build. Preserve all other BILD bytes, anim.bin and atlas-0.tex. Source hashes in files remain unchanged.",
+      "bank": "boarrior",
+      "build": "hn_igris_build",
+      "texture_sha256": "46e59265bb53f140a26c83330f81a77c4b92576a4a904a49675babec8a45d91a",
+      "animation_sha256": "f18318ad26e02d5e98d62494140142d6bbb1f39741e63eec2ba92d38e2e0fb25"
+    }
+  },
+  "extra_boss_prefabs": {
+    "hh_beetle_pig": "hn_beetle_pig",
+    "hh_dual_wield_pig": "hn_dual_wield_pig",
+    "minotau": "hn_minotau"
+  },
+  "guardian_fx_prefabs": {
+    "minotaur_deadlyshockwave": "hn_minotau_deadlyshockwave",
+    "minotaur_deathshockwave": "hn_minotau_deathshockwave",
+    "minotaur_shadowblaze": "hn_minotau_shadowblaze",
+    "minotaur_shadowblaze_high": "hn_minotau_shadowblaze_high",
+    "minotaur_shadowblaze_rigidbody": "hn_minotau_shadowblaze_rigidbody",
+    "minotaurattachedfire_fx": "hn_minotau_attachedfire_fx",
+    "minotaurfirecharge_fx": "hn_minotau_firecharge_fx",
+    "minotaurfirering_fx": "hn_minotau_firering_fx",
+    "minotaurfiresplash_fx": "hn_minotau_firesplash_fx",
+    "minotaurtarget_fx": "hn_minotau_target_fx",
+    "minotaurteleport_fx": "hn_minotau_teleport_fx",
+    "minotaurteleportpost_fx": "hn_minotau_teleportpost_fx",
+    "minotaurtransform_fx": "hn_minotau_transform_fx",
+    "minotaur_weakeningfx": "hn_minotau_weakeningfx",
+    "shadowpoundring_fx": "hn_minotau_shadowpoundring_fx"
   }
 }

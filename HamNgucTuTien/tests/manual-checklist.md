@@ -28,6 +28,16 @@ Ngày 2026-09-30; dedicated server Windows x64 **747465**, Tu Tiên **18.1.0**. 
 - [ ] Client reconnect khi đang offline trong arena; restart sau clear; auto-loot trong trận thực. Restart giữa trận/rương thu hồi đã qua test engine ở trên.
 - [ ] Thiên Nghịch Châu, Truyền Tống Trận, Thuấn Ảnh, hồi sinh/companion trong client; startup cả bộ mod và contract hook đã qua test riêng.
 
+## Bổ sung 1.1.0 — ba boss mới
+
+- [x] 44 test Lua tổng cộng: pool sáu boss, chỉ số nền, registered target/companion, stale epoch, lửa trùng, owner damage, chuyển pha và cập nhật realm thật của module Thần Khí.
+- [x] Dedicated build 747465: source health floor ngăn chết pha 1; pha 2 chết một lần và gọi thưởng một lần; tường tự mất sau 4 giây, không loot/workable; reset chuyển pha dọn callback/FX.
+- [x] Thực thi các nhóm chiêu của cả ba boss trong engine, độc lập và cùng Tu Tiên + Thần Khí + Nyx + Công Trình + Thành Tựu. Lỗi animation `full` của tường mới đã đổi thành `fullA` theo prefab vanilla và chạy lại.
+- [x] Review độc lập phát hiện và sửa 3 lỗi Guardian: timeout bỏ qua đòn đáp, locomote ngắt charge/gore, sóng xung kích cộng dồn tại gốc. Regression engine đã thấy 4 lỗi trước sửa rồi đạt 4/4; unit test kiểm tra bốn tia cách gốc 3 đơn vị và chung danh sách mục tiêu đã đánh.
+- [ ] Hai client có renderer: nhìn đủ animation/FX/CC, late join/reconnect, va chạm sát từng cạnh/góc và đánh giá độ khó bằng nhân vật/trang bị thật. Engine headless dùng mục tiêu thử, không thay thế nghiệm thu chơi thực.
+
+Harness: `engine_extra_bosses.lua`, chạy qua mod QA riêng; kết quả chỉ đạt khi có `HN_EXTRA_DONE 0` và không có lỗi Lua trong cả lượt.
+
 ## Chạy lại
 
 Từ root repository: `lua HamNgucTuTien/tests/run.lua all` và `python HamNgucTuTien/tests/check_dependencies.py`. Có thể chọn nhóm `worldgen`, `lifecycle`, `cooldown`, `actions`, `network`, `combat`, `rewards`, `recovery`, `compat`, `restrictions`.

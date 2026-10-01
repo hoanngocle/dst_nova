@@ -1,5 +1,6 @@
 -- Adapted from Solo Leveling 2.2.7 / Saikuno.
 local _bU_g__ = require "hn_dungeon/boss_defs"
+for name,definition in pairs(require('hn_dungeon/extra_boss_defs')) do _bU_g__[name]=definition end
 local function _b__U__g(__B_u__G, _BUG)
     local function b_u_G__()
         local _b_U_g__ = CreateEntity()

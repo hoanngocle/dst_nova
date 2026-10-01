@@ -36,7 +36,7 @@ local function GetMixedWave(max_waves, random)
     
     return shuffled
 end
-local super_bosses = {"hn_sharkboi", "hn_igris", "hn_beru"}
+local super_bosses = {"hn_sharkboi", "hn_igris", "hn_beru", "hn_beetle_pig", "hn_dual_wield_pig", "hn_minotau"}
 
 
 local M={}

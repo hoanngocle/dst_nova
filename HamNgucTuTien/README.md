@@ -1,8 +1,8 @@
 # Hầm Ngục Tu Tiên
 
-Bản thử `0.1.1-dev`: mod Hầm Ngục riêng cho Don't Starve Together, tách từ Solo Leveling 2.2.7 của Saikuno. Cần **tạo thế giới mới**, bật Tu Tiên (`3721846643`) trên server và cài mod này cho tất cả client. Solo Leveling không cần bật.
+Bản `1.1.0`: mod Hầm Ngục riêng cho Don't Starve Together, tách từ Solo Leveling 2.2.7 của Saikuno. Cần **tạo thế giới mới khi cài lần đầu**, bật Tu Tiên (`3721846643`) trên server và cài mod này cho tất cả client. Solo Leveling không cần bật. Nâng từ bản 0.1.x/1.0.0 trên world đã có arena chỉ cần cập nhật mod trên server và mọi client, rồi khởi động lại game.
 
-## Cài bản thử
+## Cài đặt
 
 Chép thư mục `HamNgucTuTien` vào thư mục `mods` của DST, bật trong **Server Mods**, bật Tu Tiên rồi tạo world mới. Dedicated server thêm `HamNgucTuTien={enabled=true}` vào `modoverrides.lua`; giữ cấu hình dependency Tu Tiên đang dùng. Bật mod này cho cả Forest và Caves khi cluster có hai shard. Arena và manager chỉ chạy ở Forest master.
 
@@ -10,8 +10,12 @@ Công Trình Tu Tiên, Nyx và Thần Khí là tùy chọn. Thiếu Linh Thạch
 
 ## Luật chơi
 
+Bản 1.0.0 giữ nguyên gameplay của 0.1.2-dev, gồm bản sửa build Igris. Cơ chế cổng hết giờ và quái thoát ra giữ nguyên.
+
+Bản 0.1.2-dev sửa xung đột build Igris: texture custom dùng build riêng `hn_igris_build` cho cả boss và xác, bank vẫn là `boarrior`. Texture/animation và chỉ số chiến đấu giữ nguyên. Cập nhật mod trên server và client, khởi động lại game để nạp lại asset; world đã có arena không cần tạo lại. Kiểm tra asset và test Lua đã qua; chưa kiểm chứng hình ảnh trong client sau bản sửa. Các cảnh báo animation diện rộng và Storage Multi nằm ngoài bản sửa này.
+
 - Một cổng và một lượt chung cho tổ đội, ngẫu nhiên 2–10 làn, 10 quái mỗi làn thường. Bắt đầu sau 5 giây, nghỉ giữa làn 10 giây.
-- Làn cuối: boss DST ở hạng 2–5 làn; Igris, Sharkboi hoặc Beru ở hạng 6–10 làn. Giữ AI/chuỗi chiêu và assets nguồn, bỏ world-rank/progression Solo nên sức mạnh không bằng tuyệt đối mod gốc.
+- Làn cuối: boss DST ở hạng 2–5 làn; hạng 6–10 chọn đều một trong sáu boss: Igris, Sharkboi, Beru, Lợn Rừng Bọ Hung, Siêu Lợn Song Kiếm, Hộ Vệ Cổ Đại Ác Mộng. Giữ các nhóm chiêu và tài sản nguồn, bỏ world-rank/progression Solo nên sức mạnh không bằng tuyệt đối mod gốc.
 - Đến làn 2 đóng đăng ký. Khi boss xuất hiện khóa lối ra; thắng có 180 giây nhặt thưởng.
 - Cổng hồi 480 giây. Cổng bị bỏ 480 giây sẽ đóng và thả một quái thường tại vị trí cổng.
 - Rời hầm: hồi chiêu cá nhân 480 giây; chết: 960 giây. Vượt biên sẽ được đưa lại vào hầm, không bị giết.
@@ -19,7 +23,19 @@ Công Trình Tu Tiên, Nyx và Thần Khí là tùy chọn. Thiếu Linh Thạch
 - Không xóa quan hệ đồng hành. Đồng hành chưa hỗ trợ và vật phẩm gọi Chester/Hutch/Glommer khiến thao tác vào hầm bị từ chối. Abigail/Woby được giữ ngoại lệ của nguồn.
 - Restart/rollback **hủy trận đang đánh**, dọn vật thể của lượt và hồi chiêu. Người reconnect ở arena được đưa về cổng. Đồ người chơi, rương thu hồi và thưởng đã nhặt được giữ.
 
-## Cân bằng boss (0.1.1-dev)
+## Ba boss mới (1.1.0)
+
+| Boss | Máu nền | Công thường / planar | Bộ chiêu |
+|---|---:|---:|---|
+| Lợn Rừng Bọ Hung | 25.000 | 50 / 30 | Combo, nhảy, tăng tốc, khống chế |
+| Siêu Lợn Song Kiếm | 30.000 | 50 / 30 | Combo, xoay đánh, tường vây tồn tại 4 giây |
+| Hộ Vệ Cổ Đại Ác Mộng | 25.000 mỗi pha | 60 / 0 | Lao húc, đập đất, sóng xung kích, lửa, dịch chuyển; hai pha |
+
+Boss mới dùng hệ số hầm ×1,5 và hệ tăng ngày/cảnh giới hiện có của Thần Khí. Guardian chuyển pha trong 4,5 giây, hồi đầy thanh máu đã được scale; chỉ chết pha cuối mới tính thắng. Lửa từ cùng boss chỉ gây một tick/giây trên mỗi mục tiêu dù các vùng chồng nhau. Tường/FX dọn theo lượt và khi boss chết; không phá đồ/công trình hay sinh loot Solo riêng.
+
+Phần điều khiển Guardian/FX được viết lại theo luật arena; nhịp hình ảnh có thể khác bản Solo. Đã có kiểm tra tự động và dedicated engine với bộ Tu Tiên; hình ảnh hai client và thời gian hạ boss bằng trang bị thật còn cần chơi thử. Không đưa nhóm quái Tầm Bảo ngoài map vào bản này.
+
+## Cân bằng ba boss ban đầu (0.1.1-dev)
 
 Giảm máu nền để dùng cùng hệ tăng theo ngày/cảnh giới của Thần Khí Tu Tiên. Giữ công nền, planar, AI/chiêu và hệ số làn. Quái thường vẫn nhân máu/công ×2 ở hạng 2–5 làn, ×3 ở hạng 6–10 làn; boss cuối tương ứng ×1 và ×1,5. Hệ số Thần Khí tiếp tục nhân lên các giá trị này, không được chép thêm vào Hầm Ngục.
 
@@ -52,10 +68,11 @@ Chạy từ root repository:
 ```powershell
 lua HamNgucTuTien/tests/run.lua all
 python HamNgucTuTien/tests/check_dependencies.py
+python HamNgucTuTien/tests/igris_assets_test.py
 ```
 
 [Checklist và bằng chứng QA](tests/manual-checklist.md) phân biệt test Lua, dedicated engine và ca chơi nhiều client chưa nghiệm thu. Các file `tests/engine_*.lua` chỉ được gọi bởi mod QA riêng trên cluster thử; bản mod không tự chạy chúng. Không bật prefab thưởng giả của QA trên server chơi.
 
 ## Nguồn
 
-Tác giả nội dung gốc: **Saikuno**, Solo Leveling **2.2.7**, nguồn local `3780347550/`. [SOURCE_MANIFEST.json](SOURCE_MANIFEST.json) ghi nguồn, SHA-256, phần trích và state boss. Tên bank/build animation giữ theo tài sản gốc. Lua dùng namespace `hn_`; mod không cần đọc thư mục nguồn lúc chạy. Chưa upload Workshop.
+Tác giả nội dung gốc: **Saikuno**, Solo Leveling **2.2.7**, nguồn local `3780347550/`. [SOURCE_MANIFEST.json](SOURCE_MANIFEST.json) ghi nguồn, SHA-256, phần trích và state boss. Tên bank/build animation giữ theo tài sản gốc, ngoại trừ build Igris được đổi thành `hn_igris_build` để tránh trùng Boarrior vanilla. Lua dùng namespace `hn_`; mod không cần đọc thư mục nguồn lúc chạy. Chưa upload Workshop.

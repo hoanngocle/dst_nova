@@ -22,6 +22,10 @@ local function HHIsDungeonPathClear(inst, from_pos, x, z)
     if not HHIsDungeonMotionEntity(inst) then
         return true
     end
+    if inst.prefab == 'hn_beetle_pig' or inst.prefab == 'hn_dual_wield_pig' then
+        local manager = inst.hn_dungeon_manager
+        if manager == nil or not manager:IsPointInsideDungeon(x, z) then return false end
+    end
     local pathfinder = TheWorld ~= nil and TheWorld.Pathfinder or nil
     if pathfinder == nil then
         return false
@@ -242,11 +246,11 @@ AddStategraphPostInit(
     HHInstallNamedDungeonMotionStates({"attack3", "attack_jump"})
 )
 AddStategraphPostInit(
-    "hh_beetle_pig",
+    "hn_beetle_pig",
     HHInstallNamedDungeonMotionStates({"attack3", "attack_jump"})
 )
 AddStategraphPostInit(
-    "hh_dual_wield_pig",
+    "hn_dual_wield_pig",
     HHInstallNamedDungeonMotionStates({"attack3", "attack_rotate"})
 )
 AddStategraphPostInit(

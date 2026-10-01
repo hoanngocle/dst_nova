@@ -1,7 +1,7 @@
 GLOBAL.setmetatable(env, {__index=function(_,k) return GLOBAL.rawget(GLOBAL,k) end})
 PrefabFiles = {'hn_dungeon_gate','hn_dungeon_exit','hn_dungeon_wall','hn_arena_lava_pond','hn_arena_decor',
     'hn_dungeon_spider','hn_dungeon_pig','hn_dungeon_hounds','hn_hound_projectiles','hn_bosses','hn_beru',
-    'hn_ice_fx','hn_corpses','hn_treasure_rock','hn_recovery_bag'}
+    'hn_ice_fx','hn_corpses','hn_treasure_rock','hn_recovery_bag','hn_boss_moonrock_wall','hn_minotau','hn_minotau_fx'}
 for _,name in ipairs({'gate_reset','gate_low','gate_high','gate_reset_max','gate_low_max','gate_high_max'}) do
     AddMinimapAtlas('images/minimap/'..name..'.xml')
 end
@@ -31,7 +31,7 @@ AddPlayerPostInit(function(inst)
         if manager and manager.players_in_dungeon[player] then manager:Leave(player,'death') end
     end)
 end)
-local names={HN_DUNGEON_SPIDER='Nhện Hầm Ngục',HN_DUNGEON_PIG='Heo Hầm Ngục',HN_BERU='Beru',
+local names={HN_MINOTAU='Hộ Vệ Cổ Đại Ác Mộng',HN_DUNGEON_SPIDER='Nhện Hầm Ngục',HN_DUNGEON_PIG='Heo Hầm Ngục',HN_BERU='Beru',
     HN_DUNGEON_FIREHOUND='Sói Lửa',HN_DUNGEON_ICEHOUND='Sói Băng',HN_DUNGEON_SNOWHOUND='Sói Tuyết',
     HN_DUNGEON_LIGHTNINGHOUND='Sói Điện',HN_DUNGEON_HORRORHOUND='Sói Bóng Đêm',HN_TREASURE_ROCK='Mạch Linh Thạch',
     HN_DUNGEON_EXIT='Lối thoát Hầm Ngục',HN_DUNGEON_GATE='Cổng Hầm Ngục',HN_RECOVERY_BAG='Túi thu hồi Hầm Ngục'}

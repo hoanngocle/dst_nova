@@ -1,7 +1,7 @@
 local root = 'HamNgucTuTien/'
 package.path = root..'scripts/?.lua;'..root..'tests/?.lua;'..package.path
 unpack = unpack or table.unpack
-local groups = {worldgen=true,lifecycle=true,cooldown=true,actions=true,combat=true,rewards=true,recovery=true,restrictions=true,compat=true,network=true}
+local groups = {extra_bosses=true,worldgen=true,lifecycle=true,cooldown=true,actions=true,combat=true,rewards=true,recovery=true,restrictions=true,compat=true,network=true}
 local selected = arg[1] or 'all'
 assert(selected == 'all' or groups[selected], 'unknown test group: '..selected)
 local passed, failed = 0, 0

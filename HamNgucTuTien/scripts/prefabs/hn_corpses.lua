@@ -1,4 +1,4 @@
-local assets={Asset('ANIM','anim/lavaarena_boarrior_basic.zip'),Asset('ANIM','anim/hh_beru_dungeon.zip')}
+local assets={Asset('ANIM','anim/lavaarena_boarrior_basic.zip'),Asset('ANIM','anim/igris_dungeon.zip'),Asset('ANIM','anim/hh_beru_dungeon.zip')}
 local function corpse(name,bank,build,anim)
     local function fn()
         local inst=CreateEntity()
@@ -11,4 +11,4 @@ local function corpse(name,bank,build,anim)
     end
     return Prefab(name,fn,assets)
 end
-return corpse('hn_corpse_igris','boarrior','lavaarena_boarrior_basic','death2'),corpse('hn_corpse_beru','beetletaur','hh_beru_dungeon','death')
+return corpse('hn_corpse_igris','boarrior','hn_igris_build','death2'),corpse('hn_corpse_beru','beetletaur','hh_beru_dungeon','death')
