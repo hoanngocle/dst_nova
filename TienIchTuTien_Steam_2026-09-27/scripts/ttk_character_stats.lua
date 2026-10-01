@@ -138,8 +138,9 @@ function M.Measure(player, G)
         Stat(2,"damage_bonus","ST cộng sau hệ số",attack_combat.damagebonus or 0)
     end
 
-    -- Achievement combines independent chances multiplicatively. Its provider
-    -- already contains Thần Khí's crit: use it once, never add detail.crit_rate again.
+    -- Achievement combines independent chances multiplicatively. Depending on
+    -- load order, its provider may be Achievement's registry or Thần Khí's
+    -- provider. Merge Thần Khí's final stats once in either case.
     local crit_rate,crit_damage=detail.crit_rate,detail.crit_damage
     if c.allachivcoin or c.chasnicritchancer then
         local chance,damage=0,1
@@ -154,8 +155,16 @@ function M.Measure(player, G)
             Chance(item.chasni_critchancegear); Chance(Call(item,"chasni_critchancegearfn"))
             damage=damage+(item.chasni_critdamagegear or 0)+(Number(Call(item,"chasni_critdamagegearfn")) or 0)
         end
-        local added,provider=Call(c.chasnicritchancer,"CalculateCrit")
-        Chance(provider); damage=damage+(Number(added) or 0)
+        local crit_provider=c.chasnicritchancer
+        local added,provider=Call(crit_provider,"CalculateCrit")
+        local achievement_provider=crit_provider and type(crit_provider.crits)=="table"
+        Chance(provider)
+        if achievement_provider or crit_provider==nil then Chance((Number(detail.crit_rate) or 0)/100) end
+        local tbc_damage=Number(detail.crit_damage)
+        local tbc_provider=tbc_damage and math.max(0,tbc_damage/100-1) or 0
+        local provider_damage=Number(added) or 0
+        damage=damage+(achievement_provider and provider_damage+tbc_provider
+            or math.max(provider_damage,tbc_provider))
         if Call(player,"HasDebuff","critter_raptor_buff") then chance=1 end
         local aura=Call(player,"GetDebuff","chasni_critter_raptor_aura_buff")
         damage=damage+math.max(0,aura and aura.critdamage or 0)/100
@@ -173,8 +182,9 @@ function M.Measure(player, G)
         crit_rate=damage>1 and math.max(0,math.min(100,chance*100)) or 0
         crit_damage=damage*100
     end
+    Stat(2,"crit_bonus","ST bạo kích cộng thêm",crit_damage and crit_damage-100,"%")
     Stat(2,"crit_rate","Tỷ lệ bạo kích",crit_rate,"%")
-    Stat(2,"crit_damage","Sát thương bạo kích",crit_damage,"%")
+    Stat(2,"crit_damage","Hệ số ST khi bạo kích",crit_damage,"%")
     Stat(2,"pierce_percent","Xuyên giáp theo ST",detail.pierce_percent,"%")
     Stat(2,"flat_pierce","ST xuyên giáp cố định",detail.flat_pierce)
     if preview and Number(preview.damage) then

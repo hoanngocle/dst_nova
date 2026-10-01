@@ -8,6 +8,7 @@ local Layout = {}
 local TOGGLE_SIZE = 96
 local SKILL_ICON_SIZE = 58.08 * 1.2
 local CORNER_ICON_SIZE = 64
+local CORNER_ICON_GAP = 96
 local ICON_GAP = 64 * 1.2
 local SKILL_ROW_Y = 0
 local BADGE_X = -110
@@ -123,7 +124,7 @@ function Layout.Apply(controls)
     PlaceAppearanceButton(controls, panel.appearance_button)
     if panel.gem_storage_button ~= nil and controls.nyx_skin_root ~= nil then
         controls.nyx_skin_root:AddChild(panel.gem_storage_button)
-        panel.gem_storage_button:SetPosition(ICON_GAP, 0, 0)
+        panel.gem_storage_button:SetPosition(CORNER_ICON_GAP, 0, 0)
     end
     return true
 end

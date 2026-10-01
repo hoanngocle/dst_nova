@@ -1,7 +1,7 @@
 name='Nyx'
 description=[[
 NYX — TỬ TIÊU TIÊN ẢNH
-Phiên bản 1.4.7
+Phiên bản 1.4.8
 Nữ tu điều khiển linh hoa và sức mạnh tu tiên. Tu luyện theo cảnh giới, mở năng lực theo cấp và tùy chọn 36 ngoại hình.
 
 CHỈ SỐ NỀN
@@ -27,7 +27,7 @@ Khô Vinh Song Sinh và Vạn Linh Phiên, nhận khi tạo nhân vật mới.
 YÊU CẦU: [Tu Tiên], Việt Hóa Tu Tiên
 ]]
 author='Nyx'
-version='1.4.7'
+version='1.4.8'
 api_version=10
 dst_compatible=true
 all_clients_require_mod=true

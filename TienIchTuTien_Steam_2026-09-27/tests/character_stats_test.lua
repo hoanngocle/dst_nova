@@ -70,6 +70,26 @@ local crit=Stats.Measure(p,{TTK_EQUIPMENT_DETAIL_SOURCE=source,
     allachiv_coindata={criticalup=.1,criticaldmgup=.5}})
 near(crit.values.crit_rate,36) -- 1-(1-.2)*(1-.2)
 near(crit.values.crit_damage,300) -- 1 base + .5 perk + 1.5 provider
+near(crit.values.crit_bonus,200) -- total multiplier x3 means +200% over normal damage
+-- Achievement's own provider can omit Thần Khí's elixir bonus. Show the
+-- combined bonus once: native +100% critical damage and elixir +40% = +140%.
+local tbc_provider=p.components.chasnicritchancer
+local achievement_perks=p.components.allachivcoin
+p.components.chasnicritchancer={crits={},CalculateCrit=function() return 0,0 end}
+p.components.allachivcoin={criticalupamount=0,criticaldmgupamount=0}
+local elixir_crit=Stats.Measure(p,{TTK_EQUIPMENT_DETAIL_SOURCE={combat_stats=function()
+    return {crit_rate=10,crit_effect=40,pierce=10}
+end}})
+near(elixir_crit.values.crit_rate,10)
+near(elixir_crit.values.crit_damage,240)
+near(elixir_crit.values.crit_bonus,140)
+assert((function()
+    for _,row in ipairs(elixir_crit.tabs[2]) do
+        if row[1]=='ST bạo kích cộng thêm' and row[2]=='140%' then return true end
+    end
+end)(),'attack tab must display the combined critical bonus')
+p.components.chasnicritchancer=tbc_provider
+p.components.allachivcoin=achievement_perks
 p.dodgechance=.1
 p.components.chasnidodgechancer={CalculateDodge=function() return .2 end}
 p.HasDebuff=function(_,key) return key=="chasni_kimchibuff" end

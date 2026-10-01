@@ -9,6 +9,11 @@ local TAB_NAMES={"Tổng quan","Tấn công","Phòng thủ","Nguồn buff"}
 local GOLD={.36,.21,.48,1}
 local WHITE={.18,.16,.20,1}
 local MUTED={.40,.35,.39,1}
+local DEFAULT_ZOOM=1.25
+local MIN_ZOOM=1
+local MAX_ZOOM=1.8
+local ZOOM_STEP=.1
+local last_zoom=DEFAULT_ZOOM
 
 local function Label(parent,size,text,x,y,colour)
     local label=parent:AddChild(Text(BODYTEXTFONT,size,text))
@@ -54,9 +59,11 @@ local CharacterInfo=Class(Screen,function(self,owner,info,onclose)
     self.black:SetOnClick(function() self:Close() end)
     self.root=self:AddChild(Widget("CharacterInfoPanel"))
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    self.root:SetMaxPropUpscale(1)
+    self.root:SetMaxPropUpscale(2)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetVAnchor(ANCHOR_MIDDLE)
+    self.zoom=last_zoom
+    self:ApplyZoom()
     -- Consume clicks throughout the panel, including the space between rows.
     local border=self.root:AddChild(Image("images/global.xml","square.tex"))
     border:SetSize(688,508)
@@ -70,6 +77,10 @@ local CharacterInfo=Class(Screen,function(self,owner,info,onclose)
     panel:SetOnClick(function() end)
     Label(self.root,29,"THÔNG TIN NHÂN VẬT",0,210,GOLD)
     self.close_button=Button(self.root,"×",310,210,function() self:Close() end)
+    self.zoom_out=Button(self.root,"-",230,210,function() self:ChangeZoom(-ZOOM_STEP) end)
+    self.zoom_in=Button(self.root,"+",270,210,function() self:ChangeZoom(ZOOM_STEP) end)
+    self.zoom_out:SetHoverText("Thu nhỏ",{font=BODYTEXTFONT,font_size=20})
+    self.zoom_in:SetHoverText("Phóng to",{font=BODYTEXTFONT,font_size=20})
     self.tabs={}
     self.tab_backgrounds={}
     for i,name in ipairs(TAB_NAMES) do
@@ -110,10 +121,25 @@ local CharacterInfo=Class(Screen,function(self,owner,info,onclose)
     self.previous:SetFocusChangeDir(MOVE_UP,self.tabs[1])
     self.next:SetFocusChangeDir(MOVE_UP,self.tabs[4])
     self.close_button:SetFocusChangeDir(MOVE_DOWN,self.tabs[4])
+    self.close_button:SetFocusChangeDir(MOVE_LEFT,self.zoom_in)
+    self.zoom_in:SetFocusChangeDir(MOVE_LEFT,self.zoom_out)
+    self.zoom_in:SetFocusChangeDir(MOVE_RIGHT,self.close_button)
+    self.zoom_out:SetFocusChangeDir(MOVE_RIGHT,self.zoom_in)
     self.info.Request(self.owner)
     self:Refresh()
     -- FrontEnd already updates the active screen; do not register a widget tick.
 end)
+
+function CharacterInfo:ApplyZoom()
+    self.zoom=math.max(MIN_ZOOM,math.min(self.zoom,MAX_ZOOM))
+    self.root:SetScale(self.zoom)
+end
+
+function CharacterInfo:ChangeZoom(delta)
+    self.zoom=math.max(MIN_ZOOM,math.min(MAX_ZOOM,self.zoom+delta))
+    self:ApplyZoom()
+    last_zoom=self.zoom
+end
 
 function CharacterInfo:SelectTab(index)
     self.tab,self.page=index,1

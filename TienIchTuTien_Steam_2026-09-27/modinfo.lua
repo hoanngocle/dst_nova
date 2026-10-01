@@ -1,6 +1,6 @@
 name = "Tiện Ích Tu Tiên"
 description = [[
-Phiên bản 1.5.2 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
+Phiên bản 1.5.7 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
 
 ★ Mở rộng túi đồ lên 45 ô
 ★ Xếp chồng vật phẩm tối đa 120
@@ -16,7 +16,7 @@ Phiên bản 1.5.2 - Một cuốn bí lục tập hợp những kỹ năng hỗ 
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.5.2"
+version = "1.5.7"
 
 api_version = 10
 dst_compatible = true

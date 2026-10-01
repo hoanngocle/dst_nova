@@ -1,18 +1,20 @@
-# Tiện Ích Tu Tiên 1.5.2 — Thông tin nhân vật
+# Tiện Ích Tu Tiên 1.5.5 — Thông tin nhân vật
 
-Nhấn **icon hồ sơ bạc–tím** nhỏ ở góc dưới bên trái HUD, cạnh icon skin và hòm đồ của Nyx. Rê chuột lên icon sẽ hiện tên “Thông tin nhân vật”. Bảng sáng màu, kích thước 680×500, có bốn mục:
+Nhấn **icon hồ sơ bạc–tím** ở góc dưới bên trái HUD, cạnh icon skin và hòm đồ của Nyx. Rê chuột lên icon sẽ hiện tên “Thông tin nhân vật”. Bảng sáng màu, kích thước 680×500, có bốn mục:
 
 - **Tổng quan:** máu hiện tại/tối đa sau phạt hồi sinh, đói, tinh thần, linh lực,
   cấp độ, cảnh giới và tài nguyên riêng được nhân vật cung cấp.
 - **Tấn công:** vũ khí đang dùng, sát thương nền sau hệ số, sát thương dự kiến,
-  tốc chạy thực tế, khoảng cách đòn tối thiểu, bạo kích và xuyên giáp.
+  tốc chạy thực tế, khoảng cách đòn tối thiểu, bạo kích và xuyên giáp. Dòng
+  **ST bạo kích cộng thêm** gộp các nguồn đang có: +100% gốc và +40% từ linh
+  dược hiển thị thành +140%; dòng hệ số khi bạo kích tương ứng là 240%.
 - **Phòng thủ:** giáp trang bị, hấp thụ của cơ thể, hệ số sát thương nhận vào,
   né tránh và hiệu ứng phòng thủ của các mod đang bật.
 - **Nguồn buff:** từng hệ số đang áp dụng, trang bị/cường hóa/đá thuộc tính,
   kỹ năng đang bật và buff tạm thời. Có thời gian còn lại nếu buff cung cấp bộ đếm.
 
 Mỗi trang có 10 dòng. Rê chuột lên dòng bị rút gọn để xem tooltip gọn, tối đa 5 dòng. Dùng **Trước / Sau** hoặc cuộn chuột để đổi
-trang; nhấn **Esc**, nút **×** hoặc bấm ngoài bảng để đóng.
+trang. Dùng **- / +** ở góc trên để thu nhỏ hoặc phóng to bảng; mức zoom được giữ khi mở lại trong phiên chơi. Nhấn **Esc**, nút **×** hoặc bấm ngoài bảng để đóng.
 
 ## Dữ liệu và cách đọc
 

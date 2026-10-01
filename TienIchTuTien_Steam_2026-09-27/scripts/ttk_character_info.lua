@@ -79,7 +79,7 @@ function M.Install(env)
         root:SetHAnchor(G.ANCHOR_LEFT)
         root:SetVAnchor(G.ANCHOR_BOTTOM)
         -- Third medallion beside Nyx's skin and gem-storage buttons.
-        root:SetPosition(238.6,85,0)
+        root:SetPosition(330,85,0)
         local function Resize()
             local frontend=G.TheFrontEnd
             root:SetScale(frontend and frontend.GetHUDScale and frontend:GetHUDScale() or 1)
@@ -97,7 +97,8 @@ function M.Install(env)
         local button=root:AddChild(ImageButton("images/ttk_character_info_icon.xml","ttk_character_info_icon.tex"))
         button.scale_on_focus=false
         button.move_on_click=false
-        button:ForceImageSize(64,64)
+        -- Match the visible medallion diameter, not the texture's outer bounds.
+        button:ForceImageSize(80,80)
         button:SetHoverText("Thông tin nhân vật",{font=G.BODYTEXTFONT,font_size=20,offset_y=42})
         button:SetOnClick(function()
             if controls.owner~=G.ThePlayer or controls._ttk_info_screen then return end

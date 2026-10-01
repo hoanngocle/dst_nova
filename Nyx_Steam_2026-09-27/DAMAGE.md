@@ -1,4 +1,4 @@
-# Sát thương 5 chiêu chiến đấu — Nyx 1.4.7
+# Sát thương 5 chiêu chiến đấu — Nyx 1.4.8
 
 Mỗi lần trúng đích dùng công thức:
 
