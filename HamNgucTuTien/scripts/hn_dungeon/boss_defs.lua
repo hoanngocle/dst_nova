@@ -156,7 +156,8 @@ local b__u_g = {
                 (false and not false or not false and true and not false and false and false or
                 false and not false and not false)
             __B_UG_:AddComponent "health"
-            __B_UG_["components"]["health"]:SetMaxHealth(50000)
+            -- Base HP; dungeon and Than Khi day/realm multipliers apply separately.
+            __B_UG_["components"]["health"]:SetMaxHealth(20000)
             __B_UG_["components"]["health"]["fire_damage_scale"] = 0
             __B_UG_:AddComponent "timer"
             __B_UG_:AddComponent "grouptargeter"
@@ -226,7 +227,8 @@ local b__u_g = {
             inst:AddComponent("hn_combat_effects")
 
             inst:AddComponent("health")
-            inst["components"]["health"]:SetMaxHealth(400000)
+            -- Base HP; dungeon and Than Khi day/realm multipliers apply separately.
+            inst["components"]["health"]:SetMaxHealth(30000)
             inst["components"]["health"]["fire_damage_scale"] = 0
             inst:AddComponent("timer")
             inst["components"]["timer"]:StartTimer("pig_around_cd", 12)

@@ -1,6 +1,6 @@
 # Hầm Ngục Tu Tiên
 
-Bản thử `0.1.0-dev`: mod Hầm Ngục riêng cho Don't Starve Together, tách từ Solo Leveling 2.2.7 của Saikuno. Cần **tạo thế giới mới**, bật Tu Tiên (`3721846643`) trên server và cài mod này cho tất cả client. Solo Leveling không cần bật.
+Bản thử `0.1.1-dev`: mod Hầm Ngục riêng cho Don't Starve Together, tách từ Solo Leveling 2.2.7 của Saikuno. Cần **tạo thế giới mới**, bật Tu Tiên (`3721846643`) trên server và cài mod này cho tất cả client. Solo Leveling không cần bật.
 
 ## Cài bản thử
 
@@ -18,6 +18,22 @@ Công Trình Tu Tiên, Nyx và Thần Khí là tùy chọn. Thiếu Linh Thạch
 - Đồ thực sự rơi khi chết được chuyển về vị trí cổng: vật phẩm thông thường vào rương thu hồi; ba lô/vật phẩm không thể nằm trong rương được đặt nguyên vẹn trên đất. Quyền mở rương là dùng chung tổ đội, không khóa theo userid. Đồ giữ lại khi chết vẫn thuộc người chơi.
 - Không xóa quan hệ đồng hành. Đồng hành chưa hỗ trợ và vật phẩm gọi Chester/Hutch/Glommer khiến thao tác vào hầm bị từ chối. Abigail/Woby được giữ ngoại lệ của nguồn.
 - Restart/rollback **hủy trận đang đánh**, dọn vật thể của lượt và hồi chiêu. Người reconnect ở arena được đưa về cổng. Đồ người chơi, rương thu hồi và thưởng đã nhặt được giữ.
+
+## Cân bằng boss (0.1.1-dev)
+
+Giảm máu nền để dùng cùng hệ tăng theo ngày/cảnh giới của Thần Khí Tu Tiên. Giữ công nền, planar, AI/chiêu và hệ số làn. Quái thường vẫn nhân máu/công ×2 ở hạng 2–5 làn, ×3 ở hạng 6–10 làn; boss cuối tương ứng ×1 và ×1,5. Hệ số Thần Khí tiếp tục nhân lên các giá trị này, không được chép thêm vào Hầm Ngục.
+
+| Boss | Máu nền cũ → mới | Trong hầm, chỉ hệ số hầm | Có Thần Khí: ngày 0/cấp 0 | Có Thần Khí: ngày 200/cấp 12 |
+|---|---:|---:|---:|---:|
+| Sharkboi | 50.000 → 20.000 | 30.000 | 105.000 | 675.000 |
+| Igris | 400.000 → 30.000 | 45.000 | 157.500 | 1.012.500 |
+| Beru | 600.000 → 40.000 | 60.000 | 210.000 | 1.350.000 |
+
+Các cột Thần Khí tính theo code hiện tại trong repository: máu nền ×1,5 × hệ số boss theo ngày × hệ số cảnh giới thế giới. Ngày là `TheWorld.state.cycles` (0 khi vừa tạo); cảnh giới là mốc thế giới đã ghi nhận. Tổng trên chưa tính can thiệp riêng của mod khác. Công thường cuối thang vẫn ×6: Sharkboi/Beru 300, Igris 240 trước phòng thủ và hiệu ứng khác; planar và chiêu trừ thẳng máu không nhân theo công thường.
+
+Mức máu mới đưa chênh lệch ba boss về 1:1,5:2, thay vì 1:8:12. Tham chiếu vũ khí Thần Khí có công nền 88–100 cùng hệ cường hóa/chí mạng/chiêu phụ; đây là mốc thử cho tổ đội, chưa phải kết quả đo thời gian hạ boss bằng nhân vật thực tế. Không yêu cầu cường hóa tối đa để mở hầm. Boss DST hạng 2–5 và phần thưởng giữ nguyên.
+
+Nâng từ 0.1.0-dev trên world đã có arena: dừng server, thay mod trên server và client, rồi khởi động lại; boss của lượt mới nhận máu mới. Không cần tạo lại world chỉ để nhận chỉnh sửa chỉ số này. Yêu cầu world mới ở phần cài đặt áp dụng khi world chưa có arena.
 
 ## Thưởng dùng chung
 

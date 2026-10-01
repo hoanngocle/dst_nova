@@ -1,5 +1,18 @@
 {
   "date": "2026-09-30",
+  "engine_evidence_version": "0.1.0-dev",
+  "balance_update": {
+    "version": "0.1.1-dev",
+    "date": "2026-09-30",
+    "base_hp": { "hn_sharkboi": 20000, "hn_igris": 30000, "hn_beru": 40000 },
+    "lua_tests_passed": 32,
+    "lua_syntax_files_passed": 73,
+    "dependency_check_passed": true,
+    "scaling_cases_passed": 180,
+    "scaling_method": "Lua fixture health/combat; current prefab HP and real hn_dungeon combat/waves plus tbc_rules/tbc_monster_scaling modules. 3 bosses x 5 days x 6 realm levels x 2 application orders. Checks total HP/attack, repeat application and health ratio after realm change.",
+    "engine_rerun": false,
+    "live_combat_balance_verified": false
+  },
   "dst_build": 747465,
   "tutien_version": "18.1.0",
   "lua_tests": 32,

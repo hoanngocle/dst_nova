@@ -113,7 +113,8 @@ local function fn()
     inst:AddComponent("hn_combat_effects")
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(600000)
+    -- Base HP; dungeon and Than Khi day/realm multipliers apply separately.
+    inst.components.health:SetMaxHealth(40000)
     inst.components.health.fire_damage_scale = 0
 
     inst:AddComponent("timer")

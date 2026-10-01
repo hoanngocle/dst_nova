@@ -3,6 +3,14 @@ local perkfuncs = require "functions/perkfunctions"
 local removedperks = require "constants/removedperks"
 local attributecaps = require "constants/attributecaps"
 
+-- Each attribute upgrade costs at most 5 stars, including its first purchase.
+-- Existing attribute level limits still apply.
+local ATTRIBUTE_COST_CAP = 5
+
+local function GetAttributeCost(perk, amount)
+    return math.min(ATTRIBUTE_COST_CAP, perk.cost + math.floor(amount / perk.multi))
+end
+
 local allachivcoin = Class(
         function(self, inst)
             self.inst = inst
@@ -12,7 +20,7 @@ local allachivcoin = Class(
                 if perk.single ~= true then
                     if perk.multi then
                         self[perkname .."amount"] = 0
-                        self[perkname .."cost"] = perk.cost
+                        self[perkname .."cost"] = GetAttributeCost(perk, 0)
                     else
                         self[perkname] = false
                     end
@@ -54,7 +62,7 @@ function allachivcoin:OnLoad(data)
         if perk.single ~= true then
             if perk.multi then
                 self[perkname .."amount"] = data[perkname .."amount"] or 0
-                self[perkname .."cost"] = perk.cost + math.floor(self[perkname .."amount"]/perk.multi)
+                self[perkname .."cost"] = GetAttributeCost(perk, self[perkname .."amount"])
             elseif perk.global then
                 self[perkname] = TUNING.ACH[perkname] or 0
             else
@@ -71,7 +79,7 @@ function allachivcoin:OnLoad(data)
             self.coinamount = self.coinamount + refund
             self.starsspent = math.max(0, self.starsspent - refund)
             self[perkname .. "amount"] = cap
-            self[perkname .. "cost"] = perk.cost + math.floor(cap / perk.multi)
+            self[perkname .. "cost"] = GetAttributeCost(perk, cap)
         end
     end
     for perkname, cost in pairs(removedperks.costs) do
@@ -129,7 +137,7 @@ function allachivcoin:pickperk1(inst, perk)
 
         self:coinDoDelta(-self[perk.."cost"])
         self.starsspent = self.starsspent + self[perk.."cost"]
-        self[perk.."cost"] = perk_lists[perk].cost + math.floor(self[perk.."amount"]/perk_lists[perk].multi)
+        self[perk.."cost"] = GetAttributeCost(perk_lists[perk], self[perk.."amount"])
         self:ongetcoin(inst)
         if self[perk.."fn"] then
             self[perk.."fn"](self, inst)
@@ -658,7 +666,7 @@ function allachivcoin:removecoin(inst, free)
         if perk.single ~= true then
             if perk.multi then
                 self[perkname .."amount"] = 0
-                self[perkname .."cost"] = perk.cost
+                self[perkname .."cost"] = GetAttributeCost(perk, 0)
             else
                 self[perkname] = false
             end

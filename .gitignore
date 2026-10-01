@@ -1,2 +1,6 @@
 3780347550
 .idea
+.env
+.env.*
+!.env.example
+.story-data/
