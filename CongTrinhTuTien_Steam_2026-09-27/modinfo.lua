@@ -1,6 +1,6 @@
 name = "Công Trình Tu Tiên"
 description = [[
-★ Phiên Bản 1.5.1 - Công Trình Tu Tiên ★
+★ Phiên Bản 1.5.3 - Công Trình Tu Tiên ★
 
 ★ Máy Tái Luyện: biến vật phẩm dư thành Linh Thạch Hạ Phẩm.
 ★ Truyền Tống Trận: dịch chuyển giữa các cổng đã đặt.
@@ -9,11 +9,12 @@ description = [[
 ★ Tường Siêu Cấp: tường, cửa tự động, hàng rào và dụng cụ xây nhanh.
 ★ Thảm: 15 kiểu sàn trang trí.
 ★ Thiên Nghịch Châu: Nyx chế tạo và sử dụng không gian hồi phục của Tu Tiên.
+★ Luân Hồi Đài: hồn ma Ám vào để hồi sinh, không giới hạn lượt.
 
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.5.2"
+version = "1.5.3"
 
 api_version = 10
 dst_compatible = true

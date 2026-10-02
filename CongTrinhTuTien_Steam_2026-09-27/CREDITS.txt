@@ -1,5 +1,12 @@
 # Nguồn và ghi công
 
+## Luân Hồi Đài
+
+- Tài nguyên gốc: Phục Sinh Từ Đài (`xd_fsct`) của **Tu Tiên / 登仙**, bản Việt hóa Workshop `3721846643`.
+- Tác giả mod gốc: **薪人小黄, 路障僵尸, 吃不吃大肉丸子**; Việt hóa: **Saikuno - Lại Hoàng Thịnh**.
+- Chuyển từ bản Luân Hồi Đài (`ttk_fsct`) đã làm trong Phàm Nhân Tu Tiên, giữ animation và icon. Công Trình Tu Tiên dùng `xd_lingshi3` của Tu Tiên cho nguyên liệu.
+- Chế tạo tại Máy Giả Kim: 10 Đá Cắt, 6 Vàng, 2 Tim Hồi Sinh và 2 Thượng Phẩm Linh Thạch. Hồn ma Ám vào đài để hồi sinh; không giới hạn lượt, không cần chờ hồi hoặc nạp lại.
+
 ## Deluxe Campfires
 
 - Nguồn: **Deluxe Campfires 3.0.12**.
