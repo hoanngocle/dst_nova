@@ -54,4 +54,10 @@ reloaded_level:loadHealth(player)
 assert(health.maxhealth == 205, 'fresh join restores Achievement and direct Tu Tien health')
 reloaded_level:loadHealth(player)
 assert(health.maxhealth == 205, 'subsequent refresh does not duplicate either bonus')
+health.maxhealth = health.maxhealth + 261 -- Tu Tien changes health after Achievement has loaded
+reloaded_level:loadHealth(player)
+assert(health._tbc_elixir_base == 416 and health.maxhealth == 466,
+    'periodic update captures Tu Tien health with no Achievement point change')
+health:SetMaxHealth(health._tbc_elixir_base)
+assert(health.maxhealth == 466, 'later elixir refresh keeps the captured body health')
 print('levelsystem_tutien_health_test: ok')

@@ -601,6 +601,11 @@ function levelsystem:loadSanity(inst, percentage)
 end
 
 function levelsystem:loadHealth(inst, percentage)
+	-- Tu Tien may write maxhealth directly after Achievement has loaded.
+	-- Capture it even when Achievement point counts stay unchanged.
+	if inst.components.health._tbc_elixir_capture ~= nil then
+		inst.components.health:_tbc_elixir_capture()
+	end
 	local health = inst.components.health
 	-- Thần Khí stores the native maximum separately and adds permanent elixir
 	-- health in SetMaxHealth. Pass that native maximum to avoid adding it twice.
