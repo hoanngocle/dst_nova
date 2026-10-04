@@ -115,6 +115,21 @@ direct_before_refresh.components.tbc_elixir_progress:OnLoad({counts={health=10}}
 direct_before_refresh:Flush()
 eq(direct_before_refresh.components.health.maxhealth,700,
     'Tu Tien direct health change before potion load survives refresh')
+
+-- Native DST health saves current health, not maxhealth. Tu Tien's body
+-- OnLoad can run first and change maxhealth directly on the new component.
+local body_before_health_load=player()
+local loaded_health=body_before_health_load.components.health
+loaded_health.maxhealth=275
+loaded_health:OnLoad({health=357})
+eq(loaded_health._tbc_elixir_base,275,
+    'health OnLoad captures the earlier Tu Tien body calculation')
+loaded_health:SetMaxHealth(loaded_health._tbc_elixir_base+350)
+body_before_health_load.components.tbc_elixir_progress:Refresh()
+eq(loaded_health.maxhealth,625,'Achievement adds 350 above the loaded body maximum')
+eq(loaded_health.currenthealth,357,'saved current health is preserved after composition')
+body_before_health_load.components.tbc_elixir_progress:Refresh()
+eq(loaded_health.maxhealth,625,'later refresh does not double the loaded body bonus')
 local gear={{code='equip_max_health_iii',value=20}}
 for _,order in ipairs({'equip_before_refresh','equip_after_refresh','equip_before_load'}) do
     local copy=player(); local h=copy.components.health; local cp=copy.components.tbc_elixir_progress

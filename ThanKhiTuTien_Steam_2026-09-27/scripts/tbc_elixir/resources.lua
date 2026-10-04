@@ -75,7 +75,11 @@ function M.Install(c,kind)
         local original=c.OnLoad
         c.OnLoad=function(self,data,...)
             local loaded=data and data[kind=='health' and 'health' or 'current']
+            -- Component load order is unspecified. Tu Tien may have already
+            -- applied its body maximum before native health loads current HP.
+            if kind=='health' then CaptureExternalHealth(self) end
             local result=original(self,data,...)
+            if kind=='health' then CaptureExternalHealth(self) end
             if data and type(data[field])=='number' then self._tbc_elixir_base=data[field] end
             if kind=='health' then self._tbc_elixir_last_max=self.maxhealth end
             self._tbc_elixir_loaded_current=loaded

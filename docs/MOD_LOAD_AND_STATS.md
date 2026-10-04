@@ -14,7 +14,7 @@ DST sắp xếp `priority` từ lớn xuống nhỏ (mã game `scripts/mods.lua`
 | 4 | Công Trình Tu Tiên | -40 | 1.6.2 |
 | 5 | Hầm Ngục Tu Tiên | -50 | 1.1.2 |
 | 6 | Thành Tựu Tu Tiên | -1000 | 1.3.5 |
-| 7 | Thần Khí Tu Tiên | -1100 | 1.2.9 |
+| 7 | Thần Khí Tu Tiên | -1100 | 1.2.10 |
 | 8 | Tiện Ích Tu Tiên | -1200 | 1.5.14 |
 | 9 | Tiện Ích Client | -1300 | 1.0.6 |
 
@@ -57,3 +57,5 @@ Test mock của adapter kiểm tra cách giữ/capture bonus và chỉ số hi�
 - Nhân vật Nyx tạo bằng console trong QA có 125 máu ban đầu; cấu hình QA cho 275 sau `SetLevel(46)`, rồi 625 khi cộng Achievement +350; sau 3 giây vẫn 625 và cache Thần Khí cũng là 625. Phép thử này xác nhận cộng bonus trên kết quả Tu Tiên đang cung cấp. Mốc 736 của người dùng phụ thuộc nền 386 đã quan sát trong cấu hình của họ.
 - QA dùng thư mục server và thế giới thử nghiệm riêng. Chưa xác nhận tải lại nhân vật trong save của người dùng, client render hay bản Workshop đã phát hành.
 - Hotfix Tiện Ích 1.5.14: bỏ gọi `select` trong `modimport` tooltip vì sandbox mod không export hàm này. Regression chạy hook hover/container với `select=nil` đã qua; test tooltip Vạn Linh Phiên cũng đã qua.
+- Hotfix Thần Khí 1.2.10: capture thay đổi máu trước/sau native health `OnLoad`, trước khi cập nhật mốc cache. Trace engine của 1.2.9 cho thấy body `OnLoad` tăng 125 → 275 nhưng cache vẫn 125; health `OnLoad` đổi mốc so sánh thành 275, khiến refresh và Achievement dùng nền 125 rồi tổng còn 475. Regression mới tái hiện lỗi này đã qua.
+- Engine `engine_body_reload_test.lua` của 1.2.10 qua hai vòng `GetSaveRecord`/`SpawnSaveRecord`: maxhealth 625 → 625 → 625, currenthealth giữ 357, hunger max giữ 275 và sanity max giữ 200. Resource refresh không cộng lặp và Luyện Thể vẫn level 46. Đây là save/load entity thật trong thế giới QA; chưa chạy trực tiếp trên nhân vật trong save của người dùng.
