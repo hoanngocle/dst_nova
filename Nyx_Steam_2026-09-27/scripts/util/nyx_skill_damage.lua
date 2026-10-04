@@ -22,6 +22,12 @@ local function WeaponDamage(owner, target)
     local inventory = owner.components ~= nil and owner.components.inventory or nil
     local weapon = inventory ~= nil and inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
     local component = weapon ~= nil and weapon.components ~= nil and weapon.components.weapon or nil
+    -- Luc Mach's command carrier suppresses the basic hit with GetDamage=0.
+    -- Its numeric damage still includes weapon strengthening and gem changes.
+    if component ~= nil and weapon._ttk_attack_command ~= nil
+        and IsFiniteNonnegative(component.damage) then
+        return component.damage
+    end
     if component ~= nil and component.GetDamage ~= nil then
         local ok, result = pcall(component.GetDamage, component, owner, target)
         if ok and IsFiniteNonnegative(result) then return result end
@@ -48,16 +54,30 @@ local function LevelMultiplier(owner, skill)
 end
 
 local function SkillBase(owner, skill, damage, target)
-    local active = owner ~= nil and owner._nyx_skill_damage_bonus or nil
-    return damage * LevelMultiplier(owner, skill)
-        + (active ~= nil and active[skill] and WeaponDamage(owner, target) or 0)
+    return damage * LevelMultiplier(owner, skill) + WeaponDamage(owner, target)
+end
+
+local function Pack(...)
+    return {n = select("#", ...), ...}
+end
+
+local prepared_owner
+local function CallPrepared(calculator, owner, damage, target, ...)
+    -- Explicit calculations and nested calculator hooks share this guard so
+    -- the level rate and weapon contribution enter the native calculator once.
+    local previous = prepared_owner
+    prepared_owner = owner
+    local result = Pack(pcall(calculator, owner, damage, target, ...))
+    prepared_owner = previous
+    if not result[1] then error(result[2], 0) end
+    return unpack(result, 2, result.n)
 end
 
 function SkillDamage.Calculate(owner, skill, damage, target, ...)
     -- Native Tu Tien applies potion, Achievement and target modifiers once,
     -- including to the weapon contribution. Never add damage after that call:
     -- doing so bypasses both attack buffs and native alwaysblock/PvP handling.
-    return Xd_CalcDamage(owner, SkillBase(owner, skill, damage, target), target, ...)
+    return CallPrepared(Xd_CalcDamage, owner, SkillBase(owner, skill, damage, target), target, ...)
 end
 
 function SkillDamage.MarkNative(effect, owner, skill)
@@ -65,42 +85,61 @@ function SkillDamage.MarkNative(effect, owner, skill)
     effect._nyx_damage_skill = skill
 end
 
+local function MarkedSkill(effect, owner)
+    if type(effect) ~= 'table' then return nil end
+    local marked = effect._nyx_damage_skill ~= nil and effect or effect.owner
+    if type(marked) ~= 'table' or marked._nyx_damage_owner ~= owner then return nil end
+    local skill = marked._nyx_damage_skill
+    if LEVEL_RATES[skill] ~= nil and owner._nyx_skill_damage_bonus[skill] then return skill end
+end
+
 local installed_hook
 function SkillDamage.InstallNativeHook(global)
     local original = global.Xd_CalcDamage
     if type(original) ~= 'function' or original == installed_hook then return end
     installed_hook = function(owner, damage, target, ...)
-        if owner ~= nil and owner.prefab == 'nyx'
+        if owner ~= nil and owner ~= prepared_owner and owner.prefab == 'nyx'
             and owner._nyx_skill_damage_bonus ~= nil and type(damage) == 'number'
-            and debug ~= nil and debug.getlocal ~= nil then
-            -- Tu Tien 18.1 domain/river/flame callbacks expose their effect as
-            -- local `inst`. Flame hitboxes have the marked emitter as owner.
-            -- Use instance identity, not filenames: the flame code is shared
-            -- by other attacks and all three skills may run simultaneously.
-            local index = 1
-            while true do
-                local name, effect = debug.getlocal(2, index)
-                if name == nil then break end
-                if name == 'inst' and type(effect) == 'table' then
-                    local marked = effect._nyx_damage_skill ~= nil and effect or effect.owner
-                    if type(marked) == 'table' and marked._nyx_damage_owner == owner then
-                        local skill = marked._nyx_damage_skill
-                        if LEVEL_RATES[skill] ~= nil and owner._nyx_skill_damage_bonus[skill] then
-                            damage = SkillBase(owner, skill, damage, target)
+            and debug ~= nil and debug.getlocal ~= nil and debug.getinfo ~= nil then
+            -- Tu Tien callbacks use inst as a parameter or captured upvalue.
+            -- Find that callback through calculator wrappers, then stop there:
+            -- outer callers may hold other active effects unrelated to this hit.
+            for depth = 2, 10 do
+                local info = debug.getinfo(depth, 'f')
+                if info == nil then break end
+                local index = 1
+                while true do
+                    local name, effect = debug.getlocal(depth, index)
+                    if name == nil then break end
+                    if name == 'inst' and type(effect) == 'table' and effect ~= owner then
+                        local skill = MarkedSkill(effect, owner)
+                        if skill ~= nil then
+                            return CallPrepared(original, owner, SkillBase(owner, skill, damage, target), target, ...)
                         end
+                        return original(owner, damage, target, ...)
                     end
-                    break
+                    index = index + 1
                 end
-                index = index + 1
+                if debug.getupvalue ~= nil and type(info.func) == 'function' then
+                    index = 1
+                    while true do
+                        local name, effect = debug.getupvalue(info.func, index)
+                        if name == nil then break end
+                        if name == 'inst' and type(effect) == 'table' and effect ~= owner then
+                            local skill = MarkedSkill(effect, owner)
+                            if skill ~= nil then
+                                return CallPrepared(original, owner, SkillBase(owner, skill, damage, target), target, ...)
+                            end
+                            return original(owner, damage, target, ...)
+                        end
+                        index = index + 1
+                    end
+                end
             end
         end
         return original(owner, damage, target, ...)
     end
     global.Xd_CalcDamage = installed_hook
-end
-
-local function Pack(...)
-    return {n = select("#", ...), ...}
 end
 
 function SkillDamage.Apply(owner, target, damage, stimuli)

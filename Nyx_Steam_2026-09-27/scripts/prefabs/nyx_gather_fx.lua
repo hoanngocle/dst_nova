@@ -1,4 +1,5 @@
 local Common = require "util/nyx_gather_common"
+local Progression = require "nyx/progression"
 
 local assets = {
     Asset("ANIM", "anim/tornado.zip"),
@@ -40,6 +41,7 @@ local function controller_fn()
     inst.owner_component = nil
     inst.center_x = nil
     inst.center_z = nil
+    inst.radius = nil
     inst.tasks = {}
     inst.fx = {}
     inst.stopped = false
@@ -64,7 +66,7 @@ local function controller_fn()
 
     function inst:_HarvestPulse()
         if self:_StopIfOwnerInvalid() then return end
-        for _, target in ipairs(Common.FindHarvestables(self.center_x, self.center_z, require("nyx/progression").Radius((self.owner.components.levelsystem and self.owner.components.levelsystem.level or 0)))) do
+        for _, target in ipairs(Common.FindHarvestables(self.center_x, self.center_z, self.radius)) do
             if target ~= nil and target.IsValid ~= nil and target:IsValid() then
                 Common.HarvestEntity(self.owner, target)
             end
@@ -73,7 +75,7 @@ local function controller_fn()
 
     function inst:_PullPulse()
         if self:_StopIfOwnerInvalid() then return end
-        for _, item in ipairs(Common.FindPullItems(self.center_x, self.center_z, require("nyx/progression").Radius((self.owner.components.levelsystem and self.owner.components.levelsystem.level or 0)))) do
+        for _, item in ipairs(Common.FindPullItems(self.center_x, self.center_z, self.radius)) do
             if item ~= nil and item.IsValid ~= nil and item:IsValid() then
                 Common.PullItemStep(item, self.center_x, self.center_z)
             end
@@ -109,6 +111,8 @@ local function controller_fn()
         self.owner = owner
         self.center_x = x
         self.center_z = z
+        self.radius = Progression.Radius(owner.components.levelsystem
+            and owner.components.levelsystem.level or 0)
         self.Transform:SetPosition(x, 0, z)
 
         local vortex = self:_TrackFx(SpawnPrefab("nyx_gather_vortex_fx"))

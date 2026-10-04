@@ -27,6 +27,7 @@ local Upgrade = Class(function(self, inst)
 end)
 
 function Upgrade:GetKind()
+    if require("tbc_soul_banner").IsBanner(self.inst.prefab) then return "soul_banner" end
     if self.inst.components.weapon ~= nil then return "weapon" end
     if self.inst.components.armor ~= nil then return "armor" end
     local equippable = self.inst.components.equippable
@@ -46,7 +47,10 @@ end
 
 function Upgrade:GetStrengthenPreview()
     local kind = self:GetKind()
-    if kind == "weapon" then
+    if kind == "soul_banner" then
+        local Banner = require("tbc_soul_banner")
+        return kind, Banner.Damage(self.level), Banner.Damage(self.level + 1)
+    elseif kind == "weapon" then
         local weapon = self.inst.components.weapon
         local current = weapon.damage
         local base = self.base_damage
@@ -146,7 +150,9 @@ function Upgrade:UpdateDisplay()
         local kind, current = self:GetStrengthenPreview()
         local stat = ""
         if type(current) == "number" then
-            if kind == "weapon" then
+            if kind == "soul_banner" then
+                stat = "Sát thương Hồn Linh: " .. string.format("%.2f", current)
+            elseif kind == "weapon" then
                 stat = "Sát thương hiện tại: " .. string.format("%g", current)
                 if type(self.base_damage) == "number" then
                     local weapon = self.inst.components.weapon
@@ -180,8 +186,11 @@ end
 
 function Upgrade:AddAffix(id, value)
     local row = Defs.by_code[id]
-    if not Slots.CanAdd(self.inst, self.affixes, row)
-        or not Defs.IsValidValue(id, value) then return false end
+    local can_add, reason = Slots.CanAdd(self.inst, self.affixes, row)
+    if not can_add then return false, reason end
+    if not Defs.IsValidValue(id, value) then
+        return false, "Giá trị Đá Thuộc Tính không hợp lệ."
+    end
     self.affixes[#self.affixes + 1] = { id = id, value = value }
     self:ApplyStats()
     StrengthenEffects.Sync(self.inst, self.level)

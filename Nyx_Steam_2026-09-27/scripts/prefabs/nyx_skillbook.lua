@@ -1,6 +1,9 @@
 local Router = require "nyx/input"
 local Net = require "nyx/skillnet"
 local Progression = require "nyx/progression"
+-- DST's reticuleaoe prefab applies its own 1.5 AnimState scale on top of
+-- Transform scale. idle_1_6 has a six-unit outer ring before that scale.
+local GATHER_RETICULE_OUTER_RADIUS = 6 * 1.5
 
 local function Atlas(definition)
     return definition.atlas or (GetInventoryItemAtlas ~= nil
@@ -38,8 +41,8 @@ end
 local function UpdateReticulePosition(book, pos, fx)
     fx.Transform:SetPosition(pos.x, 0, pos.z)
     if fx.prefab == "reticuleaoe_1_6" then
-        -- idle_1_6 has a six-unit outer ring; the "1" is its inner marker.
-        local scale = (book._nyx_preview_radius or 6) / 6
+        local scale = (book._nyx_preview_radius or 6)
+            / GATHER_RETICULE_OUTER_RADIUS
         fx.Transform:SetScale(scale, scale, scale)
     end
 end
@@ -64,7 +67,13 @@ local function ConfigurePointSkill(book, skill)
     targeting:SetShouldRepeatCastFn(nil)
     targeting.reticule.reticuleprefab = skill == 'purple_gather'
         and "reticuleaoe_1_6" or "reticuleaoesummontarget_1"
-    targeting.reticule.pingprefab = "reticuleaoeping"
+    -- The vanilla ping animates its own Transform scale and would draw a
+    -- second, inaccurate range ring after the targeting reticule is gone.
+    if skill == 'purple_gather' then
+        targeting.reticule.pingprefab = nil
+    else
+        targeting.reticule.pingprefab = "reticuleaoeping"
+    end
     targeting.reticule.targetfn = ReticuleTargetAllowWater
     targeting.reticule.mousetargetfn = nil
     targeting.reticule.updatepositionfn = skill == 'purple_gather'

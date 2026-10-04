@@ -601,18 +601,28 @@ function levelsystem:loadSanity(inst, percentage)
 end
 
 function levelsystem:loadHealth(inst, percentage)
+	local health = inst.components.health
+	-- Thần Khí stores the native maximum separately and adds permanent elixir
+	-- health in SetMaxHealth. Pass that native maximum to avoid adding it twice.
+	local function healthBase()
+		if health._tbc_elixir_capture ~= nil then
+			health:_tbc_elixir_capture()
+		end
+		return health._tbc_elixir_resource == "health"
+			and health._tbc_elixir_base or health.maxhealth
+	end
 	local achievement_health = allachiv_coindata["healthup"] * inst.currenthealthup:value()
 	if achievement_health ~= self.achievementhealthup then
-		local amount = inst.components.health.maxhealth + (achievement_health - self.achievementhealthup)
-		chasni_setMaxHealth(inst.components.health, amount)
+		local amount = healthBase() + (achievement_health - self.achievementhealthup)
+		chasni_setMaxHealth(health, amount)
 		self.achievementhealthup = achievement_health
 	end
 	if self.healthlevelamount ~= self.levelhealthup then
-		local amount = inst.components.health.maxhealth + (self.healthlevelamount - self.levelhealthup) * healthGain
-		chasni_setMaxHealth(inst.components.health, amount)
+		local amount = healthBase() + (self.healthlevelamount - self.levelhealthup) * healthGain
+		chasni_setMaxHealth(health, amount)
 		self.levelhealthup = self.healthlevelamount
 	end
-	self.healthlevelmax = inst.components.health.maxhealth
+	self.healthlevelmax = health.maxhealth
 
 	if percentage then
 		inst:DoTaskInTime(0, function()

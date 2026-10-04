@@ -1,3 +1,6 @@
+local Loot = require("functions/icyweedloot")
+local LootData = require("constants/icyweedloot")
+
 local assets =
 {
     Asset("ANIM", "anim/tumbleweed_icy.zip"),
@@ -7,25 +10,114 @@ local prefabs =
 {
     "splash_sink",
     "chasni_icyweedbreakfx",
-    "ice",
-    "rocks",
-    "flint",
+    "goldnugget",
     "saltrock",
-    "nitre",
+    "moonrocknugget",
+    "moonglass",
+    "gears",
     "lunarplant_husk",
-    "moonstorm_spark",
-    "moonglass_charged",
-    "security_pulse_cage",
     "dreadstone",
     "thulecite",
     "purebrilliance",
     "horrorfuel",
     "voidcloth",
     "wagpunk_bits",
-    "moonstorm_static_item",
-    "moonstorm_spark",
-    "gelblob_bottle",
 }
+
+-- Optional mod prefabs are resolved from the live registry, never hard dependencies.
+local support_cache, warnings = {}, {}
+local function WarnOnce(key, message)
+    if not warnings[key] then
+        warnings[key] = true
+        print("[Achievement icyweed] " .. message)
+    end
+end
+
+local function SafeSpawn(prefab)
+    local ok, item = pcall(SpawnPrefab, prefab)
+    if ok and item ~= nil then return item end
+    WarnOnce("spawn:" .. prefab, "Could not spawn " .. prefab .. "; using fallback")
+end
+
+local function StackLimit(item)
+    local stack = item.components and item.components.stackable
+    if stack == nil then return nil end
+    local maximum = stack.GetMaxSize and stack:GetMaxSize() or stack.maxsize
+    if type(maximum) ~= "number" or maximum < 1 or maximum ~= maximum then return nil end
+    return math.floor(maximum)
+end
+
+local function Exists(prefab)
+    local exists = Prefabs ~= nil and Prefabs[prefab] ~= nil
+    if not exists and prefab == LootData.fallback.prefab then
+        WarnOnce("missing:tutien", "xd_lingshi1 unavailable; required Tu Tien dependency missing, using goldnugget")
+    end
+    return exists
+end
+
+local function StackSupported(prefab)
+    local definition = Prefabs and Prefabs[prefab]
+    local cached = support_cache[prefab]
+    if cached ~= nil and cached.definition == definition then return cached.supported end
+    local supported = false
+    if definition ~= nil then
+        local item = SafeSpawn(prefab)
+        if item ~= nil then
+            supported = StackLimit(item) ~= nil
+            item:Remove()
+        end
+    end
+    support_cache[prefab] = {definition = definition, supported = supported}
+    if not supported then WarnOnce("unsupported:" .. prefab, prefab .. " unavailable or not stackable; using fallback") end
+    return supported
+end
+
+local function EnsureLoot(inst)
+    if inst.loot == nil then
+        inst.loot = Loot.Roll(Loot.PreparePool(Exists, StackSupported))
+    end
+end
+
+local function Fallback(prefab, amount)
+    local row = LootData.fallback
+    if prefab == row.prefab or not Exists(row.prefab) or not StackSupported(row.prefab) then
+        row = LootData.emergency
+    end
+    -- Keep replacement quantities deterministic across save/load and mod changes.
+    return row.prefab, math.clamp(amount, row.min, row.max)
+end
+
+local function SpawnReward(row, items)
+    local prefab, remaining = row.prefab, row.amount
+    if not Exists(prefab) or not StackSupported(prefab) then
+        prefab, remaining = Fallback(prefab, remaining)
+    end
+    while remaining > 0 do
+        local item = SafeSpawn(prefab)
+        local limit = item and StackLimit(item)
+        if limit == nil then
+            if item ~= nil then item:Remove() end
+            if prefab == LootData.emergency.prefab then
+                WarnOnce("lost:" .. prefab, "Even goldnugget fallback failed; could not deliver reward")
+                return
+            end
+            prefab, remaining = Fallback(prefab, remaining)
+        else
+            local amount = math.min(remaining, limit)
+            item.components.stackable:SetStackSize(amount)
+            remaining = remaining - amount
+            for _, existing in ipairs(items) do
+                if item == nil then break end
+                local stack = existing.components.stackable
+                if existing.prefab == item.prefab and stack:StackSize() < StackLimit(existing)
+                    and stack:CanStackWith(item) then
+                    item = stack:Put(item)
+                end
+            end
+            if item ~= nil then items[#items + 1] = item end
+        end
+    end
+end
 
 local ANGLE_VARIANCE = 10
 local SFX_COOLDOWN = 5
@@ -59,73 +151,36 @@ local function startmoving(inst)
 end
 
 local function onpickup(inst, picker)
+    if inst.loot_claimed then return true end
+    inst.loot_claimed = true
+    EnsureLoot(inst)
     inst:PushEvent("detachchild")
     local x, y, z = inst.Transform:GetWorldPosition()
-    for i, v in ipairs(inst.loot) do
-        local item = SpawnPrefab(v)
+    local items = {}
+    for _, row in ipairs(inst.loot) do SpawnReward(row, items) end
+    for _, item in ipairs(items) do
         item.Transform:SetPosition(x, y, z)
         if item.components.inventoryitem and item.components.inventoryitem.ondropfn then
             item.components.inventoryitem.ondropfn(item)
         end
     end
-    SpawnPrefab("chasni_icyweedbreakfx").Transform:SetPosition(x, y, z)
+    local fx = SafeSpawn("chasni_icyweedbreakfx")
+    if fx ~= nil then fx.Transform:SetPosition(x, y, z) end
 
     return true --This makes the inventoryitem component not actually give the tumbleweed to the player
 end
 
-local function MakeLoot(inst)
-    local possible_loot =
-    {
-        {chance = 70,    item = "ice"},
-        {chance = 30,    item = "rocks"},
-        {chance = 30,    item = "flint"},
-        {chance = 20,    item = "saltrock"},
-        {chance = 20,    item = "nitre"},
-        {chance = 14,    item = "goldnugget"},
-        {chance = 10,    item = "trinket"},
+local function OnSave(inst, data)
+    EnsureLoot(inst)
+    data.icyweed_loot = {version = LootData.version, rewards = inst.loot}
+    data.icyweed_claimed = inst.loot_claimed or nil
+end
 
-        {chance = 8,     item = "moonrocknugget"},
-        {chance = 8,     item = "moonglass"},
-        {chance = 8,     item = "thulecite"},
-        {chance = 6,     item = "gears"},
-        {chance = 5,     item = "dreadstone"},
-        {chance = 5,     item = "horrorfuel"},
-        {chance = 4,    item = "wagpunk_bits"},
-
-        {chance = 3,    item = "lunarplant_husk"},
-        {chance = 3,    item = "moonglass_charged"},
-        {chance = 3,    item = "purebrilliance"},
-        {chance = 3,    item = "voidcloth"},
-        {chance = 2,    item = "moonstorm_static_item"},
-        {chance = 2,    item = "gelblob_bottle"},
-        {chance = 1,    item = "security_pulse_cage"},
-    }
-
-    local totalchance = 0
-    for m, n in ipairs(possible_loot) do
-        totalchance = totalchance + n.chance
-    end
-
-    inst.loot = {}
-    local next_loot, next_chance
-    local num_loots = 3
-    while num_loots > 0 do
-        next_chance = math.random()*totalchance
-        next_loot = nil
-        for _, n in ipairs(possible_loot) do
-            next_chance = next_chance - n.chance
-            if next_chance <= 0 then
-                next_loot = n.item
-                break
-            end
-        end
-        if next_loot then
-            if next_loot == "trinket" then
-                next_loot = "trinket_" .. math.random(1, 46)
-            end
-            table.insert(inst.loot, next_loot)
-            num_loots = num_loots - 1
-        end
+local function OnLoad(inst, data)
+    inst.loot = Loot.NormalizeSaved(data and data.icyweed_loot)
+    if data and data.icyweed_claimed then
+        inst.loot_claimed = true
+        inst:Remove()
     end
 end
 
@@ -285,7 +340,10 @@ local function fn()
 
     inst:ListenForEvent("startlongaction", OnLongAction)
 
-    MakeLoot(inst)
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
+    -- Load restores saved loot before this task executes; legacy weeds roll once.
+    inst:DoTaskInTime(0, EnsureLoot)
 
     MakeSmallPropagator(inst)
     inst.components.propagator.flashpoint = 5 + math.random()*3

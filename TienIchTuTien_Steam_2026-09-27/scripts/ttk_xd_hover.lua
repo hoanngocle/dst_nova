@@ -78,13 +78,15 @@ function M.Augment(data, item, detail, Detail)
         Wrapped(detail.description, Add)
         Wrapped("Áp dụng: " .. detail.slot, Add)
     else
-        Header("THUỘC TÍNH · " .. #detail.affixes .. "/" .. (detail.max_affixes or Detail.MAX_AFFIXES or 5))
-        if #detail.affixes == 0 then Add("Chưa gắn Đá Thuộc Tính") end
-        for index, affix in ipairs(detail.affixes) do
-            reserved = reserved + #detail.affixes - index
-            Affix(affix.name .. " · " .. affix.value,
-                affix.atlas, affix.image, affix.description, affix.colour)
-            reserved = reserved - (#detail.affixes - index)
+        if detail.kind ~= "soul_banner" then
+            Header("THUỘC TÍNH · " .. #detail.affixes .. "/" .. (detail.max_affixes or Detail.MAX_AFFIXES or 5))
+            if #detail.affixes == 0 then Add("Chưa gắn Đá Thuộc Tính") end
+            for index, affix in ipairs(detail.affixes) do
+                reserved = reserved + #detail.affixes - index
+                Affix(affix.name .. " · " .. affix.value,
+                    affix.atlas, affix.image, affix.description, affix.colour)
+                reserved = reserved - (#detail.affixes - index)
+            end
         end
         reserved = 0
         if #milestone_lines > 0 then

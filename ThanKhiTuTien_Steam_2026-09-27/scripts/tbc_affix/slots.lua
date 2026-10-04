@@ -27,7 +27,10 @@ function M.Accept(item, row)
 end
 
 function M.CanAdd(item, affixes, row)
-    if not M.Accept(item, row) or type(affixes) ~= "table" or #affixes >= Defs.MAX_SLOTS then return false end
+    if row == nil then return false, "Dữ liệu Đá Thuộc Tính không hợp lệ." end
+    if not M.Accept(item, row) then return false, "Đá này không hợp vị trí trang bị." end
+    if type(affixes) ~= "table" then return false, "Dữ liệu thuộc tính trang bị không hợp lệ." end
+    if #affixes >= Defs.MAX_SLOTS then return false, "Trang bị đã đủ 5 dòng thuộc tính." end
     for _, affix in ipairs(affixes) do
         local existing = Defs.by_code[affix.id]
         if existing ~= nil and (
@@ -35,7 +38,7 @@ function M.CanAdd(item, affixes, row)
             or (row.family == "Hộ Giáp" or row.family == "Bền Bỉ"
                 or row.family == "Gia Trì") and existing.family == row.family
             or row.exclusive_group ~= "" and existing.exclusive_group == row.exclusive_group
-        ) then return false end
+        ) then return false, "Trang bị đã có thuộc tính cùng nhóm." end
     end
     return true
 end

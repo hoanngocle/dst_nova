@@ -14,6 +14,10 @@ require("tbc_equipment/compat").SetRpcNamespace(modname)
 local DetailHooks = require("tbc_detail_hooks")
 local Combat = require("tbc_combat")
 local MonsterScaling = require("tbc_monster_scaling")
+local SoulBanner = require("tbc_soul_banner")
+SoulBanner.Install(AddPrefabPostInit)
+G.STRINGS.NAMES.VANHONPHIEN_SOUL = "Hồn Linh"
+G.STRINGS.NAMES.XD_WMZ_ZHF_SOUL = "Hồn Linh"
 local achievement_enabled = G.KnownModIndex ~= nil
     and G.KnownModIndex:IsModEnabled("Achivement") or false
 local standalone_scaling_enabled = G.KnownModIndex ~= nil
@@ -31,6 +35,8 @@ G.TTK_EQUIPMENT_DETAIL_SOURCE = {
     stone_detail = Stone.Detail,
     stone_colour = Stone.Colour,
     weapon_preview = require("tbc_strengthen_effects").Preview,
+    soul_banner_damage = SoulBanner.Damage,
+    soul_banner_crit = SoulBanner.CritBonus,
     combat_stats = Combat.StatsForOwner,
     preview_attack = Combat.PreviewAttack,
     flat_pierce = function(player, _, level)
@@ -186,6 +192,7 @@ containers.params.tbc_forge = {
             return item.prefab == "wb_enhancegem"
         end
         return (slot == 1 or slot == nil) and ((item.components ~= nil and item.components.tbc_upgrade ~= nil)
+            or SoulBanner.IsBanner(item.prefab)
             or (item.replica ~= nil and item.replica.equippable ~= nil
                 and (item:HasTag("weapon") or item:HasTag("armor") or item:HasTag("tbc_upgradeable"))))
     end,
@@ -331,15 +338,20 @@ local function ApplyItem(act)
     local upgrade = target.components ~= nil and target.components.tbc_upgrade or nil
     local station = act.tbc_station
     if upgrade == nil then
+        Say(player, "Trang bị này không hỗ trợ Đá Thuộc Tính.")
         return false
     end
-    local owner = target.components.inventoryitem ~= nil and target.components.inventoryitem.owner or nil
+    local inventoryitem = target.components.inventoryitem
+    local owner = inventoryitem ~= nil and inventoryitem.owner or nil
+    local grandowner = inventoryitem ~= nil and inventoryitem.GetGrandOwner ~= nil
+        and inventoryitem:GetGrandOwner() or owner
     if station ~= nil then
         local container = station.components ~= nil and station.components.container or nil
         if not station:IsValid() or station.prefab ~= "tbc_forge" or container == nil
             or not container.openlist[player] or container:GetItemInSlot(1) ~= target
             or owner ~= station or player:GetDistanceSqToInst(station) > 16 then return false end
-    elseif owner ~= nil and owner ~= player then
+    elseif owner ~= nil and grandowner ~= player then
+        Say(player, "Trang bị cần nằm trong túi của bạn hoặc trên mặt đất gần bạn.")
         return false
     elseif owner == nil and player.GetDistanceSqToInst ~= nil
         and player:GetDistanceSqToInst(target) > 16 then
@@ -421,8 +433,13 @@ local function ApplyItem(act)
     elseif id == "hh_effect_stone" then
         Stone.OnReceived(item, player)
         local affix, value = Stone.Read(item)
-        if not upgrade:AddAffix(affix, value) then
-            Say(player, "Đá Thuộc Tính không phù hợp hoặc đã đầy")
+        if affix == nil then
+            Say(player, "Dữ liệu Đá Thuộc Tính không hợp lệ.")
+            return false
+        end
+        local added, reason = upgrade:AddAffix(affix, value)
+        if not added then
+            Say(player, reason or "Không thể gắn Đá Thuộc Tính.")
             return false
         end
         ConsumeOne(item)
@@ -464,7 +481,8 @@ local apply = AddAction("TBC_APPLY", "Cường hóa / thuộc tính", ApplyItem)
 apply.rmb = true
 apply.priority = 5
 AddComponentAction("USEITEM", "inventoryitem", function(item, doer, target, actions)
-    if target == nil or not ((target.replica ~= nil and target.replica.equippable ~= nil)
+    if target == nil or not (SoulBanner.IsBanner(target.prefab)
+        or (target.replica ~= nil and target.replica.equippable ~= nil)
         or (target.components ~= nil and target.components.equippable ~= nil)
         or target:HasTag("tbc_upgradeable")) then return end
     local id = item.prefab

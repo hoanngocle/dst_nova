@@ -26,6 +26,12 @@ local stats = Player.Measure(server, source)
 assert(stats.strengthen_level == 16 and stats.damage == 1024)
 assert(stats.crit_rate == 17 and stats.crit_damage == 250)
 assert(stats.pierce_percent == 12 and stats.flat_pierce == 500)
+source.preview_attack = function(_, _, damage)
+    return {damage=damage, pierce_damage=damage*.12+500,
+        total_damage=damage*1.12+500}
+end
+stats = Player.Measure(server, source)
+assert(math.abs(stats.damage-1646.88)<.001, 'single total uses the combat preview')
 current_weapon = {components = {weapon = {damage = 1024}}, _tbc_source_item = weapon}
 assert(Player.Measure(server, source).strengthen_level == 16,
     "weapon proxies use the upgraded source item")
@@ -37,11 +43,20 @@ local decoded = Player.Read(client, source)
 assert(decoded.crit_rate == 17 and decoded.crit_damage == 250)
 assert(decoded.pierce_percent == 12 and decoded.flat_pierce == 500)
 local data = {str = {{"Cảnh giới tu tiên", "Luyện Khí Tiên Kỳ"},
-    {"伤害", 1024}, {"Sát thương xuyên giáp: 0"}}}
+    {"伤害", 1274}, {"Sát thương: 1274"}, {"Sát thương xuyên giáp: 0"}}}
 local augmented = Player.Augment(data, decoded)
 local lines = {}
 for _, row in ipairs(augmented.str) do lines[#lines + 1] = row[1] end
 local output = table.concat(lines, "\n")
+assert(output:find("ATK tổng (trước giáp): 1646.88", 1, true),
+    "display the combined hit once")
+assert(not output:find("1274", 1, true),
+    "do not show a conflicting second damage value")
+local total_rows=0
+for _,row in ipairs(augmented.str) do
+    if row[1]:find('ATK tổng (trước giáp):',1,true) then total_rows=total_rows+1 end
+end
+assert(total_rows==1,'duplicate native damage rows still yield one total')
 assert(output:find("Tỷ lệ bạo kích: 17%", 1, true))
 assert(output:find("Sát thương bạo kích: 250%", 1, true))
 assert(output:find("Tỷ lệ xuyên giáp: 12%", 1, true))
@@ -53,6 +68,12 @@ assert(not output:find("CƯỜNG HÓA", 1, true)
 
 current_weapon = nil
 local bare = Player.Measure(server, source)
+assert(Player.Measure(server, {}).damage == 10,
+    'unarmed attack uses default damage, unlike weapon damage')
+current_weapon = {components={weapon={damage=1,GetDamage=function() return 210 end}}}
+assert(Player.Measure(server, {}).damage == 210,
+    'live weapon damage takes precedence over its static damage field')
+current_weapon = nil
 local bare_client = {_ttk_player_detail = {value = function() return Player.Encode(bare) end},
     HasTag = function() return false end}
 local bare_rows = Player.Augment(data, Player.Read(bare_client, source))

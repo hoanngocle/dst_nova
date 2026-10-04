@@ -127,8 +127,18 @@ function M.Measure(player, G)
         local ok,result=pcall(source.preview_attack,player,weapon,detail.damage)
         if ok and type(result)=="table" then preview=result end
     end
-    Stat(2,"damage",preview and "ST hiện tại (trước giáp mục tiêu)" or "ST trước hiệu ứng trúng đòn",
-        preview and preview.damage or detail.damage)
+    local physical = preview and Number(preview.physical_damage or preview.damage)
+        or Number(detail.damage)
+    local pierce = preview and Number(preview.pierce_damage)
+    if pierce == nil and physical ~= nil then
+        pierce = physical * (preview and preview.pierce_percent or detail.pierce_percent or 0) / 100
+            + (preview and preview.affix_pierce or 0) + (detail.flat_pierce or 0)
+    end
+    local total = preview and Number(preview.total_damage)
+        or physical ~= nil and physical + (pierce or 0) or nil
+    Stat(2,"damage","ATK tổng (trước giáp mục tiêu)",total)
+    Stat(2,"damage_physical","Trong đó: ST thường",physical)
+    Stat(2,"pierce_damage","Trong đó: ST xuyên giáp",pierce)
     Stat(2,"speed","Tốc chạy thực tế",detail.speed)
     Stat(2,"attack_period","Khoảng cách đòn tối thiểu",combat and combat.min_attack_period,"s")
     Stat(2,"damage_multiplier",detail.mounted and "Hệ số ST thú cưỡi" or "Hệ số ST nhân vật",
@@ -187,10 +197,6 @@ function M.Measure(player, G)
     Stat(2,"crit_damage","Hệ số ST khi bạo kích",crit_damage,"%")
     Stat(2,"pierce_percent","Xuyên giáp theo ST",detail.pierce_percent,"%")
     Stat(2,"flat_pierce","ST xuyên giáp cố định",detail.flat_pierce)
-    if preview and Number(preview.damage) then
-        Stat(2,"pierce_damage","ST xuyên giáp dự kiến",preview.damage*(preview.pierce_percent or 0)/100
-            +(preview.affix_pierce or 0)+(detail.flat_pierce or 0))
-    end
     Row(2,"Phạm vi tính","Chưa tính giáp/kháng, hệ mục tiêu, proc ngẫu nhiên và đòn phụ")
     if c.hh_player then Row(2,"Hiệu ứng Solo gốc","Xem Nguồn buff; chưa gộp vào ST dự kiến") end
 

@@ -21,6 +21,16 @@ local function Maximum(c,kind)
         or EquipmentMana(c.inst)
     return math.max(1,c._tbc_elixir_base+Bonus(c.inst,kind)+equipment)
 end
+local function CaptureExternalHealth(c)
+    local previous=c._tbc_elixir_last_max
+    if type(previous)=='number' and type(c.maxhealth)=='number'
+        and c.maxhealth~=previous then
+        -- Tu Tiên can adjust maxhealth directly, bypassing SetMaxHealth.
+        -- Fold only that outside delta into the native base before recomputing.
+        c._tbc_elixir_base=math.max(1,c._tbc_elixir_base+c.maxhealth-previous)
+        c._tbc_elixir_last_max=c.maxhealth
+    end
+end
 local function Restore(c,kind,value)
     if type(value)~='number' then return end
     if kind=='health' then
@@ -38,11 +48,15 @@ function M.Install(c,kind)
     local current=kind=='health' and 'currenthealth' or 'current'
     local setter=kind=='health' and 'SetMaxHealth' or 'SetMax'
     c._tbc_elixir_base=c[field]
+    if kind=='health' then c._tbc_elixir_last_max=c.maxhealth end
+    if kind=='health' then c._tbc_elixir_capture=CaptureExternalHealth end
     if c[setter] then
         local original=c[setter]
         c[setter]=function(self,value,...)
             self._tbc_elixir_base=value
-            return original(self,Maximum(self,kind),...)
+            local result=original(self,Maximum(self,kind),...)
+            if kind=='health' then self._tbc_elixir_last_max=self.maxhealth end
+            return result
         end
     end
     if kind=='mana' and c.CheckLevel then
@@ -63,6 +77,7 @@ function M.Install(c,kind)
             local loaded=data and data[kind=='health' and 'health' or 'current']
             local result=original(self,data,...)
             if data and type(data[field])=='number' then self._tbc_elixir_base=data[field] end
+            if kind=='health' then self._tbc_elixir_last_max=self.maxhealth end
             self._tbc_elixir_loaded_current=loaded
             return result
         end
@@ -70,6 +85,7 @@ function M.Install(c,kind)
     if c.OnSave then
         local original=c.OnSave
         c.OnSave=function(self,...)
+            if kind=='health' then CaptureExternalHealth(self) end
             local data,refs=original(self,...)
             if data and type(data[field])=='number' then
                 data[field]=self._tbc_elixir_base
@@ -78,10 +94,12 @@ function M.Install(c,kind)
         end
     end
     c._tbc_elixir_refresh=function(self)
+        if kind=='health' then CaptureExternalHealth(self) end
         local value=self._tbc_elixir_loaded_current
         if value==nil then value=self[current] end
         local maximum=Maximum(self,kind)
         if kind=='health' then self[field]=maximum else self.max=maximum end
+        if kind=='health' then self._tbc_elixir_last_max=self.maxhealth end
         Restore(self,kind,value)
         self._tbc_elixir_loaded_current=nil
         if kind=='health' and self.ForceUpdateHUD then self:ForceUpdateHUD(true) end

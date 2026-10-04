@@ -18,6 +18,7 @@ modimport("main/ttk_inventory45_compat.lua")
 
 modimport("main/ttk_moreplantables.lua")
 modimport("main/ttk_smart_minisign.lua")
+modimport("main/ttk_escape_treasurechest.lua")
 GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/ttk_item_detail.lua")
 GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/ttk_xd_hover.lua")
 GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/ttk_player_detail.lua")

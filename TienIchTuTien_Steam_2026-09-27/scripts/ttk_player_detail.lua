@@ -17,11 +17,11 @@ function M.Measure(player, source)
     local base
     if weapon ~= nil and weapon.components.weapon ~= nil then
         local w = weapon.components.weapon
-        base = Number(w.damage)
-        if base == nil and w.GetDamage ~= nil then
+        if w.GetDamage ~= nil then
             local ok, value = pcall(w.GetDamage, w, player, nil)
             if ok then base = Number(value) end
         end
+        if base == nil then base = Number(w.damage) end
     else
         base = Number(combat.defaultdamage)
         local rider = components.rider
@@ -65,6 +65,13 @@ function M.Measure(player, source)
             stats.flat_pierce = Number(source.flat_pierce(player, weapon,
                 stats.strengthen_level))
         end
+        if source.preview_attack ~= nil and stats.damage ~= nil then
+            local ok, preview = pcall(source.preview_attack, player, weapon, stats.damage)
+            if ok and type(preview) == "table" then
+                stats.damage = Number(preview.total_damage) or Number(preview.damage)
+                    or stats.damage
+            end
+        end
     end
     return stats
 end
@@ -104,7 +111,8 @@ end
 local function DamageRow(row)
     local key = row[1]
     return key == "伤害" or key == "Sát thương" or key == "Sát thương:"
-        or type(key) == "string" and (key:find("Sát thương tay không:",1,true)==1
+        or type(key) == "string" and (key:find("Sát thương:",1,true)==1
+            or key:find("Sát thương tay không:",1,true)==1
             or key:find("Sát thương cơ bản (vũ khí):",1,true)==1
             or key:find("Sát thương cơ bản (thú cưỡi):",1,true)==1)
 end
@@ -143,13 +151,12 @@ function M.Augment(data, stats)
         local copy = {}
         for k,v in pairs(row) do copy[k]=v end
         if DamageRow(row) then
-            local name = stats.armed and "Sát thương cơ bản (vũ khí)"
-                or stats.mounted and "Sát thương cơ bản (thú cưỡi)" or "Sát thương tay không"
-            copy = {name .. ": " .. (stats.damage ~= nil and Format(stats.damage)
-                or "Tùy mục tiêu")}
-            result.str[#result.str+1] = copy
-            Speed()
-            added = true
+            if not added then
+                result.str[#result.str+1] = {"ATK tổng (trước giáp): " ..
+                    (stats.damage ~= nil and Format(stats.damage) or "Tùy mục tiêu")}
+                Speed()
+                added = true
+            end
         elseif pierce_bonus > 0 and type(row[1]) == "string"
             and row[1]:find("Sát thương xuyên giáp", 1, true) ~= nil then
             local base = tonumber(row[2])

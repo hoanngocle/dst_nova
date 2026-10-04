@@ -43,12 +43,14 @@ function Panel:OnUpdate()
         local d=Defs.Get(self.focused_skill)
         local gate=d.gate.kind=='realm' and P.Realms[d.gate.value+1] or d.gate.kind=='level' and ('Cấp '..d.gate.value) or 'Có sẵn'
         local info=d.cost..' Linh Lực · Hồi '..d.cooldown..' giây'
+        local title=d.name..' · '..gate
         if d.id=='purple_gather' then
-            local nextlevel=P.NextRadiusLevel(s.level or 0)
-            info=info..'\nBán kính '..P.Radius(s.level or 0)..(nextlevel and (' · tăng ở cấp '..nextlevel) or ' · tối đa')
+            local level=s.level or 0
+            title=d.name..' - Cấp '..P.GatherTier(level)
+            info=info..'\nBán kính ảnh hưởng: '..P.Radius(level)
         elseif d.id=='moon_wings' then info=P.WingDrain(s.level or 0)..' Linh Lực/giây · Bấm để bật/tắt'
         elseif d.id=='purple_eye' then info=P.EyeDrain(s.level or 0)..' Linh Lực/giây · Bấm để bật/tắt' end
-        self.skill_tooltip_text:SetString(d.name..' · '..gate..'\n'..(s.ready and info or s.reason or 'Đang nạp dữ liệu...'))
+        self.skill_tooltip_text:SetString(title..'\n'..(s.ready and info or s.reason or 'Đang nạp dữ liệu...'))
     end
 end
 return Panel

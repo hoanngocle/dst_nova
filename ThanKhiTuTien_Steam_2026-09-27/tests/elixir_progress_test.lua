@@ -71,6 +71,12 @@ for _,status in ipairs({'hot','cold','sleep','poison','freeze'}) do assert(Immun
 progress:Refresh(); progress:Refresh()
 eq(health.maxhealth,625,'refresh idempotent'); eq(mana.max,160,'mana refresh idempotent')
 health:SetMaxHealth(200); eq(health.maxhealth,700,'new native base')
+health.maxhealth=health.maxhealth+75 -- external Tu Tien code can change the field directly
+eq(health:OnSave().maxhealth,275,'direct native change is saved in the base')
+eq(health:OnSave().maxhealth,275,'repeat save does not double count native change')
+progress:Refresh()
+eq(health.maxhealth,775,'direct native health change survives refresh')
+health:SetMaxHealth(200)
 mana.native_max=90; mana:CheckLevel(); eq(mana.max,190,'native mana level change')
 eq(mana.current,130,'level change preserves augmented current')
 p._tbc_affix_mana={component=mana,max_bonus=100}; mana.max=mana.max+100
@@ -103,6 +109,12 @@ assert(not plain.components.tbc_elixir_progress:CanConsume('mana'),'no invented 
 plain.components.tbc_elixir_progress:OnLoad({counts={power=0/0,crit=math.huge,health=100,mana=-1,speed='garbage'}})
 plain:Flush()
 eq(plain.components.tbc_elixir_progress:GetCount('health'),10,'clamp old save'); eq(plain.components.tbc_elixir_progress:GetCount('crit'),0,'reject nonfinite counts')
+local direct_before_refresh=player()
+direct_before_refresh.components.health.maxhealth=200
+direct_before_refresh.components.tbc_elixir_progress:OnLoad({counts={health=10}})
+direct_before_refresh:Flush()
+eq(direct_before_refresh.components.health.maxhealth,700,
+    'Tu Tien direct health change before potion load survives refresh')
 local gear={{code='equip_max_health_iii',value=20}}
 for _,order in ipairs({'equip_before_refresh','equip_after_refresh','equip_before_load'}) do
     local copy=player(); local h=copy.components.health; local cp=copy.components.tbc_elixir_progress
@@ -121,6 +133,20 @@ for _,order in ipairs({'equip_before_refresh','equip_after_refresh','equip_befor
     Passives.Reconcile(copy,gear)
     eq(h.maxhealth,740,'reequip after native recalculation')
 end
+
+local body_and_gear=player()
+local body_health=body_and_gear.components.health
+body_and_gear.components.tbc_elixir_progress:OnLoad({counts={health=10}})
+body_and_gear:Flush()
+Passives.Reconcile(body_and_gear,gear)
+eq(body_health.maxhealth,650,'equipment bonus before body realm change')
+body_health.maxhealth=body_health.maxhealth+261 -- Tu Tien updates its body realm directly
+Passives.Reconcile(body_and_gear,gear,{body_health=5})
+eq(body_health._tbc_elixir_base,386,'body realm becomes the new native health base')
+eq(body_health.maxhealth,968.2,'equipment refresh keeps body realm and elixir health')
+Passives.Remove(body_and_gear)
+eq(body_health.maxhealth,886,'unequip keeps body realm and elixir health')
+
 for _,health_first in ipairs({true,false}) do
     local source,target=player(),player()
     source.components.tbc_elixir_progress:OnLoad({counts={health=10}}); source:Flush()

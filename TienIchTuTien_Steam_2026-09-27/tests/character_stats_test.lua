@@ -23,11 +23,20 @@ local p = {prefab="nyx", HasTag=function() return false end, components={
 }}
 local source = {combat_stats=function() return {crit_rate=20,crit_effect=50,pierce=10} end,
     flat_pierce=function() return 30 end,
-    preview_attack=function(_, _, damage) return {damage=(damage+20)*1.2,pierce_percent=10} end}
+    preview_attack=function(_, _, damage) return {damage=(damage+20)*1.2,
+        pierce_percent=10,pierce_damage=69.6,total_damage=465.6} end}
 local s = Stats.Measure(p, {TTK_EQUIPMENT_DETAIL_SOURCE=source})
-near(s.values.damage,396) -- ((100 * 1.5 * 2) + 10 + 20) * 1.2
+near(s.values.damage,465.6) -- physical 396 + armor-piercing 69.6
+near(s.values.damage_physical,396)
+near(s.values.pierce_damage,69.6)
 near(s.values.base_damage,310)
 near(s.values.health_max,150) -- penalties must be reflected
+local penalized=p.components.health.GetMaxWithPenalty
+p.components.health.maxhealth=680
+p.components.health.GetMaxWithPenalty=function(self) return self.maxhealth end
+near(Stats.Measure(p,{TTK_EQUIPMENT_DETAIL_SOURCE=source}).values.health_max,680)
+p.components.health.GetMaxWithPenalty=penalized
+p.components.health.maxhealth=200
 near(s.values.speed,9)
 near(s.values.health_absorption,55) -- sequential 10% then 50%, not 60%
 near(s.values.armor,80) -- duplicate equip slot must not double count armor

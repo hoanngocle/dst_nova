@@ -96,7 +96,9 @@ end
 
 function M.Attach(inst, net_string_fn)
     if inst.replica == nil
-        or inst.replica.inventoryitem == nil or inst.replica.equippable == nil then return end
+        or inst.replica.inventoryitem == nil
+        or (inst.replica.equippable == nil
+            and not require("tbc_soul_banner").IsBanner(inst.prefab)) then return end
     if inst._tbc_detail == nil then
         inst._tbc_detail = net_string_fn(inst.GUID, "tbc_upgrade.detail", "tbc_upgrade_dirty")
     end

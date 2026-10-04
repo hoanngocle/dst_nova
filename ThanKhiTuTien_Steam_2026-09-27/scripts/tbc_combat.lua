@@ -126,7 +126,13 @@ function M.PreviewAttack(attacker, weapon, damage)
     preview = AffixCombat.AdjustDamage(attacker, weapon, preview)
     local packet = AffixCombat.AugmentHit(attacker, nil, weapon, preview)
     local stats = M.StatsForOwner(attacker, weapon)
-    return {damage = preview, pierce_percent = stats.pierce,
+    local strengthen = WeaponUpgrade(attacker, weapon)
+    local pierce = Math.PierceDamage(preview, stats) + M.SoloArmorPierce(attacker)
+        + (strengthen ~= nil and StrengthenEffects.TrueDamage(strengthen.level) or 0)
+        + (packet.tbc_armor_pierce or 0)
+    return {damage = preview, physical_damage = preview,
+        pierce_percent = stats.pierce, pierce_damage = pierce,
+        total_damage = preview + pierce,
         affix_pierce = packet.tbc_armor_pierce or 0}
 end
 

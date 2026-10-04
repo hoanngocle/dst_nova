@@ -39,24 +39,27 @@ spells[6].onselect(book) -- Tử Phong Tụ Linh
 assert(targeting.range == 12, 'cast distance remains 12')
 assert(targeting.reticule.reticuleprefab == 'reticuleaoe_1_6',
     'gather should use a scalable area preview')
+assert(targeting.reticule.pingprefab == nil,
+    'gather ping must not draw a second uncalibrated range ring')
 local fx_scale
 local fx = {prefab = 'reticuleaoe_1_6', Transform = {
     SetPosition = function() end,
     SetScale = function(_, x) fx_scale = x end,
 }}
 targeting.reticule.updatepositionfn(book, {x = 1, z = 2}, fx)
-assert(math.abs(fx_scale - require('nyx/progression').Radius(level) / 6) < 0.001,
-    'preview should match the gather effect radius at this level')
+assert(math.abs(fx_scale * 1.5 * 6 - require('nyx/progression').Radius(level)) < 0.001,
+    'reticule outer edge must match the server gather radius at this level')
 
 level = 100
 spells[6].onselect(book)
 targeting.reticule.updatepositionfn(book, {x = 1, z = 2}, fx)
-assert(math.abs(fx_scale - 2) < 0.001,
-    'maximum gather radius should only double the native six-unit ring')
+assert(math.abs(fx_scale - 4 / 3) < 0.001,
+    'maximum gather radius must compensate for the native 1.5 animation scale')
 
 spells[4].onselect(book) -- Tàn Dạ
 assert(targeting.reticule.reticuleprefab == 'reticuleaoesummontarget_1'
-    and targeting.reticule.updatepositionfn == nil,
+    and targeting.reticule.updatepositionfn == nil
+    and targeting.reticule.pingprefab == 'reticuleaoeping',
     'other skills keep their original targeting marker')
 
 print('gather_reticule_test: ok')

@@ -30,4 +30,9 @@ for _, case in ipairs(milestones) do
             level, tostring(next_level), tostring(progression.NextRadiusLevel(level))))
 end
 
+assert(progression.GatherTier(10) == 1, 'level 10 is gather tier 1')
+assert(progression.GatherTier(19) == 1, 'tier advances only every ten levels')
+assert(progression.GatherTier(50) == 5, 'level 50 is gather tier 5')
+assert(progression.GatherTier(100) == 10, 'level 100 is gather tier 10')
+
 print('gather radius: all level milestones verified')

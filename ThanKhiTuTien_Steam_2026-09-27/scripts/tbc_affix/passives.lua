@@ -71,6 +71,9 @@ function M.Reconcile(player, entries, strengthen)
         and health.SetMaxHealth ~= nil
         and (state.health_percent ~= stats.health_percent or state.body_health ~= body_health) then
         local managed = health._tbc_elixir_resource == 'health'
+        if managed and type(health._tbc_elixir_capture) == 'function' then
+            health:_tbc_elixir_capture()
+        end
         local base = math.max(1, managed and health._tbc_elixir_base
             or health.maxhealth - state.health_bonus)
         local bonus = base * stats.health_percent / 100 + body_health

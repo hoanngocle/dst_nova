@@ -1,6 +1,6 @@
 name = "Công Trình Tu Tiên"
 description = [[
-★ Phiên Bản 1.5.4 - Công Trình Tu Tiên ★
+★ Phiên Bản 1.6.1 - Công Trình Tu Tiên ★
 
 ★ Máy Tái Luyện: biến vật phẩm dư thành Linh Thạch Hạ Phẩm.
 ★ Truyền Tống Trận: dịch chuyển giữa các cổng đã đặt.
@@ -14,7 +14,7 @@ description = [[
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.5.4"
+version = "1.6.1"
 
 api_version = 10
 dst_compatible = true

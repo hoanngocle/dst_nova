@@ -116,6 +116,11 @@ function Harvest.CanWork(inst)
     if Harvest.IsProtectedEntity(inst) or HasAnyTag(inst, PLANTED_WORK_TAGS) then
         return false
     end
+    -- Evergreens selected to become Leif set both flags before their delayed transform.
+    -- Keep the original tree alive so the scheduled spawn is not cancelled by chopping or digging it.
+    if inst.noleif and inst.leifscale ~= nil and inst.TransformIntoLeif ~= nil then
+        return false
+    end
     local workable = inst.components.workable
     if workable == nil or workable.CanBeWorked == nil
         or not workable:CanBeWorked() or workable.GetWorkAction == nil then

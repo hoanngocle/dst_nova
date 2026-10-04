@@ -62,6 +62,7 @@ local BODY_MILESTONES = {
     {13, "Bất Diệt: Không hao độ bền; có cơ hội hồi máu khi giáp đỡ đòn."},
     {16, "+500 máu tối đa khi mặc."},
 }
+local SOUL_BANNER_MILESTONES = {3, 5, 7, 9, 11, 13, 16}
 
 local function EquipSlot(item)
     local components = item.components or {}
@@ -78,6 +79,30 @@ end
 
 function M.StrengthenRows(detail)
     local rows = {}
+    if detail.kind == "soul_banner" and detail.soul_banner ~= nil then
+        local banner = detail.soul_banner
+        local function Add(text, active)
+            rows[#rows + 1] = {label = "", text = text, active = active,
+                colour = active and M.ACTIVE_COLOUR or M.LOCKED_COLOUR}
+        end
+        Add("Sát thương gốc: " .. string.format("%g", banner.base_damage), true)
+        Add("Sát thương Hồn Linh: " .. string.format("%.2f", banner.damage), true)
+        Add("Mỗi cấp: +20% sát thương", true)
+        if banner.next_damage ~= nil then
+            Add("Cấp kế tiếp +" .. (detail.level + 1) .. ": "
+                .. string.format("%.2f", banner.next_damage), true)
+        else
+            Add("Cường hóa tối đa +16", true)
+        end
+        Add("Tỷ lệ bạo kích: " .. banner.crit_rate .. "%", true)
+        Add("Sát thương bạo kích: " .. string.format("%.2f", banner.crit_damage)
+            .. " (+" .. banner.crit_effect .. "%)", true)
+        for _, level in ipairs(SOUL_BANNER_MILESTONES) do
+            Add("(+" .. level .. ") +10% tỷ lệ bạo kích, +20% sát thương bạo kích",
+                detail.level >= level)
+        end
+        return rows
+    end
     local milestones = detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.HEAD) and HEAD_MILESTONES
         or detail.slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.BODY) and BODY_MILESTONES
         or detail.kind == "weapon" and WeaponMilestones(detail.preview) or nil
@@ -117,7 +142,9 @@ function M.Read(item, source)
         max_affixes = source.max_affixes or M.MAX_AFFIXES }
     detail.slot = EquipSlot(item)
     local components = item.components or {}
-    if components.weapon ~= nil or stat:find("Sát thương", 1, true) == 1
+    if item.prefab == "xd_wmz_zhf" or item.prefab == "vanhonphien" then
+        detail.kind = "soul_banner"
+    elseif components.weapon ~= nil or stat:find("Sát thương", 1, true) == 1
         or (item.HasTag ~= nil and item:HasTag("weapon")) then
         detail.kind = "weapon"
     elseif components.armor ~= nil or stat:find("Giảm sát thương", 1, true) == 1 then
@@ -135,6 +162,19 @@ function M.Read(item, source)
         if source.weapon_preview ~= nil then
             detail.preview = source.weapon_preview(level, detail.weapon_damage)
         end
+    end
+    if detail.kind == "soul_banner" and source.soul_banner_damage ~= nil
+        and source.soul_banner_crit ~= nil then
+        local rate, effect = source.soul_banner_crit(level)
+        local damage = source.soul_banner_damage(level)
+        detail.soul_banner = {
+            base_damage = source.soul_banner_damage(0),
+            damage = damage,
+            next_damage = level < 16 and source.soul_banner_damage(level + 1) or nil,
+            crit_rate = rate,
+            crit_effect = effect,
+            crit_damage = damage * (2 + effect / 100),
+        }
     end
     -- A hosted world can read the authoritative component immediately.
     local upgrade = components.tbc_upgrade
@@ -200,16 +240,19 @@ function M.Name(item, detail)
 end
 
 function M.Lines(detail, base)
-    local lines = {"", "THUỘC TÍNH · " .. #detail.affixes .. "/" .. (detail.max_affixes or M.MAX_AFFIXES)}
+    local lines = {""}
     local icon_lines = {}
-    if #detail.affixes == 0 then
-        lines[#lines + 1] = "Chưa gắn Đá Thuộc Tính"
-    else
-        for _, affix in ipairs(detail.affixes) do
-            lines[#lines + 1] = "     " .. affix.name .. " · " .. affix.value
-            icon_lines[#icon_lines + 1] = {index = #lines, atlas = affix.atlas, image = affix.image}
-            if affix.description ~= nil and affix.description ~= "" then
-                lines[#lines + 1] = "     " .. affix.description
+    if detail.kind ~= "soul_banner" then
+        lines[#lines + 1] = "THUỘC TÍNH · " .. #detail.affixes .. "/" .. (detail.max_affixes or M.MAX_AFFIXES)
+        if #detail.affixes == 0 then
+            lines[#lines + 1] = "Chưa gắn Đá Thuộc Tính"
+        else
+            for _, affix in ipairs(detail.affixes) do
+                lines[#lines + 1] = "     " .. affix.name .. " · " .. affix.value
+                icon_lines[#icon_lines + 1] = {index = #lines, atlas = affix.atlas, image = affix.image}
+                if affix.description ~= nil and affix.description ~= "" then
+                    lines[#lines + 1] = "     " .. affix.description
+                end
             end
         end
     end

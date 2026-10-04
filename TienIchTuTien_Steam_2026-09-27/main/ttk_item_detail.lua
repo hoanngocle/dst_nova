@@ -78,6 +78,7 @@ AddClassPostConstruct("widgets/hoverer", function(hover)
         -- ItemTile has already appended our sections. Remove them before
         -- laying out icons and the coloured title in the normal hoverer.
         local marker = detail.kind == "stone" and "\nTHUỘC TÍNH\n"
+            or detail.kind == "soul_banner" and "\nCƯỜNG HÓA\n"
             or "\nTHUỘC TÍNH · "
         local marker_at = original:find(marker, 1, true)
         if marker_at ~= nil then original = original:sub(1, marker_at - 1) end

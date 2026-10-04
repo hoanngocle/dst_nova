@@ -100,7 +100,7 @@ end)
 function ForgeUI:Refresh()
     local replica = self.container.replica ~= nil and self.container.replica.container or nil
     local item = replica ~= nil and replica:GetItemInSlot(1) or nil
-    self.place_hint:SetString(item == nil and "Đặt vũ khí hoặc giáp vào ô" or "")
+    self.place_hint:SetString(item == nil and "Đặt trang bị hoặc Vạn Linh Phiên vào ô" or "")
     local state = self.container._tbc_forge_state ~= nil and self.container._tbc_forge_state:value() or ""
     local level, kind, current, next_value, chance, cost, luck =
         state:match("^(%d+)|([^|]+)|([^|]+)|([^|]+)|([^|]+)|(%d+)|([^|]+)$")
@@ -125,7 +125,8 @@ function ForgeUI:Refresh()
         self.level_current:SetString("+" .. level)
         self.level_next:SetString("tối đa")
     end
-    local stat_name = kind == "weapon" and "Sát thương" or kind == "armor" and "Giảm sát thương"
+    local stat_name = kind == "weapon" and "Sát thương" or kind == "soul_banner" and "Sát thương Hồn Linh"
+        or kind == "armor" and "Giảm sát thương"
         or kind == "weapon_bonus" and "Thưởng cường hóa" or "Chỉ số"
     local suffix = kind == "armor" and "%" or ""
     self.stat_label:SetString(stat_name)

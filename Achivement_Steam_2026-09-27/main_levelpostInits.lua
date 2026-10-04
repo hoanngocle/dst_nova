@@ -1,4 +1,5 @@
 GLOBAL.setmetatable(env,{__index=function(_,k) return GLOBAL.rawget(GLOBAL,k) end})
+local TutienHealthReload = require "functions/tutienhealthreload"
 
 -- CC : health sanity hunger percentage save and load >> [Level] Level Attributes Stats
 AddComponentPostInit("health", function(Health)
@@ -19,6 +20,16 @@ AddComponentPostInit("health", function(Health)
                 self.inst.components.levelsystem:loadHealth(self.inst, data.chasnipercentages)
             end
         end)
+        if self.inst:HasTag("player") then
+            self.inst:DoTaskInTime(2, function()
+                if self.inst:IsValid() then
+                    TutienHealthReload.Restore(self.inst, data and data.health,
+                        self.inst._chasni_loaded_hunger, self.inst._chasni_loaded_sanity)
+                    self.inst._chasni_loaded_hunger = nil
+                    self.inst._chasni_loaded_sanity = nil
+                end
+            end)
+        end
         return retval
     end
 end)
@@ -34,6 +45,9 @@ AddComponentPostInit("hunger", function(Hunger)
     end
     local oldOnLoad = Hunger.OnLoad
     function Hunger:OnLoad(data, ...)
+        if self.inst:HasTag("player") then
+            self.inst._chasni_loaded_hunger = data and data.hunger
+        end
         local retval = oldOnLoad(self, data, ...)
         self.inst:DoTaskInTime(0, function()
             if self.inst.components.levelsystem and data and data.chasnipercentages then
@@ -58,6 +72,9 @@ AddComponentPostInit("sanity", function(Sanity)
     end
     local oldOnLoad = Sanity.OnLoad
     function Sanity:OnLoad(data, ...)
+        if self.inst:HasTag("player") then
+            self.inst._chasni_loaded_sanity = data and data.current
+        end
         local retval = oldOnLoad(self, data, ...)
         self.inst:DoTaskInTime(0, function()
             if self.inst.components.levelsystem and data and data.chasnipercentages then

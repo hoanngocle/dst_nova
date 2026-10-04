@@ -1,22 +1,23 @@
 name = "Tiện Ích Tu Tiên"
 description = [[
-Phiên bản 1.5.7 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
+Phiên bản 1.5.12 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
 
 ★ Mở rộng túi đồ lên 45 ô
 ★ Xếp chồng vật phẩm tối đa 120
 ★ Sắp xếp kho đồ bằng phím J
+★ Nhấn Esc để đóng Hòm Kho Báu đang mở
 ★ Cải tiến Máy Phóng Băng thông minh hơn
 ★ Cho phép mở quà ở bất cứ đâu
 ★ Ngăn Grass Gekko xuất hiện
 ★ Mở rộng các cách trồng cây và nấm
 ★ Biển nhỏ tự hiện biểu tượng món đồ trong rương
-★ Tooltip khi bật Thần Khí Tu Tiên: trang bị cường hóa và từng viên Đá Thuộc Tính
+★ Tooltip khi bật Thần Khí Tu Tiên: trang bị cường hóa, từng viên Đá Thuộc Tính và toàn bộ chỉ số Vạn Linh Phiên
 ★ Bảng Thông tin nhân vật: chỉ số hiện tại, trang bị và nguồn buff trực tiếp từ server
 
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.5.7"
+version = "1.5.12"
 
 api_version = 10
 dst_compatible = true

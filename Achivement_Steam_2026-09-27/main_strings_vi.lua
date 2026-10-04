@@ -1075,7 +1075,7 @@ STRINGS.PERKS={
     },
     ["icyweed"] = {
         ["name"]="Gió lạnh vi vu",
-        ["description"]="Bụi cỏ lăn đóng băng xuất hiện ngẫu nhiên từ cây hoặc gốc cây vào mùa đông",
+        ["description"]="Mùa đông: mỗi bụi đóng băng cho 2–4 Linh Thạch hạ phẩm và 2 lượt thưởng vật liệu",
     },
     ["bosshunting"] = {
         ["name"]="Triều đại người khổng lồ",

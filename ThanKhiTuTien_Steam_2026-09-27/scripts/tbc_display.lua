@@ -95,13 +95,21 @@ function M.Sections(upgrade, names)
         and (slot == EQUIPSLOTS.HEAD or slot == EQUIPSLOTS.BODY)
     local bonus = level > 0 and not armor_slot
         and (kind == "weapon" and ("Sát thương +" .. string.format("%g%%", level * 5))
+        or kind == "soul_banner" and ("Sát thương Hồn Linh "
+            .. string.format("%.2f", require("tbc_soul_banner").Damage(level)))
         or kind == "armor" and ("Giảm sát thương +" .. string.format("%g%%", level * 1.5)))
         or nil
     local sections = {}
 
     local lines = {"Cấp +" .. level .. "/16"
         .. (bonus ~= nil and (" | " .. bonus) or "")}
-    if slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.HEAD) then
+    if kind == "soul_banner" then
+        local rate, effect = require("tbc_soul_banner").CritBonus(level)
+        if rate > 0 then
+            lines[#lines + 1] = "Hồn Linh: +" .. rate .. "% tỷ lệ bạo kích, +"
+                .. effect .. "% sát thương bạo kích"
+        end
+    elseif slot == (EQUIPSLOTS ~= nil and EQUIPSLOTS.HEAD) then
         local tier = Tier(level)
         if level >= 3 then
             lines[#lines + 1] = "Nhập Định: giảm "
@@ -170,7 +178,8 @@ function M.SectionsFromState(state, item, names)
     local upgrade = {inst = item, level = tonumber(level), affixes = {}}
     local kind = nil
     if item ~= nil and item.HasTag ~= nil then
-        if item:HasTag("weapon") then kind = "weapon"
+        if require("tbc_soul_banner").IsBanner(item.prefab) then kind = "soul_banner"
+        elseif item:HasTag("weapon") then kind = "weapon"
         elseif item:HasTag("armor") then kind = "armor" end
     end
     for id, value in affix_ids:gmatch("([^:|]+):(%d+)") do
