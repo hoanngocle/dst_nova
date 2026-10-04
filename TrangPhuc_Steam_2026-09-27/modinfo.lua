@@ -1,7 +1,7 @@
 name = "Trang Phục Tu Tiên"
-description = "Cuộc trình diễn thời trang của Nyx.\n\nVersion: 1.0"
+description = "Cuộc trình diễn thời trang của Nyx.\n\nVersion: 1.0.1"
 author = "Nyx"
-version = "1.0"
+version = "1.0.1"
 
 server_filter_tags = { "TuTien", "Nyx", "skin"}
 
@@ -14,4 +14,6 @@ server_only_mod = false
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 
-priority = 100000
+-- Tu Tien (-10) and Nyx (-20) register their characters before skin extensions.
+priority = -30
+mod_dependencies = { { workshop = "workshop-3721846643" } }

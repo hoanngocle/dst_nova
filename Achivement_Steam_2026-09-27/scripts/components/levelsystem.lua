@@ -610,9 +610,6 @@ function levelsystem:loadHealth(inst, percentage)
 	-- Thần Khí stores the native maximum separately and adds permanent elixir
 	-- health in SetMaxHealth. Pass that native maximum to avoid adding it twice.
 	local function healthBase()
-		if health._tbc_elixir_capture ~= nil then
-			health:_tbc_elixir_capture()
-		end
 		return health._tbc_elixir_resource == "health"
 			and health._tbc_elixir_base or health.maxhealth
 	end

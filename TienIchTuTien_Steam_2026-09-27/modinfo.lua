@@ -1,6 +1,6 @@
 name = "Tiện Ích Tu Tiên"
 description = [[
-Phiên bản 1.5.12 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
+Phiên bản 1.5.13 - Một cuốn bí lục tập hợp những kỹ năng hỗ trợ hữu dụng.
 
 ★ Mở rộng túi đồ lên 45 ô
 ★ Xếp chồng vật phẩm tối đa 120
@@ -17,7 +17,10 @@ Phiên bản 1.5.12 - Một cuốn bí lục tập hợp những kỹ năng hỗ
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.5.12"
+version = "1.5.13"
+-- Read final server stats after Tu Tien, Achievement and Than Khi load.
+priority = -1200
+mod_dependencies = { { workshop = "workshop-3721846643" } }
 
 api_version = 10
 dst_compatible = true

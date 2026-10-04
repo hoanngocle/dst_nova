@@ -43,6 +43,27 @@ assert(Reload.Restore(player, 175, 90, 70))
 assert(health.maxhealth == 389 and body.calls == 2,
     'same-level reapplication must not double the body bonus')
 
+-- Existing save: 125 native + 70 Achievement levels * 5 = 475.
+-- Tu Tien body level 46 must add its observed 261 health on top.
+health.maxhealth = 475
+health.currenthealth = 357
+health._tbc_elixir_base = 475
+health._tbc_elixir_last_max = 475
+hunger.max = 325
+sanity.max = 300
+function body:SetLevel(level)
+    assert(level == 46)
+    health.maxhealth = 736
+end
+assert(Reload.Restore(player, 357, 262, 281))
+assert(health.maxhealth == 736 and health.currenthealth == 357,
+    'level 46 restores Tu Tien health above 350 Achievement health')
+assert(hunger.max == 325 and hunger.current == 262
+    and sanity.max == 300 and sanity.current == 281,
+    'health repair does not overwrite existing hunger or sanity')
+assert(health._tbc_elixir_base == 736,
+    'later equipment refresh cannot revert health to 475')
+
 local absent = { components = { health = health } }
 assert(not Reload.Restore(absent, 100), 'players without Tu Tien are unaffected')
 print('tutien_health_reload_test: ok')

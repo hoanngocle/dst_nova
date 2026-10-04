@@ -1,6 +1,6 @@
 name = "Tiện Ích Client"
 description = [[
-Phiên bản 1.0.5 - Tiện Ích Client
+Phiên bản 1.0.6 - Tiện Ích Client
 
 ★ Tự động đi bộ đến điểm chọn trên bản đồ, có chỉ dẫn đường đi.
 ★ Camera quan sát: đổi góc nhìn, ẩn HUD và theo dõi mục tiêu.
@@ -12,14 +12,14 @@ Chỉ cần cài phía Client.
 
 ]]
 author = "Nyx"
-version = "1.0.5"
+version = "1.0.6"
 api_version = 10
 api_version_dst = 10
 dst_compatible = true
 all_clients_require_mod = false
 client_only_mod = true
 server_only_mod = false
-priority = -10
+priority = -1300 -- Apply client UI helpers after gameplay mods; no stat writes.
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 

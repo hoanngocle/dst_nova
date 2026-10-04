@@ -1,6 +1,6 @@
 name = 'Hầm Ngục Tu Tiên'
 description = [[
-★ Phiên Bản 1.1.1 - Hầm Ngục Tu Tiên.
+★ Phiên Bản 1.1.2 - Hầm Ngục Tu Tiên.
 
 ★ Mỗi lượt có 2–10 đợt; đợt cuối gặp boss DST hoặc một trong sáu boss Solo Leveling.
 ★ Thưởng Linh Thạch, mạch khoáng, Huyền Tinh và rương phần thưởng.
@@ -9,7 +9,8 @@ description = [[
 Cần bật Tu Tiên và cài Hầm Ngục cho mọi người chơi.
 ]]
 author = 'Nyx;'
-version = '1.1.1'
+version = '1.1.2'
+priority = -50 -- Load after the Tu Tien core (-10).
 api_version = 10
 dst_compatible = true
 all_clients_require_mod = true
