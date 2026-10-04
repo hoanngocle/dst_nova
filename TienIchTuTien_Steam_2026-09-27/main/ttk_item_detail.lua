@@ -111,7 +111,8 @@ AddClassPostConstruct("widgets/hoverer", function(hover)
         widget.ttk_title:Show()
 
         widget.ttk_icons = widget.ttk_icons or {}
-        local line_count = select(2, body:gsub("\n", "")) + 1
+        local _, newline_count = body:gsub("\n", "")
+        local line_count = newline_count + 1
         local line_height = height / math.max(1, line_count)
         for index, icon_info in ipairs(icon_lines) do
             local icon = widget.ttk_icons[index]

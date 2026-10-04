@@ -15,7 +15,7 @@ DST sắp xếp `priority` từ lớn xuống nhỏ (mã game `scripts/mods.lua`
 | 5 | Hầm Ngục Tu Tiên | -50 | 1.1.2 |
 | 6 | Thành Tựu Tu Tiên | -1000 | 1.3.5 |
 | 7 | Thần Khí Tu Tiên | -1100 | 1.2.9 |
-| 8 | Tiện Ích Tu Tiên | -1200 | 1.5.13 |
+| 8 | Tiện Ích Tu Tiên | -1200 | 1.5.14 |
 | 9 | Tiện Ích Client | -1300 | 1.0.6 |
 
 Các thư viện và bản Việt Hóa ngoài repo dùng yêu cầu của mod gốc. Tiện Ích Client chỉ hoạt động phía client, không yêu cầu Tu Tiên để dùng độc lập và không sửa chỉ số server. Nyx vốn đã load sau Tu Tiên nên không tăng version trong thay đổi này.
@@ -56,3 +56,4 @@ Test mock của adapter kiểm tra cách giữ/capture bonus và chỉ số hi�
 - DST dedicated engine build 756039 khởi động offline với Tu Tiên 18.1.0 và toàn bộ mod gameplay trong bảng. Engine xác nhận đúng thứ tự Tu Tiên → Nyx → Trang Phục → Công Trình → Hầm Ngục → Thành Tựu → Thần Khí → Tiện Ích.
 - Nhân vật Nyx tạo bằng console trong QA có 125 máu ban đầu; cấu hình QA cho 275 sau `SetLevel(46)`, rồi 625 khi cộng Achievement +350; sau 3 giây vẫn 625 và cache Thần Khí cũng là 625. Phép thử này xác nhận cộng bonus trên kết quả Tu Tiên đang cung cấp. Mốc 736 của người dùng phụ thuộc nền 386 đã quan sát trong cấu hình của họ.
 - QA dùng thư mục server và thế giới thử nghiệm riêng. Chưa xác nhận tải lại nhân vật trong save của người dùng, client render hay bản Workshop đã phát hành.
+- Hotfix Tiện Ích 1.5.14: bỏ gọi `select` trong `modimport` tooltip vì sandbox mod không export hàm này. Regression chạy hook hover/container với `select=nil` đã qua; test tooltip Vạn Linh Phiên cũng đã qua.
