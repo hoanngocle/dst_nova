@@ -64,4 +64,12 @@ local hover_text = Text(augmented.str)
 assert(hover_text:find("924.42", 1, true), "in-game hover shows current damage")
 assert(hover_text:find("3143.03", 1, true), "in-game hover shows critical damage")
 assert(hover_text:find("(+16)", 1, true), "in-game hover shows final milestone")
+local appended = Hover.Augment({str = {
+    {"Vạn Linh Phiên"},
+    {"Trang bị" .. Detail.Lines(detail, "")},
+}}, item, detail, Detail)
+local appended_text = Text(appended.str)
+local _, headings = appended_text:gsub("CƯỜNG HÓA", "")
+assert(headings == 1, "Tu Tien detail panel must contain one strengthen section")
+assert(appended_text:find("Trang bị", 1, true), "native item description remains")
 print("soul_banner_detail_test: ok")
