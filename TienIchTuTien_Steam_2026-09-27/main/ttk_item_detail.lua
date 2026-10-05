@@ -19,6 +19,7 @@ local function HoveredItem()
             if widget.item ~= nil then return widget.item end
             widget = widget.parent
         end
+        return nil
     end
     return input:GetWorldEntityUnderMouse()
 end
