@@ -35,6 +35,11 @@ function A.Prepare(owner,id,p)
         if not target then return nil,'Không có kẻ địch ở điểm chọn.' end
     end
     local h=handle(owner)
+    if id=='bean_soldiers' then
+        function h:IsDone()
+            return self.done or (self.projectile~=nil and not self.projectile:IsValid())
+        end
+    end
     function h:Start()
         if id=='triflame_fan' or id=='eternal_night' or id=='spirit_sword' then
             self.skill=id
@@ -61,6 +66,19 @@ function A.Prepare(owner,id,p)
                 end)
             end
             self:Later(15,function() self:Cancel() end)
+        elseif id=='bean_soldiers' then
+            -- Upstream owns the explosion, three summons, AI, lifetime and
+            -- CopyFromPlayer health (12x health, Yuan Shen scaling).
+            if not Prefabs.xd_wmz_sdcb or not Prefabs.xd_wmz_db then return false end
+            local fx=self:Track(SpawnPrefab('xd_wmz_sdcb'))
+            if not fx or not fx.components.complexprojectile then return false end
+            self.projectile=fx
+            self.skill='bean_explosion'
+            SkillDamage.Begin(owner,self.skill)
+            SkillDamage.MarkNative(fx,owner,self.skill)
+            fx:ListenForEvent('onremove',function() SkillDamage.End(owner,self.skill) end)
+            fx.Transform:SetPosition(owner.Transform:GetWorldPosition())
+            fx.components.complexprojectile:Launch(Vector3(p.x,0,p.z),owner)
         elseif id=='divine_chariot' then
             if not target:IsValid() or not XD_CanAttackTrget(owner,target) then return false end
             for i=1,3 do if not Prefabs['xd_wmz_butterfly'..i] then return false end end

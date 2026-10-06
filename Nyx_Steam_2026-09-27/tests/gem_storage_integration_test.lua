@@ -11,9 +11,12 @@ package.preload['widgets/hh_ui/hh_equip_ui']=function() return {} end
 local api={
     AddPrefabPostInit=function(name,fn) assert(name=='nyx'); prefab_hook=fn end,
     AddModRPCHandler=function(namespace,name,fn)
+        if name=='CLOSE_GEM_STORAGE' then return end
         assert(namespace=='NYX' and name=='GEM_STORAGE'); rpc=fn
     end,
+    AddComponentPostInit=function(name,fn) assert(name=='inventory' and type(fn)=='function') end,
     AddClassPostConstruct=function(path,fn)
+        if path=='screens/playerhud' then return end
         require(path) -- Match Klei: optional third-party widgets are required immediately.
         assert(path=='widgets/hh_ui/hh_equip_ui'); ui_hook=fn
     end,

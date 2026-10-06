@@ -121,12 +121,10 @@ function M.Measure(player, G)
     end
     Row(2,"Vũ khí",weapon and Name(weapon._tbc_source_item or weapon._source_weapon or weapon,G)
         or detail.mounted and "Thú cưỡi" or "Tay không")
-    Stat(2,"base_damage","ST nền sau hệ số",detail.damage)
-    local preview
-    if source and type(source.preview_attack)=="function" and detail.damage then
-        local ok,result=pcall(source.preview_attack,player,weapon,detail.damage)
-        if ok and type(result)=="table" then preview=result end
-    end
+    Stat(2,"base_damage","ST nền sau hệ số",detail.base_damage)
+    -- PlayerDetail already applied the item/elixir attack provider once.
+    -- Reuse its packet; feeding the total back through that provider stacks it.
+    local preview=detail.attack_preview
     local physical = preview and Number(preview.physical_damage or preview.damage)
         or Number(detail.damage)
     local pierce = preview and Number(preview.pierce_damage)

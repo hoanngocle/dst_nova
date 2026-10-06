@@ -36,17 +36,22 @@ function Storage:Close()
     end
 end
 
-function Storage:Toggle()
+function Storage:GetContainer()
     if not self.inst:IsValid() or self.inst:HasTag('playerghost')
         or self.inst.components.health ~= nil and self.inst.components.health:IsDead() then
-        return false
+        return nil
     end
     if self.box == nil or not self.box:IsValid() then
         local box = SpawnPrefab('nyx_gem_storage')
-        if box == nil then return false end
+        if box == nil then return nil end
         self:Attach(box)
     end
-    local container = self.box.components.container
+    return self.box.components.container
+end
+
+function Storage:Toggle()
+    local container = self:GetContainer()
+    if container == nil then return false end
     if container:IsOpenedBy(self.inst) then
         container:Close(self.inst)
     else

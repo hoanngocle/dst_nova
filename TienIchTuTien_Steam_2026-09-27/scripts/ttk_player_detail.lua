@@ -42,6 +42,7 @@ function M.Measure(player, source)
         local external = combat.externaldamagemultipliers
         stats.damage = Number(base * (combat.damagemultiplier or 1)
             * (external ~= nil and external:Get() or 1) + (combat.damagebonus or 0))
+        stats.base_damage = stats.damage
     end
     if loco ~= nil then stats.speed = Number(loco:GetRunSpeed()) end
     local source_item = weapon ~= nil
@@ -68,6 +69,7 @@ function M.Measure(player, source)
         if source.preview_attack ~= nil and stats.damage ~= nil then
             local ok, preview = pcall(source.preview_attack, player, weapon, stats.damage)
             if ok and type(preview) == "table" then
+                stats.attack_preview = preview
                 stats.damage = Number(preview.total_damage) or Number(preview.damage)
                     or stats.damage
             end

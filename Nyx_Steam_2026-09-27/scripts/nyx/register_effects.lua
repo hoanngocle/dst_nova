@@ -14,7 +14,7 @@ end)
 E.Register('purple_gather',function(inst,p)
     return componentHandle(inst,'nyx_gather',function(c) return c:CastAt(p.x,p.z) end,function(c) return c.controller==nil end)
 end)
-for _,id in ipairs({'triflame_fan','eternal_night','spirit_sword'}) do
+for _,id in ipairs({'triflame_fan','eternal_night','spirit_sword','bean_soldiers'}) do
     local skill=id
     E.Register(skill,function(inst,p) return require('nyx/attack18').Prepare(inst,skill,p) end)
 end

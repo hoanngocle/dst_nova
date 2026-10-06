@@ -1,6 +1,7 @@
 local Common = require "util/nyx_blink_common"
 local SkillDamage = require "util/nyx_skill_damage"
 local Source = require "nyx/source18"
+local Progression = require "nyx/progression"
 
 local LIGHTNING_FX = "spear_wathgrithr_lightning_lunge_fx"
 local LIGHTNING_SOUND = "meta3/wigfrid/spear_lighting_lunge"
@@ -12,6 +13,7 @@ local NyxBlink = Class(function(self, inst)
     self.cooldown_end = 0
     self.cast_task = nil
     self.cast_state = nil
+    self.cast_cost = nil
 
     self._ondeath = function() self:Stop("death") end
     self._onghost = function() self:Stop("ghost") end
@@ -63,6 +65,7 @@ function NyxBlink:_FinishCast(reason)
     self.inst:RemoveTag("nyx_blink_casting")
     local cast_state = self.cast_state
     self.cast_state = nil
+    self.cast_cost = nil
     if (reason == "finished" or reason == "destination_invalid"
             or reason == "cast_error" or reason == "no_resource")
         and self.inst.sg ~= nil and self.inst.sg.currentstate == cast_state
@@ -113,7 +116,8 @@ function NyxBlink:_ResolveCast(x, z)
 
     local targets = Common.FindTargetsAlongPath(
         self.inst, origin_x, origin_z, x, z)
-    local paid, reason = Source.Spend(self.inst, Common.COST)
+    local cost = self.cast_cost
+    local paid, reason = Source.Spend(self.inst, cost)
     if not paid then
         self:_Say(reason)
         self:_FinishCast("no_resource")
@@ -121,7 +125,7 @@ function NyxBlink:_ResolveCast(x, z)
     end
     local ok, problem = pcall(self.inst.Physics.Teleport, self.inst.Physics, x, 0, z)
     if not ok then
-        Source.Refund(self.inst, Common.COST)
+        Source.Refund(self.inst, cost)
         print("[Nyx] Thuấn Ảnh teleport failed: " .. tostring(problem))
         self:_FinishCast("cast_error")
         return
@@ -155,11 +159,14 @@ function NyxBlink:CastAt(x, z)
     if not valid then return false, reason end
 
     local resource = self.inst.components.xd_htz_lq
-    if resource == nil or resource.current < Common.COST then
-        self:_Say("Thuấn Ảnh cần " .. Common.COST .. " Linh Lực.")
+    local level = self.inst.components.levelsystem
+    local cost = Progression.ReducedCost(Common.COST, level and level.level)
+    if resource == nil or resource.current < cost then
+        self:_Say("Thuấn Ảnh cần " .. cost .. " Linh Lực.")
         return false, "no_resource"
     end
     self.active = true
+    self.cast_cost = cost
     self.cast_state = self.inst.sg ~= nil and self.inst.sg.currentstate or nil
     self.inst:AddTag("nyx_blink_casting")
     self.cast_task = self.inst:DoTaskInTime(Common.BLINK_DELAY, function()

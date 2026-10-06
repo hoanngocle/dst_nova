@@ -28,7 +28,11 @@ local function CaptureExternalHealth(c)
         -- Tu Tiên can adjust maxhealth directly, bypassing SetMaxHealth.
         -- Fold only that outside delta into the native base before recomputing.
         c._tbc_elixir_base=math.max(1,c._tbc_elixir_base+c.maxhealth-previous)
+        -- The equipped percentage also depends on the new native base. Merely
+        -- capturing the delta leaves that source stale until an equipment swap.
+        c.maxhealth=Maximum(c,'health')
         c._tbc_elixir_last_max=c.maxhealth
+        if c.ForceUpdateHUD then c:ForceUpdateHUD(true) end
     end
 end
 local function Restore(c,kind,value)

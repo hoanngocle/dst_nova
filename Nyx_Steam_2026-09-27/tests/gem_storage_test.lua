@@ -3,11 +3,12 @@ local ok, Rules = pcall(require, 'nyx/gem_storage')
 assert(ok, 'gem storage rules must be available')
 for _, id in ipairs({'redgem','bluegem','purplegem','orangegem','yellowgem','greengem',
     'opalpreciousgem','hh_effect_stone','hh_effect_tally','hh_remove_stone',
-    'ac_refreshstone','ad_cleanstone','wb_enhancegem',
+    'ac_refreshstone','ad_cleanstone','wb_enhancegem','hh_essence',
+    'xd_lingshi1','xd_lingshi2','xd_lingshi3','xd_lingshi4',
     'ttk_huyen_tinh_ha_pham','ttk_huyen_tinh_trung_pham','ttk_huyen_tinh_thuong_pham'}) do
     assert(Rules.Accepts({prefab=id}), 'must accept '..id)
 end
-for _, id in ipairs({'rocks','goldnugget','spear','papyrus','hh_essence','nn_liquidluck',
+for _, id in ipairs({'rocks','goldnugget','spear','papyrus','xd_lingshi5','nn_liquidluck',
     'nn_magicpaper','wb_strengthen_strengthen_protectpaper','fakegem','hh_effect_stone_fake'}) do
     assert(not Rules.Accepts({prefab=id}), 'must reject '..id)
 end

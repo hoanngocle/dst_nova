@@ -76,6 +76,9 @@ local function WrapCastAOE(sg)
     local original = handler.deststate
     handler.deststate = function(inst, action)
         if Router.CanEnterNativeCast(inst, action) then
+            if action.invobject._nyx_selected_skill == 'bean_soldiers' then
+                return 'xd_wmz_sdcb'
+            end
             return "nyx_skill_cast"
         end
         if type(original) == "function" then

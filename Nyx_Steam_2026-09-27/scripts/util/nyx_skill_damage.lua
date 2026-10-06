@@ -7,6 +7,14 @@ local LEVEL_RATES = {
     eternal_night = 0.25,
     spirit_sword = 0.15,
 }
+local DAMAGE_SCALES={triflame_fan=2,eternal_night=2,spirit_sword=3}
+
+local function OwnerLevel(owner)
+    local component=owner and owner.components and owner.components.levelsystem
+    local level=component and component.level
+    return type(level)=='number' and level==level and level<math.huge
+        and level>-math.huge and math.max(1,math.floor(level)) or 1
+end
 
 local function IsFiniteNonnegative(value)
     return type(value) == "number" and value == value
@@ -54,7 +62,10 @@ local function LevelMultiplier(owner, skill)
 end
 
 local function SkillBase(owner, skill, damage, target)
-    return damage * LevelMultiplier(owner, skill) + WeaponDamage(owner, target)
+    if skill=='bean_soldiers' then damage=20*OwnerLevel(owner)
+    elseif skill=='bean_explosion' then damage=200+100*math.floor(OwnerLevel(owner)/10) end
+    return (damage * LevelMultiplier(owner, skill) + WeaponDamage(owner, target))
+        * (DAMAGE_SCALES[skill] or 1)
 end
 
 local function Pack(...)
@@ -80,6 +91,64 @@ function SkillDamage.Calculate(owner, skill, damage, target, ...)
     return CallPrepared(Xd_CalcDamage, owner, SkillBase(owner, skill, damage, target), target, ...)
 end
 
+function SkillDamage.InstallSummonHook(api)
+    api.AddPrefabPostInit('xd_wmz_db',function(inst)
+        if not TheWorld.ismastersim or inst._nyx_summon_damage_hook
+            or type(inst.CopyFromPlayer)~='function' then return end
+        inst._nyx_summon_damage_hook=true
+        local copy=inst.CopyFromPlayer
+        inst.CopyFromPlayer=function(summon,...)
+            local results=Pack(copy(summon,...))
+            local combat=summon.components.combat
+            if combat then
+                -- Upstream CopyFromPlayer reinstalls owner-based CalcDamage.
+                -- Add Nyx's weapon contribution only after that native setup.
+                local native=combat.CalcDamage
+                combat.CalcDamage=function(self,target,...)
+                    local owner=summon.owner or (summon.components.follower
+                        and summon.components.follower.leader)
+                    if owner and owner.prefab=='nyx' and owner:IsValid()
+                        and owner.components.combat then
+                        -- Bean base grows 20 per level without a cap; the
+                        -- owner calculator supplies all live bonuses once.
+                        return SkillDamage.Calculate(owner,'bean_soldiers',self.defaultdamage,target)
+                    end
+                    return native(self,target,...)
+                end
+                if type(combat.DoAttack)=='function' and not combat._nyx_summon_attack_hook then
+                    combat._nyx_summon_attack_hook=true
+                    local attack=combat.DoAttack
+                    combat.DoAttack=function(self,target,...)
+                        local owner=summon.owner or (summon.components.follower
+                            and summon.components.follower.leader)
+                        local victim=target or self.target
+                        local victimcombat=victim and victim.components and victim.components.combat
+                        if not owner or owner.prefab~='nyx' or not owner:IsValid()
+                            or not victimcombat then return attack(self,target,...) end
+                        -- Native DoAttack still owns the soldier's range, AI,
+                        -- cooldown and attack events. Attribute just this hit
+                        -- to Nyx before the final target-side mod wrappers.
+                        local getattacked=victimcombat.GetAttacked
+                        victimcombat.GetAttacked=function(component,attacker,damage,weapon,...)
+                            if attacker==summon then
+                                local inventory=owner.components.inventory
+                                local held=inventory and inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                                return getattacked(component,owner,damage,held,...)
+                            end
+                            return getattacked(component,attacker,damage,weapon,...)
+                        end
+                        local hit=Pack(pcall(attack,self,target,...))
+                        victimcombat.GetAttacked=getattacked
+                        if not hit[1] then error(hit[2],0) end
+                        return unpack(hit,2,hit.n)
+                    end
+                end
+            end
+            return unpack(results,1,results.n)
+        end
+    end)
+end
+
 function SkillDamage.MarkNative(effect, owner, skill)
     effect._nyx_damage_owner = owner
     effect._nyx_damage_skill = skill
@@ -90,7 +159,8 @@ local function MarkedSkill(effect, owner)
     local marked = effect._nyx_damage_skill ~= nil and effect or effect.owner
     if type(marked) ~= 'table' or marked._nyx_damage_owner ~= owner then return nil end
     local skill = marked._nyx_damage_skill
-    if LEVEL_RATES[skill] ~= nil and owner._nyx_skill_damage_bonus[skill] then return skill end
+    if (LEVEL_RATES[skill] ~= nil or skill=='bean_explosion')
+        and owner._nyx_skill_damage_bonus[skill] then return skill end
 end
 
 local installed_hook

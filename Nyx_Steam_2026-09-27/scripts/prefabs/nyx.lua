@@ -59,6 +59,7 @@ return MakePlayerCharacter('nyx',{
     'xd_luoshen_shentong_death_buff','xd_luoshen_shentong_death_circle',
     'groundpoundring_fx','xd_yunxiao_swamp_terraformer','xd_yunxiao_jjj_aoeent',
     'xd_htz_firefx','xd_wmz_butterfly1','xd_wmz_butterfly2','xd_wmz_butterfly3',
+    'xd_wmz_sdcb','xd_wmz_db',
     'nyx_gather_controller','nyx_wings_fx','nyx_ice_circle',
     'nyx_wmz_profire','nyx_wmz_beam_fx','nyx_wmz_gestalt',
     'nyx_htz_smallxtj','nyx_htz_trap_spell','nyx_htz_bigxtj','nyx_htz_beam_fx','nyx_htz_laserwire_fx',

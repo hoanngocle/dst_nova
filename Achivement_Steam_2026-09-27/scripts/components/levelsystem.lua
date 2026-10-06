@@ -351,17 +351,13 @@ function levelsystem:petpickattribute(inst, attr)
 end
 
 function levelsystem:speedlevelfn(inst)
-	if self.speedlevelamount > 0 then
-		local spd = 1 + self.speedlevelamount * speedGain
-		inst.components.locomotor:SetExternalSpeedMultiplier(inst,"speedUpgrade", spd)
-	end
+	local spd = 1 + self.speedlevelamount * speedGain
+	inst.components.locomotor:SetExternalSpeedMultiplier(inst,"speedUpgrade", spd)
 end
 
 function levelsystem:damagelevelfn(inst)
-	if self.damagelevelamount > 0 then
-		local dmg = 1 + self.damagelevelamount * damageGain
-		inst.components.combat.externaldamagemultipliers:SetModifier("damageUpgrade", dmg)
-	end
+	local dmg = 1 + self.damagelevelamount * damageGain
+	inst.components.combat.externaldamagemultipliers:SetModifier("damageUpgrade", dmg)
 end
 
 function levelsystem:absorblevelpick(inst, free)
@@ -376,10 +372,8 @@ function levelsystem:absorblevelpick(inst, free)
 end
 
 function levelsystem:absorblevelfn(inst)
-	if self.absorblevelamount > 0 then
-		local abs = self.absorblevelamount * absorbGain
-		inst.components.combat.externaldamagetakenmultipliers:SetModifier("absorbUpgrade", 1 - abs)
-	end
+	local abs = self.absorblevelamount * absorbGain
+	inst.components.combat.externaldamagetakenmultipliers:SetModifier("absorbUpgrade", 1 - abs)
 end
 
 function levelsystem:petspeedlevelfn(inst)

@@ -20,6 +20,16 @@ function M.Restore(inst, saved_health, saved_hunger, saved_sanity)
         or type(body.SetLevel) ~= "function" then
         return false
     end
+    if inst.HasTag and inst:HasTag("playerghost")
+        or Finite(health.currenthealth) and health.currenthealth <= 0 then
+        return false
+    end
+
+    local hunger = components.hunger
+    local sanity = components.sanity
+    saved_health = Finite(saved_health) and saved_health or health.currenthealth
+    saved_hunger = Finite(saved_hunger) and saved_hunger or hunger and hunger.current
+    saved_sanity = Finite(saved_sanity) and saved_sanity or sanity and sanity.current
 
     local ok, err = pcall(body.SetLevel, body, body_level)
     if not ok then
@@ -37,12 +47,9 @@ function M.Restore(inst, saved_health, saved_hunger, saved_sanity)
         if type(health.ForceUpdateHUD) == "function" then health:ForceUpdateHUD(true) end
     end
 
-    local hunger = components.hunger
-    if hunger ~= nil and type(hunger.SetCurrent) == "function" then
-        local current = Finite(saved_hunger) and saved_hunger or hunger.max
-        hunger:SetCurrent(math.max(0, math.min(current, hunger.max)))
+    if hunger ~= nil and Finite(saved_hunger) and type(hunger.SetCurrent) == "function" then
+        hunger:SetCurrent(math.max(0, math.min(saved_hunger, hunger.max)))
     end
-    local sanity = components.sanity
     if sanity ~= nil and Finite(saved_sanity) and type(sanity.SetCurrent) == "function" then
         local cap = type(sanity.GetMaxWithPenalty) == "function"
             and sanity:GetMaxWithPenalty() or sanity.max

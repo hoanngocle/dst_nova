@@ -3,7 +3,7 @@ G.setmetatable(env,{__index=function(_,key) return G.rawget(G,key) end})
 PrefabFiles={'nyx','nyx_none','nyx_skillbook','nyx_gather_fx','nyx_wings_fx','nyx_htz_xtzlj','nyx_wmz_spell','nyx_ice_fx','nyx_gem_storage'}
 Assets={Asset('ANIM','anim/nyx_purple.zip'),Asset('ANIM','anim/nyx_ghost.zip'),
     Asset('ANIM','anim/status_xd_htz_lq.zip'),Asset('ANIM','anim/xd_ui_6x6.zip')}
-for _,path in ipairs({'images/nyx_eye_icon','images/nyx_night_icon','images/nyx_triflame_icon','images/nyx_yellow_river_icon','images/nyx_skill_icons','images/nyx_skill_toggle','images/nyx_skin_dress_icon','images/nyx_gem_storage_icon',
+for _,path in ipairs({'images/nyx_eye_icon','images/nyx_night_icon','images/nyx_triflame_icon','images/nyx_yellow_river_icon','images/nyx_clone_icon','images/nyx_skill_icons','images/nyx_skill_toggle','images/nyx_skin_dress_icon','images/nyx_gem_storage_icon',
     'images/nyx_skin_ui/frame','images/nyx_skin_ui/controls','images/nyx_skin_ui/close_icon','images/saveslot_portraits/nyx',
     'images/selectscreen_portraits/nyx','images/selectscreen_portraits/nyx_silho','images/map_icons/nyx',
     'images/avatars/avatar_nyx','images/avatars/avatar_ghost_nyx','images/avatars/self_inspect_nyx','bigportraits/nyx','bigportraits/nyx_none'}) do
@@ -16,7 +16,7 @@ end
 AddMinimapAtlas('images/map_icons/nyx.xml')
 STRINGS.CHARACTER_TITLES.nyx='Tử Tiêu Tiên Ảnh'
 STRINGS.CHARACTER_NAMES.nyx='Nyx'
-STRINGS.CHARACTER_DESCRIPTIONS.nyx='*5 chiêu chiến đấu, 3 tiện ích\n*Linh Lực ban đầu: 60\n*Khô Vinh Song Sinh, Vạn Linh Phiên'
+STRINGS.CHARACTER_DESCRIPTIONS.nyx='*6 chiêu chiến đấu, 3 tiện ích\n*Linh Lực ban đầu: 60\n*Khô Vinh Song Sinh, Vạn Linh Phiên'
 STRINGS.CHARACTER_QUOTES.nyx='Một ý niệm, vạn pháp quy nhất.'
 STRINGS.CHARACTER_SURVIVABILITY.nyx='Khó'
 STRINGS.CHARACTERS.NYX=require('speech_wendy')
@@ -24,6 +24,7 @@ STRINGS.NAMES.NYX='Nyx'
 STRINGS.SKIN_NAMES.nyx_none='Nyx'
 AddModCharacter('nyx','FEMALE',{{type='ghost_skin',anim_bank='ghost',idle_anim='idle',scale=.75,offset={0,-25}}})
 require('nyx/register_effects')
+require('util/nyx_skill_damage').InstallSummonHook(env)
 AddSimPostInit(function()
     if TheWorld.ismastersim then require('util/nyx_skill_damage').InstallNativeHook(G) end
 end)

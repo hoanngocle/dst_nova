@@ -1,7 +1,8 @@
 {
   "generator": "built-in ImageGen",
-  "prompt": "Use case: stylized-concept. Asset type: a single small fantasy game HUD icon for the Character Information button in Don't Starve Together Tu Tien mod. Create a polished circular medallion matching an existing set of silver-and-violet skin/chest UI icons: ornate hand-painted silver frame with flowing leaf-like points, a small violet gem at the top, dark plum inset and soft lavender glow. Center symbol: clearly readable ivory parchment character dossier with a simple stylized bust silhouette and three short engraved stat lines; this should instantly suggest character information. Large simple center shape, strong contrast, clean silhouette, restrained detail so it reads at 48-56 pixels. The entire circular frame must fit comfortably inside a square with small transparent padding. Genuine transparent alpha outside the round frame. One icon only, centered, frontal view, no scene, no labels, no words, no letter i, no watermark, no photorealism. Silver and muted amethyst colors, warm ivory parchment, subtle purple highlights. Generate a clean production PNG suitable for conversion to a game TEX sprite.",
+  "prompt": "Edit nyx_gem_storage_icon.png: preserve its circular silver/violet frame, round silhouette, centered placement, top oval amethyst, bottom ornament, purple inset and transparent padding. Replace the central diamond with an ivory character dossier bearing a dark purple bust and three stat strokes, inspired by the previous character info icon. Keep the gem icon's circular aspect ratio and outer bounds; no tall frame, lettering or extra objects. Readable at 48 pixels.",
   "transparent_background": true,
-  "runtime_texture": "128x128 BC3 premultiplied alpha with mipmaps; official Klei TextureConverter",
-  "hud_size": "56x56"
+  "runtime_texture": "256x256 BC3 premultiplied alpha with mipmaps; official Klei TextureConverter",
+  "hud_size": "48x48",
+  "reference": "Nyx_Steam_2026-09-27/images/nyx_gem_storage_icon.png"
 }

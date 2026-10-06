@@ -1,8 +1,8 @@
 local Defs=require('nyx/skilldefs')
 local Net=require('nyx/skillnet')
 local R={SKILLS={},SPELL_INDEX={}}
-local custom_icons={triflame_fan='nyx_triflame_icon',yellow_river='nyx_yellow_river_icon',eternal_night='nyx_night_icon',purple_eye='nyx_eye_icon'}
-local textures={'life','array','daydu','daydu','array','harvest','life','wings'}
+local custom_icons={triflame_fan='nyx_triflame_icon',yellow_river='nyx_yellow_river_icon',eternal_night='nyx_night_icon',purple_eye='nyx_eye_icon',bean_soldiers='nyx_clone_icon'}
+local textures={'life','array','daydu','daydu','array','harvest','life','wings','array'}
 for i,id in ipairs(Defs.Order()) do
     local d=Defs.Get(id)
     R.SKILLS[id]={label=d.name,tooltip=d.name,range=d.range,atlas='images/nyx_skill_icons.xml',texture='nyx_skill_'..textures[i]..'.tex'}
@@ -10,6 +10,9 @@ for i,id in ipairs(Defs.Order()) do
     if icon then
         R.SKILLS[id].atlas='images/'..icon..'.xml'
         R.SKILLS[id].texture=icon..'.tex'
+    end
+    if id=='bean_soldiers' then
+        R.SKILLS[id].tooltip=d.name..' · 3 phân thân; máu ×12 và hệ số Nguyên Thần; mỗi đòn nền 20 × level; đậu nổ nền 200 + 100 mỗi 10 level. Cả hai không giới hạn, cộng sát thương vũ khí và tính bonus Nyx.'
     end
     R.SPELL_INDEX[id]=i
 end

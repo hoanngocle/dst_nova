@@ -1,59 +1,25 @@
 GLOBAL.setmetatable(env,{__index=function(_,k) return GLOBAL.rawget(GLOBAL,k) end})
-local ShardGameIndex = ShardIndex()
-local removedperks = require "constants/removedperks"
+local State = require "functions/globalperkstate"
+State.Initialize()
 
-local function RemoveRetiredGlobalPerks(perkdata)
-    perkdata.bosshp = nil
-    perkdata.bossdmg = nil
-    perkdata.mermbuff = nil
-    perkdata.spiderbuff = nil
-end
-
-local function Chasni_CreateJSON()
-    local savefile = { chasni_ganteng = 0 }
-    for perkname, perk in pairs(perk_lists) do
-        if perk.global then
-            if savefile[perkname] then else
-                savefile[perkname] = 0
-            end
-        end
+-- modmain runs before TheWorld exists. Read legacy data once in the server world.
+-- Clients must never create or overwrite a default global Perk file.
+AddPrefabPostInit("world", function(inst)
+    if not inst.ismastersim then return end
+    inst:AddComponent("chasni_globalperks")
+    local component = inst.components.chasni_globalperks
+    local function loaded(success, data)
+        component:LoadLegacy(success, data)
     end
-    removedperks.clearGlobal(savefile)
-    TUNING.ACH = savefile
-    TheSim:SetPersistentString("chasni_perk_global.json", json.encode(savefile), false)
-end
-
-local function Chasni_LoadJSON(load_success, data)
-    print("CZ-INFO : Loading save files")
-    if load_success == true and data then
-        local status, perkdata = pcall(function() return json.decode(data) end)
-        if status and perkdata then
-            RemoveRetiredGlobalPerks(perkdata)
-            for perkname, perk in pairs(perk_lists) do
-                if perk.global then
-                    if perkdata[perkname] then else
-                        perkdata[perkname] = 0
-                    end
-                end
-            end
-            removedperks.clearGlobal(perkdata)
-            TheSim:SetPersistentString("chasni_perk_global.json", json.encode(perkdata), false)
-            TUNING.ACH = perkdata
-        else
-            print("CZ-ERROR : Faild to load global perk!", status, perkdata)
-            Chasni_CreateJSON()
-        end
+    -- ShardIndex() creates an unloaded index whose slot is nil. The active
+    -- ShardGameIndex is populated by the game before the world is spawned.
+    local index = ShardGameIndex
+    local slot = index and index:GetSlot()
+    local serverdata = index and index:GetServerData()
+    if not TheNet:IsDedicated() and type(slot) == "number" and slot >= 1 and slot % 1 == 0
+        and serverdata and not serverdata.use_legacy_session_path then
+        TheSim:GetPersistentStringInClusterSlot(slot, "Master", "chasni_perk_global.json", loaded)
     else
-        Chasni_CreateJSON()
+        TheSim:GetPersistentString("chasni_perk_global.json", loaded)
     end
-end
-
-if TheWorld and TheWorld.ismastersim then
-    if not TheNet:IsDedicated() and not ShardGameIndex:GetServerData().use_legacy_session_path then
-        TheSim:GetPersistentStringInClusterSlot(ShardGameIndex:GetSlot(), "Master", "chasni_perk_global.json", Chasni_LoadJSON)
-    else
-        TheSim:GetPersistentString("chasni_perk_global.json", Chasni_LoadJSON)
-    end
-end
-
-TheSim:GetPersistentString("chasni_perk_global.json", Chasni_LoadJSON)
+end)

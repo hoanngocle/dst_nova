@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nyx 1.5.12 — Bảng kỹ năng chi tiết</title>
+<style>
+:root{color-scheme:light;--ink:#242036;--muted:#686278;--paper:#fff;--bg:#f5f3fa;--line:#e4dfed;--purple:#6544a0;--tint:#f0e9fa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:1480px;margin:auto;padding:48px 32px 64px}header{border-bottom:2px solid var(--purple);padding-bottom:26px}.eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;color:var(--purple);text-transform:uppercase}h1{margin:9px 0 12px;font-size:clamp(30px,4vw,48px);line-height:1.15;letter-spacing:-1.4px}h2{font-size:23px;margin:36px 0 12px}p{margin:8px 0;color:var(--muted)}header p{max-width:880px}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px}button{font:inherit;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:9px 15px;color:var(--ink);cursor:pointer}button:hover{border-color:var(--purple)}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;background:var(--paper);padding:22px;border:1px solid var(--line);border-radius:12px;margin:24px 0 14px}label{display:block;font-weight:650;font-size:13px}input{width:100%;margin-top:7px;padding:10px;border:1px solid var(--line);border-radius:6px;font:inherit;background:var(--paper);color:var(--ink)}input:focus-visible,button:focus-visible{outline:2px solid var(--purple);outline-offset:3px}.hint{font-size:12px;color:var(--muted);margin-top:5px}.summary{padding:14px 18px;background:var(--tint);border-radius:8px}.summary strong{color:var(--purple)}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--paper)}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--tint);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--purple)}tr:last-child td{border-bottom:0}tbody tr:hover{background:#faf8fd}.main-table{min-width:1150px}.main-table td:first-child{min-width:190px;font-weight:650}.main-table td:nth-child(2){min-width:125px}.main-table td:nth-child(5){min-width:280px}.main-table td:nth-child(6){min-width:245px}.number{font-variant-numeric:tabular-nums;white-space:nowrap}.sub{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:3px}.formula{background:var(--paper);padding:22px;border-radius:10px;border:1px solid var(--line);margin:18px 0}.formula code{font-size:15px;color:var(--purple);white-space:normal}.formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.formula h3{margin:0 0 8px;font-size:16px}.formula p{font-size:14px}.matrix{min-width:1450px;font-size:13px}.matrix th,.matrix td{padding:11px 13px}.matrix td:first-child{position:sticky;left:0;background:var(--paper);min-width:210px;font-weight:600;box-shadow:1px 0 var(--line)}.matrix th:first-child{position:sticky;left:0;z-index:1}.selected{background:var(--tint)}.notes{display:grid;grid-template-columns:1fr 1fr;gap:24px}.notes article{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px}.notes h3{margin:0 0 10px;font-size:17px}.notes ul{padding-left:20px;margin:0}.notes li{margin:7px 0;color:var(--muted)}footer{margin-top:32px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.print-only{display:none}@media(max-width:760px){main{padding:24px 16px}.controls{grid-template-columns:1fr 1fr;gap:14px;padding:16px}.formula-grid,.notes{grid-template-columns:1fr}h1{letter-spacing:-.8px}.topline{align-items:flex-start}}@media print{@page{size:A3 landscape;margin:12mm}body{background:white;font-size:10px}main{max-width:none;padding:0}header{padding-bottom:12px}h1{font-size:27px}h2{font-size:18px;margin-top:20px}.controls,button{display:none}.summary{margin-top:12px}.table-wrap{overflow:visible}table,.main-table,.matrix{min-width:0;width:100%;font-size:9px}th,td,.matrix th,.matrix td{padding:7px 8px}.main-table td:first-child,.main-table td:nth-child(2),.main-table td:nth-child(5),.main-table td:nth-child(6),.matrix td:first-child{min-width:0}.matrix td:first-child,.matrix th:first-child{position:static}.sub{font-size:8px}thead{display:table-header-group}tr,article,.formula{break-inside:avoid}.print-only{display:block}.hint{font-size:9px}footer{font-size:9px}.number{white-space:normal}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="topline"><span class="eyebrow">Tu Tiên · Nyx 1.5.12 · 05/10/2026</span><button id="print" type="button">In / lưu PDF</button></div>
+<h1>Bảng kỹ năng chi tiết</h1>
+<p>Chi phí Linh Lực, hồi chiêu, sát thương từng thành phần và cách tăng theo level. Phân Thân dùng skill gốc của Vương Ma Tử; năm chiêu chiến đấu đầu có công thức tăng sát thương riêng của Nyx.</p>
+</header>
+<section class="controls" aria-label="Thông số minh họa">
+<div><label for="level">Level Thành Tựu</label><input id="level" type="number" min="1" max="10000" step="1" value="100"><div class="hint">Level dùng cho hệ số skill; cảnh giới mở khóa tính riêng.</div></div>
+<div><label for="weapon">Sát thương vũ khí W</label><input id="weapon" type="number" min="0" max="1000000000" step="any" value="0"><div class="hint">Giá trị vũ khí mà skill đọc, trước bonus từ bộ tính Tu Tiên.</div></div>
+<div><label for="health">Máu tối đa Nyx</label><input id="health" type="number" min="1" max="1000000000" step="any" value="1000"><div class="hint">Dùng để minh họa máu binh, không phải chỉ số mặc định Nyx.</div></div>
+<div><label for="yuan">Hệ số Nguyên Thần</label><input id="yuan" type="number" min="1" max="1000000" step="any" value="1"><div class="hint">Mặc định 1; vượt ngưỡng: cấp Nguyên Thần ÷ ngưỡng.</div></div>
+</section>
+<div id="summary" class="summary" aria-live="polite"></div>
+<h2>Toàn bộ kỹ năng</h2>
+<p>Sát thương ở cột cuối là giá trị đưa vào bộ tính Tu Tiên cho năm chiêu đầu, đậu nổ và mỗi đòn binh; cả ba nhóm đều cộng W. Đậu nổ dùng nền 200 + 100 × floor(level / 10); binh dùng nền 20 × level. Cả hai không giới hạn. Không phải tổng sát thương của cả lần dùng hay số máu chắc chắn trừ được trên mục tiêu.</p>
+<div class="table-wrap"><table class="main-table"><thead><tr><th scope="col">Kỹ năng</th><th scope="col">Mở khóa</th><th scope="col">Hồi chiêu</th><th scope="col">Linh Lực</th><th scope="col">Sát thương nền / cơ chế</th><th scope="col">Theo thông số đang chọn</th></tr></thead><tbody id="skills"></tbody></table></div>
+<h2>Công thức và hệ số level</h2>
+<div class="formula"><div class="formula-grid">
+<div><h3>Năm chiêu chiến đấu đầu</h3><code>Đầu vào = (B × (1 + r × N) + W) × S</code><p><b>B</b>: sát thương nền của từng đòn/tick. <b>W</b>: sát thương vũ khí đang cầm, đọc lại khi gây sát thương. <b>r</b>: 0,30 / 0,25 / 0,15 tùy skill. <b>S</b>: ×2 cho Tam Diễm / Tàn Dạ, ×3 cho Trảm Linh Kiếm, ×1 cho Lĩnh Vực / Hoàng Hà. S nhân cả phần nền đã tăng theo level và W.</p><p><b>N = min(8, floor(level / 10))</b> khi level &lt; 100. Level ≥ 100 dùng <b>N = 10</b>. Cấp 80–99 giữ cùng hệ số; không có mốc 9.</p></div>
+<div><h3>Phần bonus của Tu Tiên</h3><code>Xd_CalcDamage(Nyx, đầu vào, mục tiêu)</code><p>Tu Tiên tiếp tục tính hệ số tấn công, bonus đan dược, Thành Tựu, trang bị và điều kiện của mục tiêu theo nguồn hiện có. Vũ khí được cộng sau phần tăng level, áp dụng S, rồi cả đầu vào được đưa qua bộ tính này một lần. B vẫn được tính bonus sát thương, cùng với W.</p><p>Hệ số level tối đa trước khi nhân S: <b>×4</b> cho Lĩnh Vực / Hoàng Hà; <b>×3,5</b> cho Tam Diễm / Tàn Dạ; <b>×2,5</b> cho Trảm Linh Kiếm.</p></div>
+</div></div>
+<h2>Sát thương và tiêu hao Tụ Linh theo mốc level</h2>
+<p>Áp dụng W đang nhập cho từng ô. Các số đã bao gồm hệ số level và W, chưa tính bonus Tu Tiên. Các cột 90 và 99 minh họa việc hệ số giữ nguyên từ cấp 80 đến 99.</p>
+<div class="table-wrap"><table class="matrix"><thead id="matrix-head"></thead><tbody id="matrix-body"></tbody></table></div>
+<h2>Chi phí Linh Lực theo level</h2>
+<p>Đây là chi phí mỗi lần dùng. Cảnh giới mở khóa vẫn áp dụng cho từng chiêu.</p>
+<div class="table-wrap"><table class="matrix"><thead id="cost-head"></thead><tbody id="cost-body"></tbody></table></div>
+<h2>Phân Thân và kỹ năng tiện ích</h2>
+<div class="notes">
+<article><h3>Phân Thân Thuật — cộng vũ khí và bonus của Nyx</h3><ul>
+<li>Một đậu nổ dùng nền <b>200 + 100 × floor(level / 10)</b>: cấp 1–9 là 200, cấp 10 là 300, cấp 20 là 400… <b>Không giới hạn</b>; cấp 100 là 1.200. Cộng W rồi tính bonus Nyx. Triệu hồi <b>3 binh</b>.</li>
+<li><b>Mỗi đòn binh = Xd_CalcDamage(Nyx, 20 × level + W, mục tiêu).</b> W đọc từ vũ khí Nyx đang cầm tại thời điểm đánh. Đổi/tháo vũ khí hoặc thay bonus của chủ sẽ cập nhật ngay ở đòn sau.</li>
+<li>Nền binh tăng <b>20, 40, 60, 80, 100, 120, 140…</b> từ cấp 1; <b>không giới hạn</b>. Cả nền và vũ khí đều đi qua bonus Tu Tiên, Thành Tựu, đan dược và trang bị của chủ một lần. Không áp dụng thêm hệ số r × N của năm chiêu đầu.</li>
+<li>Đòn trúng của binh được quy về Nyx và vũ khí hiện tại khi đi qua xử lý nhận đòn, để áp dụng cả xuyên giáp, affix và hiệu ứng cường hóa của Thần Khí. Các số trong bảng vẫn là đầu vào trước những bonus này.</li>
+<li><b>Máu mỗi binh = floor(12 × máu tối đa Nyx × hệ số Nguyên Thần).</b></li>
+<li>Hệ số Nguyên Thần bằng 1 khi chưa vượt ngưỡng hoặc thiếu dữ liệu; vượt ngưỡng thì bằng cấp Nguyên Thần chia ngưỡng cấu hình Tu Tiên.</li>
+<li>Giữ prefab, AI, hiệu ứng và vòng đời của binh gốc. Không tạo binh hoặc asset mới.</li>
+</ul></article>
+<article><h3>Các chiêu không dùng công thức năm chiêu đầu</h3><ul>
+<li><b>Chi phí theo cấp:</b> mỗi 10 level giảm 10 Linh Lực, tối thiểu bằng một nửa chi phí ban đầu. Áp dụng năm chiêu chiến đấu và Thuấn Ảnh. Phân Thân miễn phí; Tụ Linh giữ dãy riêng; các chiêu bật/tắt giữ hao mỗi giây.</li>
+<li><b>Thuấn Ảnh:</b> level &lt; 100 dùng min(1000, 200 + 100 × floor(level / 10)); level ≥ 100 dùng 1500. Mỗi mục tiêu hợp lệ trên đường lướt nhận một đòn. Không cộng W hoặc đưa đòn lướt qua Xd_CalcDamage trong hàm skill.</li>
+<li><b>Thần Nhãn:</b> mở ở level 30; hao 4/3/2/1 Linh Lực mỗi giây tại mốc 30/50/70/100.</li>
+<li><b>Nguyệt Dực:</b> mở ở level 50; hao 4/3/2/1 Linh Lực mỗi giây tại mốc 50/70/90/100.</li>
+<li><b>Tụ Linh:</b> mở ở level 10; tốn 20/18/16/14/12/10/8/6 Linh Lực mỗi lần ở level 10/20/30/40/50/60/70/80; từ level 80 trở lên giữ 6. Hồi 10 giây. Bán kính 6 ở level 10, tối đa 12 ở level 100. Không gây sát thương.</li>
+</ul></article>
+</div>
+<footer>Đối chiếu mã Nyx 1.5.12: skilldefs.lua, nyx_skill_damage.lua, progression.lua, casting.lua, nyx_blink_common.lua và các prefab skill. Phân Thân tái sử dụng nguồn Tu Tiên, tăng nền đậu nổ 100 mỗi 10 level, không giới hạn, nền binh 20 × level và cộng W trước khi tính bonus chủ. Giá trị sát thương là theo đòn/tick/thành phần, không cộng thành DPS cố định vì còn phụ thuộc trúng đòn, số mục tiêu và thời gian trong vùng. Test Lua/mock đã qua; chưa xác nhận thay đổi sát thương và tiêu hao trực tiếp trong game. File tự chứa, dùng được ngoại tuyến.</footer>
+</main>
+<script>
+'use strict';
+const parts = [
+ {skill:'Tuyệt Đối Lĩnh Vực',name:'Vùng · mỗi 0,5 giây',base:67,rate:.30},
+ {skill:'Tuyệt Đối Lĩnh Vực',name:'Đạn',base:80,rate:.30},
+ {skill:'Tam Diễm Phiến',name:'Luồng lửa',base:116.7,rate:.25},
+ {skill:'Tam Diễm Phiến',name:'Nổ hỏa diễm',base:110,rate:.25},
+ {skill:'Cửu Khúc Hoàng Hà Trận',name:'Mỗi lần gây sát thương',base:240,rate:.30},
+ {skill:'Tàn Dạ',name:'Hỏa diễm',base:220,rate:.25},
+ {skill:'Tàn Dạ',name:'Vùng tia · mỗi giây',base:100,rate:.25},
+ {skill:'Huyền Thiên Trảm Linh Kiếm',name:'Kiếm nổ',base:60,rate:.15},
+ {skill:'Huyền Thiên Trảm Linh Kiếm',name:'Tia · mỗi 0,5 giây',base:300,rate:.15},
+ {skill:'Huyền Thiên Trảm Linh Kiếm',name:'Kiếm lớn',base:1101,rate:.15}
+];
+const skills = [
+ {name:'Tuyệt Đối Lĩnh Vực',gate:'Có sẵn',cd:20,cost:'30',parts:[0,1],note:'+30% nền / mốc'},
+ {name:'Tam Diễm Phiến',gate:'Trúc Cơ Tiền Kỳ',cd:30,cost:'40',parts:[2,3],note:'+25% nền / mốc; nhân ×2 cả đầu vào'},
+ {name:'Cửu Khúc Hoàng Hà Trận',gate:'Trúc Cơ Hậu Kỳ',cd:40,cost:'40',parts:[4],note:'+30% nền / mốc'},
+ {name:'Tàn Dạ – Vĩnh Hằng Lĩnh Vực',gate:'Kết Đan Tiền Kỳ',cd:50,cost:'50',parts:[5,6],note:'+25% nền / mốc; nhân ×2 cả đầu vào'},
+ {name:'Huyền Thiên Trảm Linh Kiếm',gate:'Nguyên Anh Tiền Kỳ',cd:60,cost:'80',parts:[7,8,9],note:'+15% nền / mốc; nhân ×3 cả đầu vào'},
+ {name:'Phân Thân Thuật',gate:'Có sẵn',cd:45,cost:'0',kind:'beans'},
+ {name:'Tử Phong Tụ Linh',gate:'Level 10',cd:10,cost:'20/18/16/14/12/10/8/6 tại cấp 10/20/30/40/50/60/70/80',kind:'gather'},
+ {name:'Tử Tiêu Thần Nhãn',gate:'Level 30',cd:0,cost:'0 khi bật; 4/3/2/1 mỗi giây tại cấp 30/50/70/100',kind:'eye'},
+ {name:'Tinh Vũ Nguyệt Dực',gate:'Level 50',cd:0,cost:'0 khi bật; 4/3/2/1 mỗi giây tại cấp 50/70/90/100',kind:'wings'},
+ {name:'Thuấn Ảnh',gate:'Có sẵn',cd:15,cost:'10',kind:'blink'}
+];
+const milestones=[1,10,20,30,40,50,60,70,80,90,99,100];
+const fmt = n => new Intl.NumberFormat('vi-VN',{maximumFractionDigits:2}).format(n);
+const steps = level => level>=100?10:Math.min(8,Math.floor(level/10));
+const scale = part => part.skill==='Tam Diễm Phiến'||part.skill==='Tàn Dạ'?2:part.skill==='Huyền Thiên Trảm Linh Kiếm'?3:1;
+const damage = (part,level,weapon) => (part.base*(1+part.rate*steps(level))+weapon)*scale(part);
+const soldier = level => 20*level;
+const explosion = level => 200+100*Math.floor(level/10);
+const reducedCost = (base,level) => Math.max(base/2,base-10*Math.floor(level/10));
+const lunge = level => level>=100?1500:Math.min(1000,200+100*Math.floor(level/10));
+const eye = level => level>=100?1:level>=70?2:level>=50?3:4;
+const wings = level => level>=100?1:level>=90?2:level>=70?3:4;
+const gather = level => Math.min(12,6+Math.floor(Math.max(0,level-10)/10)*.5+(level>=50?.5:0)+(level>=70?.5:0)+(level>=100?.5:0));
+const gatherCost = level => 20-2*Math.min(7,Math.max(0,Math.floor((level-10)/10)));
+function readNumber(id,fallback,min,max,integer=false){
+ const el=document.getElementById(id); let n=el.value===''?fallback:Number(el.value);
+ if(!Number.isFinite(n))n=fallback; n=Math.max(min,Math.min(max,n));return integer?Math.floor(n):n;
+}
+function render(){
+ const level=readNumber('level',100,1,10000,true),weapon=readNumber('weapon',0,0,1e9),health=readNumber('health',1000,1,1e9),yuan=readNumber('yuan',1,1,1e6);
+ document.getElementById('summary').innerHTML=`Minh họa <strong>level ${fmt(level)}</strong> · ${steps(level)} mốc · W = <strong>${fmt(weapon)}</strong> · mỗi binh <strong>${fmt(Math.floor(12*health*yuan))} máu</strong>. Các thông số này không lấy từ save của bạn.`;
+ document.getElementById('skills').innerHTML=skills.map(s=>{
+  let base='',value='';
+  if(s.parts){base=s.parts.map(i=>`${parts[i].name}: <b>${fmt(parts[i].base)}</b>`).join('<br>')+`<span class="sub">${s.note}</span>`;value=s.parts.map(i=>`${parts[i].name}: <b>${fmt(damage(parts[i],level,weapon))}</b>`).join('<br>')+`<span class="sub">Hệ số level ×${fmt(1+parts[s.parts[0]].rate*steps(level))}; S = ×${scale(parts[s.parts[0]])}; đã cộng W.</span>`;}
+  else if(s.kind==='beans'){base='Đậu nổ: <b>200 + 100 × floor(level / 10) + W</b><br>Binh: <b>20 × level + W / đòn</b><span class="sub">3 binh; cả đậu nổ và binh không giới hạn sát thương nền.</span>';value=`Đậu nổ: <b>${fmt(explosion(level)+weapon)}</b> · Binh: <b>${fmt(soldier(level)+weapon)}/đòn</b><br>Máu mỗi binh: <b>${fmt(Math.floor(12*health*yuan))}</b><span class="sub">Cả hai đã cộng W; chưa tính bonus sát thương Tu Tiên.</span>`;}
+  else if(s.kind==='blink'){base='200 → 1.000 trước cấp 100<br>Cấp 100 trở lên: <b>1.500</b>';value=`Đòn lướt: <b>${fmt(lunge(level))}</b><span class="sub">Không dùng hệ số năm chiêu đầu.</span>`;}
+  else if(s.kind==='gather'){base='Không gây sát thương<br>Bán kính 6 → 12';value=level<10?'Chưa mở khóa':`Bán kính: <b>${fmt(gather(level))}</b>`;}
+  else{base='Không gây sát thương';const unlocked=level>=(s.kind==='eye'?30:50);value=unlocked?`Hao <b>${s.kind==='eye'?eye(level):wings(level)} Linh Lực/giây</b>`:'Chưa mở khóa';}
+  const cost=s.kind==='gather'?`<b>${gatherCost(level)}</b><span class="sub">${s.cost}; từ cấp 80 giữ 6.</span>`:Number.isFinite(Number(s.cost))?`<b>${reducedCost(Number(s.cost),level)}</b><span class="sub">Ban đầu ${s.cost}; giảm 10 mỗi 10 cấp, tối thiểu ${Number(s.cost)/2}.</span>`:s.cost;
+  return `<tr><td>${s.name}</td><td>${s.gate}</td><td class="number">${s.cd?s.cd+' giây':'Không'}</td><td>${cost}</td><td>${base}</td><td>${value}</td></tr>`;
+ }).join('');
+ document.getElementById('matrix-head').innerHTML='<tr><th scope="col">Thành phần</th>'+milestones.map(l=>`<th scope="col"${level===l?' class="selected"':''}>Cấp ${l}</th>`).join('')+'</tr>';
+ let rows=parts.map(p=>`<tr><td>${p.skill}<span class="sub">${p.name} · B = ${fmt(p.base)}</span></td>${milestones.map(l=>`<td class="number${level===l?' selected':''}">${fmt(damage(p,l,weapon))}</td>`).join('')}</tr>`).join('');
+ rows+=`<tr><td>Thuấn Ảnh<span class="sub">Đòn lướt; không cộng W</span></td>${milestones.map(l=>`<td class="number">${fmt(lunge(l))}</td>`).join('')}</tr>`;
+ rows+=`<tr><td>Phân Thân · đậu nổ<span class="sub">200 + 100 × floor(level / 10) + W; chưa tính bonus chủ</span></td>${milestones.map(l=>`<td class="number">${fmt(explosion(l)+weapon)}</td>`).join('')}</tr>`;
+ rows+=`<tr><td>Phân Thân · mỗi binh<span class="sub">20 × level + W mỗi đòn; không giới hạn</span></td>${milestones.map(l=>`<td class="number">${fmt(soldier(l)+weapon)}</td>`).join('')}</tr>`;
+ rows+=`<tr><td>Tụ Linh · tiêu hao<span class="sub">Linh Lực mỗi lần; từ cấp 80 giữ 6</span></td>${milestones.map(l=>`<td class="number">${l<10?'Chưa mở':gatherCost(l)}</td>`).join('')}</tr>`;
+ document.getElementById('matrix-body').innerHTML=rows;
+ document.getElementById('cost-head').innerHTML='<tr><th scope="col">Linh Lực / lần dùng</th>'+milestones.map(l=>`<th scope="col">Cấp ${l}</th>`).join('')+'</tr>';
+ document.getElementById('cost-body').innerHTML=skills.filter(s=>s.parts||s.kind==='blink'||s.kind==='beans'||s.kind==='gather').map(s=>`<tr><td>${s.name}</td>${milestones.map(l=>`<td class="number">${s.kind==='gather'?(l<10?'Chưa mở':gatherCost(l)):reducedCost(Number(s.cost),l)}</td>`).join('')}</tr>`).join('');
+}
+for(const id of ['level','weapon','health','yuan'])document.getElementById(id).addEventListener('input',render);
+document.getElementById('print').addEventListener('click',()=>window.print());
+render();
+</script>
+</body>
+</html>

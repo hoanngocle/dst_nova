@@ -42,7 +42,7 @@ function Panel:OnUpdate()
     if self.focused_skill then
         local d=Defs.Get(self.focused_skill)
         local gate=d.gate.kind=='realm' and P.Realms[d.gate.value+1] or d.gate.kind=='level' and ('Cấp '..d.gate.value) or 'Có sẵn'
-        local info=d.cost..' Linh Lực · Hồi '..d.cooldown..' giây'
+        local info=P.SkillCost(d,s.level)..' Linh Lực · Hồi '..d.cooldown..' giây'
         local title=d.name..' · '..gate
         if d.id=='purple_gather' then
             local level=s.level or 0

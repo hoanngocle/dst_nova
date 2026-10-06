@@ -27,7 +27,24 @@ end
 function M.Augment(data, item, detail, Detail)
     local result = Copy(data)
     result.str = {}
-    for i, row in ipairs(data.str) do result.str[i] = Copy(row) end
+    local marker = detail.kind == "stone" and "THUỘC TÍNH"
+        or detail.kind == "soul_banner" and "CƯỜNG HÓA"
+        or "THUỘC TÍNH · "
+    for _, row in ipairs(data.str) do
+        local copy = Copy(row)
+        local at = type(copy[1]) == "string" and copy[1]:find(marker, 1, true) or nil
+        if at ~= nil then
+            -- ItemTile may have appended this same section to a native row.
+            -- Keep its original prefix and let this widget add formatted rows.
+            local prefix = copy[1]:sub(1, at - 1):gsub("\n+$", "")
+            if prefix ~= "" then
+                copy[1] = prefix
+                result.str[#result.str + 1] = copy
+            end
+            break
+        end
+        result.str[#result.str + 1] = copy
+    end
     if detail.damage_bonus ~= nil then
         for _, row in ipairs(result.str) do
             if row[1] == "伤害" or row[1] == "Sát thương" then

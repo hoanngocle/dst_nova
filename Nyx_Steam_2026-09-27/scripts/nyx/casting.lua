@@ -31,15 +31,16 @@ function C:Request(id,payload,request_id)
     if def.target=='point' and (not P.Finite(payload.x) or not P.Finite(payload.z)) then return false,'Điểm chọn không hợp lệ.' end
     local valid,why=self.port.valid(def,payload)
     if not valid then return false,why end
-    local minimum=def.target=='toggle' and (id=='purple_eye' and P.EyeDrain(s.level) or P.WingDrain(s.level)) or def.cost
+    local cost=P.SkillCost(def,s.level)
+    local minimum=def.target=='toggle' and (id=='purple_eye' and P.EyeDrain(s.level) or P.WingDrain(s.level)) or cost
     if s.current<minimum then return false,'Không đủ Linh Lực.' end
     self.busy=true
     local ok,h,reason=pcall(self.port.prepare,id,payload)
     if not ok or not h then self.busy=false; return false,ok and reason or 'Không thể chuẩn bị kỹ năng.' end
-    if not self.port.spend(def.cost) then self.busy=false; pcall(h.Cancel,h,'no_resource'); return false,'Không đủ Linh Lực.' end
+    if not self.port.spend(cost) then self.busy=false; pcall(h.Cancel,h,'no_resource'); return false,'Không đủ Linh Lực.' end
     local started,result=pcall(h.Start,h)
     if not started or result~=true then
-        pcall(h.Cancel,h,'failed'); self.port.refund(def.cost); self.busy=false
+        pcall(h.Cancel,h,'failed'); self.port.refund(cost); self.busy=false
         return false,'Thi triển thất bại; Linh Lực đã hoàn lại.'
     end
     self.ends[id]=now+def.cooldown

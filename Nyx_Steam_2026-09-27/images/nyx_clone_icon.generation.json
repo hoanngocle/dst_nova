@@ -1,0 +1,8 @@
+{
+  "tool": "image_gen.imagegen",
+  "skill": "Phân Thân Thuật",
+  "style_references": ["nyx_triflame_icon.tex", "nyx_night_icon.tex", "nyx_yellow_river_icon.tex"],
+  "prompt": "Three spectral cultivator clones inside the same ornate circular silver leaf/thorn frame as the existing Nyx skill icons. Dark crimson red and charcoal black robes, ruby jewels, red eyes and restrained red aura. Central clone slightly forward, two behind to either side. Preserve the hand-painted fantasy style, clear silhouettes and genuine transparent background outside the emblem. No text or extra objects.",
+  "transparent_background": true,
+  "game_texture": {"width": 256, "height": 256, "format": "RGBA", "converter": "Klei TextureConverter"}
+}

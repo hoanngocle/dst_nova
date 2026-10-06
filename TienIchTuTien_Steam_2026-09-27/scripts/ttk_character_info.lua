@@ -73,13 +73,17 @@ function M.Install(env)
     local Widget=require("widgets/widget")
     local ImageButton=require("widgets/imagebutton")
     env.AddClassPostConstruct("widgets/controls",function(controls)
-        local root=controls:AddChild(Widget("CharacterInfoButtonRoot"))
-        root:SetScaleMode(G.SCALEMODE_PROPORTIONAL)
-        root:SetMaxPropUpscale(G.MAX_HUD_SCALE)
-        root:SetHAnchor(G.ANCHOR_LEFT)
-        root:SetVAnchor(G.ANCHOR_BOTTOM)
-        -- Third medallion beside Nyx's skin and gem-storage buttons.
-        root:SetPosition(330,85,0)
+        -- Share Nyx's corner group, regardless of which controls hook runs first.
+        local root=controls.nyx_skin_root
+        if root==nil then
+            root=controls:AddChild(Widget("NyxCornerButtonsRoot"))
+            root:SetScaleMode(G.SCALEMODE_PROPORTIONAL)
+            root:SetMaxPropUpscale(G.MAX_HUD_SCALE)
+            root:SetHAnchor(G.ANCHOR_LEFT)
+            root:SetVAnchor(G.ANCHOR_BOTTOM)
+            root:SetPosition(85,85,0)
+            controls.nyx_skin_root=root
+        end
         local function Resize()
             local frontend=G.TheFrontEnd
             root:SetScale(frontend and frontend.GetHUDScale and frontend:GetHUDScale() or 1)
@@ -97,9 +101,10 @@ function M.Install(env)
         local button=root:AddChild(ImageButton("images/ttk_character_info_icon.xml","ttk_character_info_icon.tex"))
         button.scale_on_focus=false
         button.move_on_click=false
-        -- Match the visible medallion diameter, not the texture's outer bounds.
-        button:ForceImageSize(80,80)
-        button:SetHoverText("Thông tin nhân vật",{font=G.BODYTEXTFONT,font_size=20,offset_y=42})
+        -- Child offsets scale together: skin at 0, gem at 64, info at 128.
+        button:SetPosition(128,0,0)
+        button:ForceImageSize(48,48)
+        button:SetHoverText("Thông tin nhân vật",{font=G.BODYTEXTFONT,font_size=20,offset_y=32})
         button:SetOnClick(function()
             if controls.owner~=G.ThePlayer or controls._ttk_info_screen then return end
             M.Reset(controls.owner)

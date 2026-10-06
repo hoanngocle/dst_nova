@@ -38,6 +38,9 @@ local ok,Storage=pcall(require,'components/nyx_gem_storage')
 assert(ok,'persistent gem storage component must exist')
 local store=Storage(player)
 assert(store.box==nil,'do not spawn until used or loaded')
+local auto_container=store:GetContainer()
+assert(auto_container~=nil and auto_container.opener==nil,
+    'auto pickup creates persistent private box without opening UI')
 assert(store:Toggle())
 local b=store.box
 assert(b.parent==player.entity and b.target==player and b.nyx_owner==player)
@@ -57,6 +60,7 @@ assert(restored.box.components.container.slots[36].data.value==17,
     'save/load must preserve attributes and slot 36')
 assert(restored.box.target==player and restored.box.persists==false)
 player.dead=true
+assert(store:GetContainer()==nil,'auto pickup must not create/use storage while dead')
 assert(not store:Toggle(),'ghost/dead owner cannot open storage')
 events.ms_becameghost()
 assert(restored.box.components.container.opener==nil)

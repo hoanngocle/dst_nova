@@ -66,4 +66,29 @@ assert(health._tbc_elixir_base == 736,
 
 local absent = { components = { health = health } }
 assert(not Reload.Restore(absent, 100), 'players without Tu Tien are unaffected')
+
+-- Missing optional save fields must preserve the current values, never refill
+-- resources as a side effect of reapplying native cultivation.
+health.currenthealth=37;hunger.current=44;sanity.current=42
+function body:SetLevel(level)
+    assert(level==46)
+    self.calls=self.calls+1
+    health.maxhealth=736;health.currenthealth=736
+    hunger.current=hunger.max;sanity.current=sanity.max
+end
+assert(Reload.Restore(player))
+assert(health.currenthealth==37 and hunger.current==44 and sanity.current==42,
+    'missing save values preserve current resources rather than refilling them')
+
+-- Native DST ghosts retain resurrect health despite being in ghost mode.
+health.currenthealth=50
+player.HasTag=function(_,tag) return tag=='playerghost' end
+local before_calls=body.calls
+assert(not Reload.Restore(player,50,44,42), 'ghost reload must not reapply a healing native level setter')
+assert(body.calls==before_calls and health.currenthealth==50,
+    'ghost restoration must not transiently heal or trigger another death')
+player.HasTag=function() return false end
+health.currenthealth=0
+assert(not Reload.Restore(player,0,44,42), 'dead players awaiting ghost transition stay dead')
+assert(body.calls==before_calls and health.currenthealth==0)
 print('tutien_health_reload_test: ok')

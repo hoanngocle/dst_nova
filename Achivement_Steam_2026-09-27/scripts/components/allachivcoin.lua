@@ -2,6 +2,7 @@ require "functions/helperfunctions"
 local perkfuncs = require "functions/perkfunctions"
 local removedperks = require "constants/removedperks"
 local attributecaps = require "constants/attributecaps"
+local globalperkstate = require "functions/globalperkstate"
 
 -- Each attribute upgrade costs at most 5 stars, including its first purchase.
 -- Existing attribute level limits still apply.
@@ -44,16 +45,21 @@ function allachivcoin:OnSave()
         if perk.single ~= true then
             if perk.multi then
                 data[perkname .."amount"] = self[perkname .."amount"]
+            elseif perk.global then
+                data[perkname] = TUNING.ACH[perkname] or 0
             else
                 data[perkname] = self[perkname]
             end
         end
     end
-    TheSim:SetPersistentString("chasni_perk_global.json", json.encode(TUNING.ACH), false)
     return data
 end
 
 function allachivcoin:OnLoad(data)
+    data = data or {}
+    globalperkstate.Initialize()
+    local globalperks = TheWorld and TheWorld.components and TheWorld.components.chasni_globalperks
+    if globalperks then globalperks:RecoverPlayer(data) end
     removedperks.clearGlobal(TUNING.ACH)
     self.coinamount = data.coinamount or 0
     self.starsspent = data.starsspent or 0
@@ -148,10 +154,8 @@ function allachivcoin:pickperk1(inst, perk)
     return false
 end
 function allachivcoin:speedupfn(inst)
-    if self.speedupamount > 0 then
-        local spd = allachiv_coindata["speedup"] * self.speedupamount
-        inst.components.locomotor:SetExternalSpeedMultiplier(inst,"speedPerk", spd)
-    end
+    local spd = 1 + allachiv_coindata["speedup"] * self.speedupamount
+    inst.components.locomotor:SetExternalSpeedMultiplier(inst,"speedPerk", spd)
 end
 function allachivcoin:absorbuppick(inst)
     local currentAbsorbAdd = inst.components.combat.externaldamagetakenmultipliers:CalculateModifierFromSource("absorbPerk")
@@ -161,16 +165,12 @@ function allachivcoin:absorbuppick(inst)
     self:cantgetcoin(inst)
 end
 function allachivcoin:absorbupfn(inst)
-    if self.absorbupamount > 0 then
-        local abs = allachiv_coindata["absorbup"] * self.absorbupamount
-        inst.components.combat.externaldamagetakenmultipliers:SetModifier("absorbPerk", 1 - abs)
-    end
+    local abs = allachiv_coindata["absorbup"] * self.absorbupamount
+    inst.components.combat.externaldamagetakenmultipliers:SetModifier("absorbPerk", 1 - abs)
 end
 function allachivcoin:damageupfn(inst)
-    if self.damageupamount > 0 then
-        local dmg = allachiv_coindata["damageup"] * self.damageupamount
-        inst.components.combat.externaldamagemultipliers:SetModifier("damagePerk", dmg)
-    end
+    local dmg = 1 + allachiv_coindata["damageup"] * self.damageupamount
+    inst.components.combat.externaldamagemultipliers:SetModifier("damagePerk", dmg)
 end
 function allachivcoin:planarabsorbupfn(inst)
     if self.planarabsorbupamount > 0 then
@@ -584,7 +584,7 @@ function allachivcoin:pickperk5(inst, perk)
     end
     local cost = perk_lists[perk].cost
     if TUNING.ACH[perk] == 0 and self.coinamount >= cost then
-        TUNING.ACH[perk] = 1
+        globalperkstate.Set(perk, 1)
         self[perk] = true
         self:coinDoDelta(-cost)
         if self[perk.."fn"] then
@@ -593,12 +593,12 @@ function allachivcoin:pickperk5(inst, perk)
         self:ongetcoin(inst)
         return
     elseif TUNING.ACH[perk] == 1 and toggleableglobalperk[perk] then
-        TUNING.ACH[perk] = -1
+        globalperkstate.Set(perk, -1)
         self[perk] = false
         self:ongetcoin(inst)
         return
     elseif TUNING.ACH[perk] == -1 then
-        TUNING.ACH[perk] = 1
+        globalperkstate.Set(perk, 1)
         self[perk] = true
         self:ongetcoin(inst)
         return

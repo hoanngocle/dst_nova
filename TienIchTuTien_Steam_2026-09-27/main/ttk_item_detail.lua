@@ -7,6 +7,7 @@ local Text = G.require("widgets/text")
 print("[TienIchTuTien] item detail hooks 3 loaded")
 local reported_itemtile = false
 local reported_hoverer = false
+local xd_hover_hook_installed = false
 
 local function HoveredItem()
     local input = G.TheInput
@@ -64,6 +65,20 @@ AddClassPostConstruct("widgets/hoverer", function(hover)
     hover.OnUpdate = function(widget, ...)
         local result = old_update(widget, ...)
         local item, detail = Data()
+        if xd_hover_hook_installed and detail ~= nil and widget.text ~= nil then
+            -- Tu Tien owns the detail panel. The standard hover still runs to
+            -- update its state, but its text must not be drawn over that panel.
+            widget.text:Hide()
+            widget._ttk_detail_text_hidden = true
+            if widget.ttk_title ~= nil then widget.ttk_title:Hide() end
+            for _, icon in ipairs(widget.ttk_icons or {}) do icon:Hide() end
+            return result
+        end
+        if widget._ttk_detail_text_hidden then
+            widget._ttk_detail_text_hidden = nil
+            if widget.text ~= nil and widget.shown and widget.str ~= nil
+                and widget.str ~= "" then widget.text:Show() end
+        end
         if widget.isFE or detail == nil or widget.text == nil or not widget.shown then
             if widget.ttk_title ~= nil then widget.ttk_title:Hide() end
             for _, icon in ipairs(widget.ttk_icons or {}) do icon:Hide() end
@@ -136,7 +151,6 @@ end)
 
 -- SetNew owns the real Tu Tien tooltip rows AND its frame measurements.
 -- Its module is only available after all modmain files have loaded.
-local xd_hover_hook_installed = false
 AddSimPostInit(function()
     if xd_hover_hook_installed then return end
     local ok, err = G.pcall(function()

@@ -7,8 +7,8 @@ local Layout = {}
 -- so the circular face matches the visible diameter of the skill icons.
 local TOGGLE_SIZE = 96
 local SKILL_ICON_SIZE = 58.08 * 1.2
-local CORNER_ICON_SIZE = 64
-local CORNER_ICON_GAP = 96
+local CORNER_ICON_SIZE = 48
+local CORNER_ICON_GAP = 64
 local ICON_GAP = 64 * 1.2
 local SKILL_ROW_Y = 0
 local BADGE_X = -110
@@ -56,11 +56,12 @@ function Layout.ConfigurePanel(panel)
     ConfigureButton(panel.collapse, TOGGLE_SIZE)
     if panel.collapse ~= nil then panel.collapse:Hide() end
 
-    for index, skill in ipairs(require('nyx/skilldefs').Order()) do
+    local skills = require('nyx/skilldefs').Order()
+    for index, skill in ipairs(skills) do
         local button = panel.icons ~= nil and panel.icons[skill] or nil
         ConfigureButton(button, SKILL_ICON_SIZE)
         if button ~= nil then
-            button:SetPosition((index - 4.5) * ICON_GAP, SKILL_ROW_Y, 0)
+            button:SetPosition((index - (#skills + 1) / 2) * ICON_GAP, SKILL_ROW_Y, 0)
             if button.label then button.label:SetPosition(0, -46, 0) end
         end
     end
@@ -75,7 +76,7 @@ end
 local function PlaceAppearanceButton(controls, button)
     if button == nil then return end
     if controls.nyx_skin_root == nil then
-        local root = controls:AddChild(Widget("NyxSkinRoot"))
+        local root = controls:AddChild(Widget("NyxCornerButtonsRoot"))
         root:SetScaleMode(SCALEMODE_PROPORTIONAL)
         root:SetMaxPropUpscale(MAX_HUD_SCALE)
         root:SetHAnchor(ANCHOR_LEFT)

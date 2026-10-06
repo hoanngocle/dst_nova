@@ -1,7 +1,7 @@
 name = "Thành Tựu Tu Tiên"
 author = "Nyx"
 description = [[
-Phiên bản 1.3.5 - Thành Tựu Tu Tiên
+Phiên bản 1.3.8 - Thành Tựu Tu Tiên
 
 ★ Thành tựu: hoàn thành thử thách sinh tồn, chiến đấu, chế tạo và lao động để nhận Sao.
 ★ Nhiệm vụ mùa: mỗi lượt có 6 nhiệm vụ và 4 rương thưởng; quà gồm Sao, EXP hoặc vật phẩm.
@@ -15,7 +15,7 @@ Yêu cầu mod: [Tu Tiên]
 ]]
 
 server_filter_tags = {"chasni", "achievement"}
-version = "1.3.5"
+version = "1.3.8"
 -- Tu Tien (-10) owns the base stats. Achievement adds only its own bonuses.
 priority = -1000
 mod_dependencies = { { workshop = "workshop-3721846643" } }

@@ -3,6 +3,18 @@ function P.Finite(v) return type(v)=='number' and v==v and v>-math.huge and v<ma
 function P.GatherTier(level)
     return math.min(10,math.max(1,math.floor((level or 10)/10)))
 end
+function P.GatherCost(level)
+    level=P.Finite(level) and level or 10
+    local steps=math.min(7,math.max(0,math.floor((level-10)/10)))
+    return 20-2*steps
+end
+function P.SkillCost(def,level)
+    return def.id=='purple_gather' and P.GatherCost(level) or P.ReducedCost(def.cost,level)
+end
+function P.ReducedCost(base,level)
+    level=P.Finite(level) and math.max(0,level) or 1
+    return math.max(base/2,base-10*math.floor(level/10))
+end
 function P.Radius(level)
     local steps = math.floor(math.max(0,level-10)/10)
     return math.min(12,6+steps*0.5

@@ -78,6 +78,10 @@ local function ConfigurePointSkill(book, skill)
     targeting.reticule.mousetargetfn = nil
     targeting.reticule.updatepositionfn = skill == 'purple_gather'
         and UpdateReticulePosition or nil
+    if skill == 'bean_soldiers' then
+        targeting.reticule.reticuleprefab = 'reticuleaoefiretarget_1'
+        targeting.reticule.pingprefab = 'reticuleaoefiretarget_1ping'
+    end
     if TheWorld.ismastersim then
         targeting:SetTargetFX("reticuleaoesummontarget_1")
         book.components.aoespell:SetSpellFn(function(inst, doer, pos)
@@ -189,4 +193,6 @@ return Prefab("nyx_skillbook", fn, nil, {
     "reticuleaoe_1_6",
     "reticuleaoesummontarget_1",
     "reticuleaoeping",
+    "reticuleaoefiretarget_1",
+    "reticuleaoefiretarget_1ping",
 })

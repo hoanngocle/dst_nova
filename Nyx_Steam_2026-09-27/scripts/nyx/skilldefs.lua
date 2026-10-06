@@ -1,4 +1,4 @@
-local order={'absolute_domain','triflame_fan','yellow_river','eternal_night','spirit_sword','purple_gather','purple_eye','moon_wings'}
+local order={'absolute_domain','triflame_fan','yellow_river','eternal_night','spirit_sword','purple_gather','purple_eye','moon_wings','bean_soldiers'}
 local defs={}
 local rows={
     {'Tuyệt Đối Lĩnh Vực',30,20,'always',0,'self',0,'Lĩnh Vực'},
@@ -9,6 +9,7 @@ local rows={
     {'Tử Phong Tụ Linh',20,10,'level',10,'point',12,'Tụ Linh'},
     {'Tử Tiêu Thần Nhãn',0,0,'level',30,'toggle',0,'Thần Nhãn'},
     {'Tinh Vũ Nguyệt Dực',0,0,'level',50,'toggle',0,'Nguyệt Dực'},
+    {'Phân Thân Thuật',0,45,'always',0,'point',12,'Phân Thân'},
 }
 for i,r in ipairs(rows) do defs[order[i]]={id=order[i],name=r[1],cost=r[2],cooldown=r[3],gate={kind=r[4],value=r[5]},target=r[6],range=r[7],short=r[8],row=i<=5 and 1 or 2,slot=i<=5 and i or i-5} end
 return {Get=function(id) return defs[id] end,Order=function() return order end}

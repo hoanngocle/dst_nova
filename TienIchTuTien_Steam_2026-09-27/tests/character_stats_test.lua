@@ -21,11 +21,13 @@ local p = {prefab="nyx", HasTag=function() return false end, components={
     xd_htz_lq={current=50,max=100},
     hh_buff={hh_buffs={add_health={time=12.5}}},
 }}
+local preview_calls=0
 local source = {combat_stats=function() return {crit_rate=20,crit_effect=50,pierce=10} end,
     flat_pierce=function() return 30 end,
-    preview_attack=function(_, _, damage) return {damage=(damage+20)*1.2,
+    preview_attack=function(_, _, damage) preview_calls=preview_calls+1; return {damage=(damage+20)*1.2,
         pierce_percent=10,pierce_damage=69.6,total_damage=465.6} end}
 local s = Stats.Measure(p, {TTK_EQUIPMENT_DETAIL_SOURCE=source})
+assert(preview_calls==1,'item/elixir attack bonuses must be applied only once in the information snapshot')
 near(s.values.damage,465.6) -- physical 396 + armor-piercing 69.6
 near(s.values.damage_physical,396)
 near(s.values.pierce_damage,69.6)

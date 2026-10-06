@@ -25,6 +25,11 @@ for _,key in ipairs({"SetScaleMode","SetHAnchor","SetVAnchor","SetPosition","Set
 end
 function Widget:SetRegionSize(w,h) self.region={w,h} end
 function Widget:SetSize(w,h) self.size={w,h} end
+function Widget:ScaleToSize(w,h) self:SetSize(w,h) end
+function Widget:SetHoverText(text)
+    self.hovertext=Widget();self.hovertext:SetString(text)
+    self.hovertext_bg=Widget()
+end
 function Widget:GetRegionSize()
     if self.region then return unpack(self.region) end
     return math.min(300,(utf8.len(self.text_value or '') or 0)*8),self.lines and self.lines*18 or 36
