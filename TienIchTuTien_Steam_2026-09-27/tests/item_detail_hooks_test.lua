@@ -1,4 +1,4 @@
-local mod_root = os.getenv('TTK_TEST_MOD_ROOT') or 'TienIchTuTien_Steam_2026-09-27'
+local mod_root = os.getenv("TTK_TEST_MOD_ROOT") or "TienIchTuTien_Steam_2026-09-27"
 package.path=mod_root..'/scripts/?.lua;'
     ..'ThanKhiTuTien_Steam_2026-09-27/scripts/?.lua;'..package.path
 local Detail=require('ttk_item_detail')
@@ -9,7 +9,6 @@ local item={prefab='vanhonphien',components={},
     GetDisplayName=function() return 'Vạn Linh Phiên' end,
     _tbc_detail={value=function() return '16;' end}}
 local source={max_affixes=5,soul_banner_damage=Banner.Damage,soul_banner_crit=Banner.CritBonus}
-local equipment = item
 local function Widget()
     local w={shown=true}
     function w:SetString(s) self.str=s end
@@ -25,22 +24,26 @@ local function Widget()
     return w
 end
 local callbacks={}
-local sim_init
-local native_hover={SetNew=function() end}
+local sim_post_init
+local xd_widget={SetNew=function() end}
+local hud_widget={item=item}
+local world_item
 local G={TheNet={IsDedicated=function() return false end},UIFONT='font',unpack=unpack or table.unpack,
-    TTK_EQUIPMENT_DETAIL_SOURCE=source,KnownModIndex=nil,
-    TheInput={GetHUDEntityUnderMouse=function() return {widget={item=item}} end,
-        GetWorldEntityUnderMouse=function() end,GetScreenPosition=function() return {x=20,y=30} end},
-    pcall=pcall,
+    TTK_EQUIPMENT_DETAIL_SOURCE=source,KnownModIndex=nil,pcall=pcall,
+    TheInput={GetHUDEntityUnderMouse=function()
+        return hud_widget~=nil and {widget=hud_widget} or nil
+    end,
+        GetWorldEntityUnderMouse=function() return world_item end,
+        GetScreenPosition=function() return {x=20,y=30} end},
     require=function(name)
-        if name=='widgets/xd_showhoverui' then return native_hover end
+        if name=='widgets/xd_showhoverui' then return xd_widget end
         assert(name=='widgets/image' or name=='widgets/text');return Widget
     end}
 -- DST modmain/modimport does not export select; standard required modules do.
 local env={GLOBAL=G,require=require,print=function() end,type=type,ipairs=ipairs,pairs=pairs,
     math=math,tostring=tostring,
     AddClassPostConstruct=function(name,fn) callbacks[name]=fn end,
-    AddSimPostInit=function(fn) sim_init=fn end}
+    AddSimPostInit=function(fn) sim_post_init=fn end}
 assert(env.select==nil)
 local chunk
 if setfenv then
@@ -64,19 +67,33 @@ assert(hover.pointer[1]==20 and hover.pointer[2]==30)
 local tile={item=item,GetDescriptionString=function() return 'Vạn Linh Phiên\nTrang bị' end}
 callbacks['widgets/itemtile'](tile)
 assert(tile:GetDescriptionString():find('CƯỜNG HÓA',1,true))
-item=nil
+sim_post_init()
 assert(hover:OnUpdate(.1)=='original result')
-assert(old_calls==2 and not hover.ttk_title.shown)
-item=equipment
-sim_init()
-assert(hover:OnUpdate(.1)=='original result')
-assert(not hover.text.shown and not hover.ttk_title.shown,
-    'standard detail must be hidden when Tu Tien owns the detail panel')
+assert(old_calls==2 and not hover.text.shown,
+    'Tu Tien detail panel must not overlap the standard hover text')
+assert(not hover.ttk_title.shown,
+    'Tu Tien detail panel must not overlap the standard hover title')
 for _, icon in ipairs(hover.ttk_icons or {}) do
     assert(not icon.shown, 'standard detail icons must not overlap native detail')
 end
+hud_widget={}
+world_item=item
+hover.str='Thông tin nhân vật'
+assert(hover:OnUpdate(.1)=='original result')
+assert(hover.text.shown,
+    'HUD buttons must keep their hover text even above equipment in the world')
+hud_widget=nil
+hover.str='Vạn Linh Phiên'
+assert(hover:OnUpdate(.1)=='original result')
+assert(not hover.text.shown, 'world equipment still uses the Tu Tien detail panel')
+hud_widget={item=item}
+world_item=nil
+item={prefab='ordinary',IsValid=function() return true end}
+hud_widget.item=item
+hover.str='Ordinary item'
+assert(hover:OnUpdate(.1)=='original result')
+assert(hover.text.shown, 'ordinary item hover remains visible after equipment')
 item=nil
-hover:OnUpdate(.1)
-assert(hover.text.shown and not hover.ttk_title.shown,
-    'ordinary tooltip must return after leaving enhanced equipment')
+assert(hover:OnUpdate(.1)=='original result')
+assert(old_calls==6 and not hover.ttk_title.shown)
 print('item_detail_hooks_test: DST sandbox hover and container tooltip passed')
