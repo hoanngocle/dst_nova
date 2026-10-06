@@ -57,11 +57,41 @@ assert(closes==5 and sends==2,'right click outside closes host box')
 widget.isopen=false
 hud:OnMouseButton(MOUSEBUTTON_LEFT,true,900,900)
 assert(closes==5 and mouse_calls==6,'outside click preserves native dispatch')
+-- Inventory and backpack transfers happen outside the gem panel. A clicked
+-- slot must stay protected even if native input already cleared the held item.
+widget.isopen=true
+local active_item
+player.replica={inventory={GetActiveItem=function() return active_item end}}
+local inv={}
+local other_widget={isopen=true}
+hud.controls.inv=inv
+hud.controls.containers[{}]=other_widget
+for _, master in ipairs({false,true}) do
+    TheWorld.ismastersim=master
+    local before_closes,before_sends,before_mouse=closes,sends,mouse_calls
+    for _, root in ipairs({inv,other_widget,widget}) do
+        hovered={widget={parent={parent=root}}}
+        for _, button in ipairs({MOUSEBUTTON_LEFT,MOUSEBUTTON_RIGHT}) do
+            assert(hud:OnMouseButton(button,true,900,900)=='native')
+        end
+    end
+    hovered=nil
+    active_item={prefab='redgem'}
+    assert(hud:OnMouseButton(MOUSEBUTTON_LEFT,true,900,900)=='native')
+    assert(hud:OnMouseButton(MOUSEBUTTON_RIGHT,true,900,900)=='native')
+    active_item=nil
+    assert(closes==before_closes and sends==before_sends,
+        'taking/storing/splitting items must not dismiss gem storage')
+    assert(mouse_calls==before_mouse+8,'item interactions retain native dispatch')
+end
+TheWorld.ismastersim=false
+hud:OnMouseButton(MOUSEBUTTON_LEFT,true,900,900)
+assert(closes==6 and sends==3,'world click resumes dismissal after transfer')
 dedicated=true
 handler=nil
 hook=nil
 Rules.InstallEscape(api)
 assert(handler~=nil and hook==nil,'dedicated server registers close RPC without client HUD')
 handler(player)
-assert(closes==6)
+assert(closes==7)
 print('gem_storage_escape_test: ok')

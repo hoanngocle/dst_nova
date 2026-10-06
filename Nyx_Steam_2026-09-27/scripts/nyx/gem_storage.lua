@@ -95,6 +95,26 @@ local function IsInsideWidget(widget, x, y)
         and math.abs(y-pos.y) <= 260*math.abs(scale.y)
 end
 
+local function IsItemInteraction(hud)
+    local inventory = hud.owner ~= nil and hud.owner.replica ~= nil
+        and hud.owner.replica.inventory or nil
+    if inventory ~= nil and inventory:GetActiveItem() ~= nil then return true end
+
+    -- Inventory includes equipment and the integrated backpack. Separate bags
+    -- and other open chests live in controls.containers. Follow tile ancestry so
+    -- transfers stay protected even after native input consumes the held item.
+    local entity = TheInput:GetHUDEntityUnderMouse()
+    local hovered = entity ~= nil and entity.widget or nil
+    while hovered ~= nil do
+        if hovered == hud.controls.inv then return true end
+        for _, widget in pairs(hud.controls.containers) do
+            if hovered == widget and widget.isopen then return true end
+        end
+        hovered = hovered.parent
+    end
+    return false
+end
+
 function M.InstallEscape(api)
     api.AddModRPCHandler('NYX', 'CLOSE_GEM_STORAGE', function(player)
         local storage = player ~= nil and player.components.nyx_gem_storage or nil
@@ -119,7 +139,8 @@ function M.InstallEscape(api)
         local onmousebutton = hud.OnMouseButton
         hud.OnMouseButton = function(self, button, down, x, y, ...)
             if down and (button == MOUSEBUTTON_LEFT or button == MOUSEBUTTON_RIGHT)
-                and self.shown and self.controls ~= nil and self.controls.containers ~= nil then
+                and self.shown and self.controls ~= nil and self.controls.containers ~= nil
+                and not IsItemInteraction(self) then
                 for chest, widget in pairs(self.controls.containers) do
                     if chest.prefab == 'nyx_gem_storage' and chest:IsValid()
                         and widget ~= nil and widget.isopen and not IsInsideWidget(widget, x, y) then
