@@ -16,7 +16,7 @@ local api={
     end,
     AddComponentPostInit=function(name,fn) assert(name=='inventory' and type(fn)=='function') end,
     AddClassPostConstruct=function(path,fn)
-        if path=='screens/playerhud' then return end
+        if path=='screens/playerhud' or path=='widgets/containerwidget' then return end
         require(path) -- Match Klei: optional third-party widgets are required immediately.
         assert(path=='widgets/hh_ui/hh_equip_ui'); ui_hook=fn
     end,

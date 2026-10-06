@@ -150,6 +150,20 @@ function M.Install(api)
     end)
     M.InstallEscape(api)
     if not TheNet:IsDedicated() then
+        api.AddClassPostConstruct('widgets/containerwidget', function(widget)
+            local close = widget.Close
+            widget.Close = function(self, ...)
+                local is_gem_storage = self.container ~= nil
+                    and self.container.prefab == 'nyx_gem_storage'
+                local result = close(self, ...)
+                -- Native Close leaves the background visible until a simulation
+                -- timer disposes the widget. Hide our 6x6 panel immediately so its
+                -- closing frame cannot linger as a dark bar (including on pause).
+                -- Native Open calls Show again; keep native cleanup unchanged.
+                if is_gem_storage then self:Hide() end
+                return result
+            end
+        end)
         -- Solo Leveling is optional. AddClassPostConstruct requires its module
         -- immediately, so probe it before registering this compatibility hook.
         local available, summary = pcall(require, 'widgets/hh_ui/hh_equip_ui')
