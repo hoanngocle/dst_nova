@@ -11,7 +11,7 @@ DST sắp xếp `priority` từ lớn xuống nhỏ (mã game `scripts/mods.lua`
 | 1 | Tu Tiên gốc, workshop-3721846643 | -10 | Giữ bản gốc |
 | 2 | Nyx | -20 | 1.5.12 |
 | 3 | Trang Phục Tu Tiên | -30 | 1.0.1 |
-| 4 | Công Trình Tu Tiên | -40 | 1.6.2 |
+| 4 | Công Trình Tu Tiên | -40 | 1.6.3 |
 | 5 | Hầm Ngục Tu Tiên | -50 | 1.1.2 |
 | 6 | Thành Tựu Tu Tiên | -1000 | 1.3.8 |
 | 7 | Thần Khí Tu Tiên | -1100 | 1.2.11 |

@@ -9,6 +9,11 @@ for _, filename in GLOBAL.ipairs({
     "main/ttk_portal.lua",
     "main/ttk_lingshi_recycler.lua",
     "scripts/nova_lingshi_pricing.lua",
+    "scripts/nova_slot_rewards.lua",
+    "scripts/nova_slot_core.lua",
+    "scripts/nova_slot_spawn.lua",
+    "scripts/components/nova_slotmachine.lua",
+    "main/ttk_slot_rewards.lua",
     "scripts/prefabs/nova_lingshi_recycler.lua",
     "anim/ttk_spirit_workshop.zip",
     "images/ttk_spirit_workshop/icon.xml",
@@ -55,6 +60,7 @@ end
 GLOBAL.require("ttt_portal_skin").Install(env)
 modimport("main/ttk_portal.lua")
 modimport("main/ttk_lingshi_recycler.lua")
+modimport("main/ttk_slot_rewards.lua")
 modimport("main/ttk_treasure.lua")
 modimport("main/ttk_thien_nghich_chau.lua")
 modimport("main/ttk_fsct.lua")
