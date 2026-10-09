@@ -1,9 +1,9 @@
 name = "Công Trình Tu Tiên"
 description = [[
-★ Phiên Bản 1.6.3 - Công Trình Tu Tiên ★
+★ Phiên Bản 1.6.4 - Công Trình Tu Tiên ★
 
 ★ Máy Tái Luyện: biến vật phẩm dư thành Linh Thạch Hạ Phẩm.
-★ Máy Quay Linh Thạch: bảng thưởng hợp nhất 149 gói, hỗ trợ vật phẩm và Boss Solo khi bật mod.
+★ Máy Quay Linh Thạch: bảng thưởng hợp nhất 133 gói, hỗ trợ vật phẩm và Boss Solo khi bật mod.
 ★ Truyền Tống Trận: dịch chuyển giữa các cổng đã đặt.
 ★ Tàng Bảo Đồ: lần theo dấu trên bản đồ và đào kho báu.
 ★ Vĩnh Hằng Thần Hỏa: bốn công trình lửa cho mùa đông và mùa hè.
@@ -15,7 +15,7 @@ description = [[
 Yêu cầu mod: [Tu Tiên]
 ]]
 author = "Nyx"
-version = "1.6.3"
+version = "1.6.4"
 -- Tu Tien (-10) registers its components and prefabs first.
 priority = -40
 

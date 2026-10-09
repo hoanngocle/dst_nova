@@ -4,7 +4,7 @@ local file = io.open(path, 'r')
 assert(file, 'final slot reward catalog must exist')
 file:close()
 local data = require('nova_slot_rewards')
-local expected = {good=24, ok=21, ok2=30, bad=43, bad2=31}
+local expected = {good=24, ok=21, ok2=30, bad=43, bad2=15}
 local seen, total = {}, 0
 for _, group in ipairs(data.groups) do
     assert(#group.bundles == expected[group.key], group.key)
@@ -20,7 +20,7 @@ for _, group in ipairs(data.groups) do
         end
     end
 end
-assert(total == 149)
+assert(total == 133)
 local core = require('nova_slot_core')
 local available = {a=true,b=true}
 local groups = {{key='good',weight=1,bundles={

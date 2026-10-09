@@ -1,4 +1,13 @@
-# Kiểm chứng Máy Quay Linh Thạch 1.6.3
+# Kiểm chứng Máy Quay Linh Thạch 1.6.4
+
+Ngày 09/10/2026: chỉ rút nhóm Quái từ 31 xuống 15 gói, tổng từ 149 xuống 133; giữ trọng số nhóm 4,2 (40%).
+
+- Đối chiếu danh mục Lua với bản 1.6.3 trong Git: bốn nhóm khác giống hệt; 15 gói còn lại giữ đúng ID, nội dung, số lượng và trọng số cũ.
+- Không còn chó thường/nguyên tố, hải mã, ếch thường/mặt trăng, xúc tu, ong sát thủ, Slurper, Slurtle hoặc Snurtle trong nhóm Quái.
+- Test danh mục và giao dịch qua trên Lua 5.1. JSON wiki khớp 133 gói, 15 gói Quái với tỷ lệ 2,6667%/gói/lượt.
+- Không chạy lại engine cho thay đổi chỉ loại dữ liệu này; các gói giữ lại thuộc tập đã kiểm tra khởi tạo ở bản 1.6.3 bên dưới.
+
+## Lịch sử kiểm chứng 1.6.3
 
 Ngày 08/10/2026. Bảng chốt: `SLOT_REWARDS_FINAL.md`.
 

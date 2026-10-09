@@ -1,6 +1,6 @@
-# Phần thưởng Máy Quay Linh Thạch — bản chốt 1.6.3
+# Phần thưởng Máy Quay Linh Thạch — bản chốt 1.6.4
 
-Ngày 08/10/2026 · 149 gói: Hiếm 24, Khá 21, Thường 30, Boss 43, Quái 31.
+Cập nhật 09/10/2026 · 133 gói: Hiếm 24, Khá 21, Thường 30, Boss 43, Quái 15.
 
 ## Cơ chế
 
@@ -9,13 +9,17 @@ Ngày 08/10/2026 · 149 gói: Hiếm 24, Khá 21, Thường 30, Boss 43, Quái 3
 - Tỷ lệ dưới đây áp dụng khi đủ mod, prefab và vị trí xuất hiện hợp lệ. Thiếu một prefab thì loại toàn bộ gói; nhóm thiếu toàn bộ gói sẽ khóa giao dịch. Không phát gói thiếu món.
 - Máy tìm đất trống cho phần thưởng. Nếu không có gói phù hợp trong nhóm đã chọn, từ chối trước khi thu tiền.
 - Lưu game giữa lượt: lưu biên nhận, hoàn đúng tiền cạnh máy khi tải lại. Lỗi phát thưởng: xóa phần đã tạo và hoàn tiền.
-- Runtime nằm trong Công Trình Tu Tiên 1.6.3, không sửa mod Tu Tiên gốc.
+- Runtime nằm trong Công Trình Tu Tiên 1.6.4, không sửa mod Tu Tiên gốc.
 
 ## Hai món đã bỏ theo yêu cầu mới nhất
 
 - Nhất Vũ Phương Hoa (`nhatvuphuonghoa`) ×1. Giữ hạt giống Phủ Băng ×3 trong gói.
 - Thần Hi Quang Trượng (`thanhiquangtruong`) ×1. Giữ Đá Sa Mạc ×3 trong gói.
 - Không thay bằng bản pháp bảo gốc vì chưa xác nhận tác dụng tương đương.
+
+## Rút gọn nhóm Quái — 09/10/2026
+
+Giữ 15 gói, trọng số nhóm 4,2 (40%); mỗi gói 2,6667% mỗi lượt khi đủ điều kiện. Bỏ chó nguyên tố, chó săn, hải mã, ếch, xúc tu, ong sát thủ, gói sâu hang/Slurper và Slurtle/Snurtle. Bỏ thêm khỉ hang, người thỏ, ruồi trái cây, mèo gấu, người nấm, voi Koala, kền kền và dê điện. Giữ nguyên số lượng quái trong những gói còn lại.
 
 ## Bảng thưởng
 
@@ -157,41 +161,25 @@ Ngày 08/10/2026 · 149 gói: Hiếm 24, Khá 21, Thường 30, Boss 43, Quái 3
 | Gingerbread Varg | gingerbreadwarg (`gingerbreadwarg`) ×1 | 0.1772% |
 | Reanimated Skeleton — hang | Reanimated Skeleton (`stalker`) ×1 | 0.1772% |
 
-### Quái — 31 gói · 40.0000%
+### Quái — 15 gói · 40.0000%
 
 | Gói | Phần thưởng | Tỷ lệ / lượt |
 |---|---|---:|
-| Chó nguyên tố | firehound (`firehound`) ×5 + icehound (`icehound`) ×5 | 1.2903% |
-| Khỉ hang | Splumonkey (`monkey`) ×7 | 1.2903% |
-| Lính heo | pigguard (`pigguard`) ×5 | 1.2903% |
-| Sâu hang và Slurper | Depths Worm (`worm`) ×5 + Slurper (`slurper`) ×4 | 1.2903% |
-| Chó săn — từ bản cũ | Hound (`hound`) ×3 | 1.2903% |
-| Ewecus | Ewecus (`spat`) ×2 | 1.2903% |
-| Thợ săn hải mã | walrus (`walrus`) ×3 | 1.2903% |
-| Chim cao cổ | Tallbird (`tallbird`) ×3 | 1.2903% |
-| Quân cờ máy | Clockwork Bishop (`bishop`) ×1 + Clockwork Rook (`rook`) ×1 + Clockwork Knight (`knight`) ×1 | 1.2903% |
-| Khỉ cướp biển | Powder Monkey (`powder_monkey`) ×5 | 1.2903% |
-| Ếch | Frog (`frog`) ×4 + Bright-Eyed Frog (`lunarfrog`) ×2 | 1.2903% |
-| Xúc tu | Tentacle (`tentacle`) ×8 | 1.2903% |
-| Dơi | Batilisk (`bat`) ×10 | 1.2903% |
-| Người thỏ | Bunnyman (`bunnyman`) ×4 | 1.2903% |
-| Ong sát thủ | killerbee (`killerbee`) ×12 | 1.2903% |
-| Ác mộng | crawlingnightmare (`crawlingnightmare`) ×3 + nightmarebeak (`nightmarebeak`) ×2 | 1.2903% |
-| Ruồi trái cây | fruitfly (`fruitfly`) ×4 | 1.2903% |
-| Mèo gấu | Catcoon (`catcoon`) ×5 | 1.2903% |
-| Nhện y tá | Nurse Spider (`spider_healer`) ×5 | 1.2903% |
-| Bộ ba Ink Blight | Ink Blight (`shadowthrall_horns`) ×1 + Ink Blight (`shadowthrall_hands`) ×1 + Ink Blight (`shadowthrall_wings`) ×1 | 1.2903% |
-| Sên hang | Slurtle (`slurtle`) ×4 + snurtle (`snurtle`) ×1 | 1.2903% |
-| Người nấm | Mush Gnome (`mushgnome`) ×3 | 1.2903% |
-| Voi Koala | Koalefant (`koalefant_summer`) ×1 + koalefant_winter (`koalefant_winter`) ×1 | 1.2903% |
-| Mắt bay nhỏ | Suspicious Peeper (`eyeofterror_mini`) ×6 | 1.2903% |
-| Kền kền | Buzzard (`buzzard`) ×4 | 1.2903% |
-| Nhện hang | Cave Spider (`spider_hider`) ×4 + Spitter (`spider_spitter`) ×2 | 1.2903% |
-| Krampus thường | Krampus (`krampus`) ×2 | 1.2903% |
-| Rồng trái cây | Saladmander (`fruitdragon`) ×5 | 1.2903% |
-| Dê điện | Volt Goat (`lightninggoat`) ×3 | 1.2903% |
-| Bầy nhện | Spider (`spider`) ×5 + Spider Warrior (`spider_warrior`) ×2 + Shattered Spider (`moonspider_spike`) ×2 | 1.2903% |
-| Lính người cá | mermguard (`mermguard`) ×5 | 1.2903% |
+| Lính heo | pigguard (`pigguard`) ×5 | 2.6667% |
+| Ewecus | Ewecus (`spat`) ×2 | 2.6667% |
+| Chim cao cổ | Tallbird (`tallbird`) ×3 | 2.6667% |
+| Quân cờ máy | Clockwork Bishop (`bishop`) ×1 + Clockwork Rook (`rook`) ×1 + Clockwork Knight (`knight`) ×1 | 2.6667% |
+| Khỉ cướp biển | Powder Monkey (`powder_monkey`) ×5 | 2.6667% |
+| Dơi | Batilisk (`bat`) ×10 | 2.6667% |
+| Ác mộng | crawlingnightmare (`crawlingnightmare`) ×3 + nightmarebeak (`nightmarebeak`) ×2 | 2.6667% |
+| Nhện y tá | Nurse Spider (`spider_healer`) ×5 | 2.6667% |
+| Bộ ba Ink Blight | Ink Blight (`shadowthrall_horns`) ×1 + Ink Blight (`shadowthrall_hands`) ×1 + Ink Blight (`shadowthrall_wings`) ×1 | 2.6667% |
+| Mắt bay nhỏ | Suspicious Peeper (`eyeofterror_mini`) ×6 | 2.6667% |
+| Nhện hang | Cave Spider (`spider_hider`) ×4 + Spitter (`spider_spitter`) ×2 | 2.6667% |
+| Krampus thường | Krampus (`krampus`) ×2 | 2.6667% |
+| Rồng trái cây | Saladmander (`fruitdragon`) ×5 | 2.6667% |
+| Bầy nhện | Spider (`spider`) ×5 + Spider Warrior (`spider_warrior`) ×2 + Shattered Spider (`moonspider_spike`) ×2 | 2.6667% |
+| Lính người cá | mermguard (`mermguard`) ×5 | 2.6667% |
 
 ## Boss đã loại
 

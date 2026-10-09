@@ -1,5 +1,7 @@
 # Kế hoạch gộp phần thưởng Máy Quay Linh Thạch
 
+> CẬP NHẬT 09/10/2026 — 1.6.4: Rút nhóm Quái xuống 15 gói theo yêu cầu; tổng 133 gói. Giữ các ID `quai_03, 06, 08, 09, 10, 13, 16, 19, 20, 24, 26, 27, 28, 30, 31`. Bỏ cả Slurper lẫn Slurtle/Snurtle cùng các nhóm chó, hải mã, ếch, xúc tu, ong. Bảng lịch sử 31 gói bên dưới được giữ để đối chiếu; bảng áp dụng nằm trong `docs/SLOT_REWARDS_FINAL.md`. Tỷ lệ nhóm vẫn 40%; mỗi gói còn lại 2,6667% khi đủ điều kiện.
+
 > CẬP NHẬT CHỐT 08/10/2026: Người dùng đã duyệt toàn bộ và yêu cầu triển khai. Bảng cuối là `docs/SLOT_REWARDS_FINAL.md`; nội dung duyệt bên dưới lưu lịch sử và được thay thế bởi bảng cuối nếu khác nhau. Giữ chi phí và trọng số nhóm của bản đang cài. Sau rà soát, người dùng yêu cầu bỏ hai món thiếu bản tùy chỉnh cũ: `nhatvuphuonghoa` và `thanhiquangtruong`; giữ những món còn lại cùng gói. Tổng vẫn 149 gói.
 
 > **For agentic workers:** Khi có yêu cầu triển khai runtime, dùng `superpowers:executing-plans` để thực hiện từng phần đã duyệt. Tài liệu hiện tại là kế hoạch nội dung đang duyệt; không phải lệnh triển khai vào game.
